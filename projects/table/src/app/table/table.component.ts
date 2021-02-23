@@ -285,6 +285,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
                 updateOnBlur: textFieldCell.updateOnBlur,
                 appearance: 'standard',
                 suggestions: textFieldCell.suggestions,
+                suggestionsPanelWidth: textFieldCell.suggestionsPanelWidth,
                 onFocus: this.options?.onCellFocus ? async () => {
                   return this.options.onCellFocus({
                     row: this.visibleData[rowIndex],
@@ -317,6 +318,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
                 updateOnBlur: numberFieldCell.updateOnBlur,
                 appearance: 'standard',
                 suggestions: numberFieldCell.suggestions,
+                suggestionsPanelWidth: numberFieldCell.suggestionsPanelWidth,
                 onFocus: this.options?.onCellFocus ? async () => {
                   return this.options.onCellFocus({
                     row: this.visibleData[rowIndex],

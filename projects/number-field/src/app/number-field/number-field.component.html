@@ -3,7 +3,7 @@
   <input matInput type="number" [placeholder]="options?.placeholder || options?.label" [formControl]="formControl"
     [errorStateMatcher]="errorStateMatcher" autocomplete="off" (blur)="onBlur()" [matAutocomplete]="auto">
   <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (opened)="onFocus()"
-    [panelWidth]="options?.autocompletePanelWidth">
+    [panelWidth]="options?.suggestionsPanelWidth">
     <mat-option *ngFor="let option of suggestions" [value]="option?.value" [ngStyle]="suggestionStyle"
       [disabled]="!!suggestionStyle">
       {{option?.label}}

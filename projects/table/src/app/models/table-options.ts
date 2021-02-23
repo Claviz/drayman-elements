@@ -431,6 +431,10 @@ export interface DraymanTableTextFieldCell extends DraymanTableCellBase<string> 
      * Array of options that populate the autocomplete.
      */
     suggestions?: SelectOption[];
+    /**
+     * Specify the width of the autocomplete panel. Can be any CSS sizing value, otherwise it will match the width of its host.
+     */
+    suggestionsPanelWidth?: string | number;
 }
 
 export interface DraymanTableCheckboxCell extends DraymanTableCellBase<boolean> {
@@ -496,6 +500,10 @@ export interface DraymanTableNumberFieldCell extends DraymanTableCellBase<number
      * Array of options that populate the autocomplete.
      */
     suggestions?: SelectOption[];
+    /**
+     * Specify the width of the autocomplete panel. Can be any CSS sizing value, otherwise it will match the width of its host.
+     */
+    suggestionsPanelWidth?: string | number;
 }
 
 export interface DraymanTableButtonCell extends DraymanTableCellBase<string>, DraymanTableButton {
