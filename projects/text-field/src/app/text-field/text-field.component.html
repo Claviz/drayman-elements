@@ -2,7 +2,8 @@
   <mat-label *ngIf="options?.label">{{options?.label}}</mat-label>
   <input matInput type="text" [placeholder]="options?.placeholder || options?.label" [formControl]="formControl"
     [errorStateMatcher]="errorStateMatcher" autocomplete="off" (blur)="onBlur()" [matAutocomplete]="auto">
-  <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (opened)="onFocus()">
+  <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (opened)="onFocus()"
+    [panelWidth]="options?.autocompletePanelWidth">
     <mat-option *ngFor="let option of suggestions" [value]="option?.value" [ngStyle]="suggestionStyle"
       [disabled]="!!suggestionStyle">
       {{option?.label}}
