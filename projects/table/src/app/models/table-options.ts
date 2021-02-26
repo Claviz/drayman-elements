@@ -6,6 +6,7 @@ import { DraymanTextField } from '../../../../text-field/src/app/models/text-fie
 import { DraymanCheckbox } from '../../../../checkbox/src/app/models/checkbox-options';
 import { DraymanDatepicker } from '../../../../datepicker/src/app/models/datepicker-options';
 import { DraymanTimepicker } from '../../../../timepicker/src/app/models/timepicker-options';
+import { InputMaskOptionsBase } from '../../../../shared/models/input-mask-options-base';
 
 /**
  * # drayman-table
@@ -413,7 +414,7 @@ export interface DraymanTableFileUploaderCell extends DraymanTableCellBase<strin
     allowMultiple?: boolean;
 }
 
-export interface DraymanTableTextFieldCell extends DraymanTableCellBase<string> {
+export interface DraymanTableTextFieldCell extends DraymanTableCellBase<string>, InputMaskOptionsBase {
     type: 'text-field';
     /**
      * Error text to be shown underneath the form field control.

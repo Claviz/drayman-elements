@@ -1,10 +1,11 @@
+import { InputMaskOptionsBase } from '../../../../shared/models/input-mask-options-base';
 import { AutocompleteOptionsBase } from '../../../../shared/models/autocomplete-options-base';
 import { InputFieldOptionsBase } from '../../../../shared/models/input-field-options-base';
 
 /**
  * # drayman-text-field
  * 
- * Text field powered by [Angular Material](https://material.angular.io/) library.
+ * Text field powered by [Angular Material](https://material.angular.io/) and [ngx-mask](https://jsdaddy.github.io/ngx-mask-page) libraries.
  *
  * ## Example of usage
  * 
@@ -93,5 +94,5 @@ import { InputFieldOptionsBase } from '../../../../shared/models/input-field-opt
  * }
  * ```
  */
-export interface DraymanTextField extends InputFieldOptionsBase<string>, AutocompleteOptionsBase<string> {
+export interface DraymanTextField extends InputFieldOptionsBase<string>, AutocompleteOptionsBase<string>, InputMaskOptionsBase {
 }

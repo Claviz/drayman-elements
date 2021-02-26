@@ -286,6 +286,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
                 appearance: 'standard',
                 suggestions: textFieldCell.suggestions,
                 suggestionsPanelWidth: textFieldCell.suggestionsPanelWidth,
+                mask: textFieldCell.mask,
                 onFocus: this.options?.onCellFocus ? async () => {
                   return this.options.onCellFocus({
                     row: this.visibleData[rowIndex],

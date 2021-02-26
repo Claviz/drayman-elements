@@ -1,7 +1,7 @@
 <mat-form-field aria-label="Timepicker field" [appearance]="options?.appearance || 'outline'" [floatLabel]="'auto'">
   <mat-label *ngIf="options?.label">{{options?.label}}</mat-label>
   <input matInput [formControl]="formControl" [errorStateMatcher]="errorStateMatcher" autocomplete="off"
-    (blur)="onBlur()">
+    (blur)="onBlur()" mask="Hh:m0" [leadZeroDateTime]="true" [dropSpecialCharacters]="false">
   <div fxLayout="row" matSuffix>
     <!-- <button aria-label="Open timepicker" class="mat-datepicker-toggle" mat-icon-button matTooltip="Open timepicker"
       [disabled]="options?.disabled" (click)="toggleOpen()">

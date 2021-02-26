@@ -1,6 +1,6 @@
 {
   "name": "drayman-elements",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Default drayman elements library",
   "license": "MIT",
   "bugs": {
@@ -168,6 +168,7 @@
     "ngx-device-detector": "2.0.0",
     "ngx-filepond": "5.0.1",
     "ngx-filesize": "2.0.16",
+    "ngx-mask": "^11.1.4",
     "ngx-mat-select-search": "^3.2.0",
     "ngx-popper": "7.0.0",
     "pdfjs-dist": "~2.5.207",
@@ -183,5 +184,6 @@
     "typescript": "^3.9.4",
     "typescript-json-schema": "^0.43.0",
     "zone.js": "0.11.1"
-  }
+  },
+  "dependencies": {}
 }

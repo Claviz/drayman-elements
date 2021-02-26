@@ -10,6 +10,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ElementZoneStrategyFactory } from 'elements-zone-strategy';
+import { NgxMaskModule } from 'ngx-mask';
 
 import { TimepickerComponent } from './timepicker/timepicker.component';
 @NgModule({
@@ -24,6 +25,7 @@ import { TimepickerComponent } from './timepicker/timepicker.component';
     FlexLayoutModule,
     MatButtonModule,
     MatTooltipModule,
+    NgxMaskModule.forRoot(),
   ],
   exports: [TimepickerComponent],
   declarations: [TimepickerComponent],
