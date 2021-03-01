@@ -21,6 +21,7 @@ export class DatepickerComponent extends FieldBase<string> implements OnChanges 
 
   opened = false;
   defaultDateFormat = 'YYYY-MM-DD';
+  mask;
   config: IDatePickerConfig = {
     openOnClick: false,
     openOnFocus: false,
@@ -44,6 +45,9 @@ export class DatepickerComponent extends FieldBase<string> implements OnChanges 
     if (this.options.value) {
       this.options.value = dayjs.utc(this.options.value).format(this.config.format);
     }
+    const format = this.config.format;
+    this.mask = format?.length === 10 && ['YYYY', 'MM', 'DD'].every(x => format.includes(x)) ?
+      format.replace('YYYY', '0000').replace('MM', 'M0').replace('DD', 'd0') : null;
     super.ngOnChanges();
   }
 

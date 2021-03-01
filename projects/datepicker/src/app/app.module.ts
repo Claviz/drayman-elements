@@ -13,6 +13,7 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DpDatePickerModule } from 'ng2-date-picker';
+import { NgxMaskModule } from 'ngx-mask';
 
 @NgModule({
   imports: [
@@ -27,6 +28,7 @@ import { DpDatePickerModule } from 'ng2-date-picker';
     MatButtonModule,
     MatTooltipModule,
     DpDatePickerModule,
+    NgxMaskModule.forRoot(),
   ],
   providers: [],
   declarations: [DatepickerComponent],
