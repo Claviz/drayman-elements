@@ -269,6 +269,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
                   return this.options.onCellButtonClick({
                     row: this.visibleData[rowIndex],
                     field: column.field,
+                    rowIndex,
                   });
                 } : null,
               } as DraymanButton,

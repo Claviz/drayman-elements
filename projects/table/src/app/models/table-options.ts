@@ -220,6 +220,7 @@ export interface DraymanTable {
     onCellButtonClick?: (data: {
         row: DraymanTableRow;
         field: string;
+        rowIndex: number;
     }) => Promise<void>;
     /**
      * Event fired when user rearranges some row.
