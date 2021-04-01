@@ -1874,6 +1874,127 @@
           }
         }
       }
+    },
+    "youtube-player": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/youtube-player",
+      "sourceRoot": "projects/youtube-player/src",
+      "prefix": "drayman",
+      "architect": {
+        "build": {
+          "builder": "ngx-build-plus:browser",
+          "options": {
+            "outputPath": "dist/youtube-player",
+            "index": "projects/youtube-player/src/index.html",
+            "main": "projects/youtube-player/src/main.ts",
+            "polyfills": "projects/youtube-player/src/polyfills.ts",
+            "tsConfig": "projects/youtube-player/tsconfig.app.json",
+            "assets": [
+              "projects/youtube-player/src/favicon.ico",
+              "projects/youtube-player/src/assets"
+            ],
+            "styles": [
+              "projects/youtube-player/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/youtube-player/src/environments/environment.ts",
+                  "with": "projects/youtube-player/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "ngx-build-plus:dev-server",
+          "options": {
+            "browserTarget": "youtube-player:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "youtube-player:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "youtube-player:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/youtube-player/src/test.ts",
+            "polyfills": "projects/youtube-player/src/polyfills.ts",
+            "tsConfig": "projects/youtube-player/tsconfig.spec.json",
+            "karmaConfig": "projects/youtube-player/karma.conf.js",
+            "assets": [
+              "projects/youtube-player/src/favicon.ico",
+              "projects/youtube-player/src/assets"
+            ],
+            "styles": [
+              "projects/youtube-player/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/youtube-player/tsconfig.app.json",
+              "projects/youtube-player/tsconfig.spec.json",
+              "projects/youtube-player/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/youtube-player/e2e/protractor.conf.js",
+            "devServerTarget": "youtube-player:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "youtube-player:serve:production"
+            }
+          }
+        }
+      }
     }
   },
   "defaultProject": "button"
