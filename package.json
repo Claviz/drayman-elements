@@ -115,8 +115,6 @@
     "@angular/youtube-player": "^10.1.0",
     "@babel/core": "^7.11.5",
     "@compodoc/compodoc": "^1.1.11",
-    "@drayman/elements": "file:./",
-    "@drayman/framework": "latest",
     "@drayman/types": "latest",
     "@nebula.js/stardust": "^1.7.0",
     "@ngneat/spectator": "^5.13.2",

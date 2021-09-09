@@ -1,0 +1,17 @@
+{
+    "name": "@drayman/elements-playground",
+    "version": "0.0.0",
+    "private": true,
+    "scripts": {
+        "start": "drayman-framework start"
+    },
+    "devDependencies": {
+        "@drayman/types": "latest",
+        "@types/node": "latest",
+        "typescript": "latest"
+    },
+    "dependencies": {
+        "@drayman/elements": "file:..",
+        "@drayman/framework": "latest"
+    }
+}
