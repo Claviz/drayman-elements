@@ -1,5 +1,7 @@
-import { Component, Input, OnChanges } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, ViewChild } from '@angular/core';
+import { MatInput } from '@angular/material/input';
 import { FieldBase } from 'projects/shared/components/field-base';
+import { generate } from 'shortid';
 
 import { DraymanTimepicker } from '../models/timepicker-options';
 
@@ -9,13 +11,23 @@ import { DraymanTimepicker } from '../models/timepicker-options';
   styleUrls: ['./timepicker.component.scss']
 })
 export class TimepickerComponent extends FieldBase<string> implements OnChanges {
-  @Input() options: DraymanTimepicker;
+  @ViewChild(MatInput) input: MatInput;
 
-  ngOnChanges() {
-    if (this.options) {
-      this.options.updateOnBlur = false;
-    }
-    super.ngOnChanges();
+  @Input() showNowButton?: boolean;
+  @Input() appearance?: 'legacy' | 'standard' | 'fill' | 'outline';
+  @Input() value?: string;
+  @Input() label?: string;
+  @Input() disabled?: boolean;
+  @Input() placeholder?: string;
+  @Input() helpText?: string;
+  @Input() error?: string;
+  @Input() onValueChange?: ElementEvent<{ value: string }>;
+  @Input() updateOnBlur?: boolean;
+  id = generate();
+
+  ngOnChanges(simpleChanges: SimpleChanges) {
+    this.updateOnBlur = false;
+    super.ngOnChanges(simpleChanges);
   }
 
   setCurrentTime() {

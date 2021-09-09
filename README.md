@@ -1,37 +1,81 @@
-[![Build Status](https://travis-ci.org/Claviz/drayman-elements.svg?branch=master)](https://travis-ci.org/Claviz/drayman-elements)
+<!-- [![Build Status](https://travis-ci.org/Claviz/drayman-elements.svg?branch=master)](https://travis-ci.org/Claviz/drayman-elements)
 [![codecov](https://codecov.io/gh/Claviz/drayman-elements/branch/master/graph/badge.svg)](https://codecov.io/gh/Claviz/drayman-elements)
-![npm](https://img.shields.io/npm/v/drayman-elements.svg)
+![npm](https://img.shields.io/npm/v/drayman-elements.svg) -->
 
-# drayman-elements
+# @drayman/elements
 
 [Docs](https://drayman-elements.netlify.app/)
 
 Default drayman elements library.
 
 ## Available elements
-* [drayman-button](https://drayman-elements.netlify.app/interfaces/draymanbutton.html)
-* [drayman-menu](https://drayman-elements.netlify.app/interfaces/draymanmenu.html)
-* [drayman-checkbox](https://drayman-elements.netlify.app/interfaces/draymancheckbox.html)
-* [drayman-claviz-charts](https://drayman-elements.netlify.app/interfaces/draymanclavizcharts.html)
-* [drayman-datepicker](https://drayman-elements.netlify.app/interfaces/draymandatepicker.html)
-* [drayman-file-uploader](https://drayman-elements.netlify.app/interfaces/draymanfileuploader.html)
-* [drayman-ngx-charts](https://drayman-elements.netlify.app/interfaces/draymanngxcharts.html)
-* [drayman-ngx-graph](https://drayman-elements.netlify.app/interfaces/draymanngxgraph.html)
-* [drayman-number-field](https://drayman-elements.netlify.app/interfaces/draymannumberfield.html)
-* [drayman-pdf-viewer](https://drayman-elements.netlify.app/interfaces/draymanpdfviewer.html)
-* [drayman-radio-group](https://drayman-elements.netlify.app/interfaces/draymanradiogroup.html)
-* [drayman-select](https://drayman-elements.netlify.app/interfaces/draymanselect.html)
-* [drayman-table](https://drayman-elements.netlify.app/interfaces/draymantable.html)
-* [drayman-text-field](https://drayman-elements.netlify.app/interfaces/draymantextfield.html)
-* [drayman-textarea-field](https://drayman-elements.netlify.app/interfaces/draymantextareafield.html)
-* [drayman-timepicker](https://drayman-elements.netlify.app/interfaces/draymantimepicker.html)
-* [drayman-youtube-player](https://drayman-elements.netlify.app/interfaces/draymanyoutubeplayer.html)
+
+- [drayman-button](interfaces/__global.draymanbuttonprops.html)
+- [drayman-menu](interfaces/__global.draymanmenuprops.html)
+- [drayman-checkbox](interfaces/__global.draymancheckboxprops.html)
+- [drayman-claviz-charts](interfaces/__global.draymanclavizchartsprops.html)
+- [drayman-datepicker](interfaces/__global.draymandatepickerprops.html)
+- [drayman-file-uploader](interfaces/__global.draymanfileuploaderprops.html)
+- [drayman-ngx-charts](interfaces/__global.draymanngxchartsprops.html)
+- [drayman-ngx-graph](interfaces/__global.draymanngxgraphprops.html)
+- [drayman-number-field](interfaces/__global.draymannumberfieldprops.html)
+- [drayman-pdf-viewer](interfaces/__global.draymanpdfviewerprops.html)
+- [drayman-radio-group](interfaces/__global.draymanradiogroupprops.html)
+- [drayman-select](interfaces/__global.draymanselectprops.html)
+- [drayman-table](interfaces/__global.draymantableprops.html)
+- [drayman-text-field](interfaces/__global.draymantextfieldprops.html)
+- [drayman-textarea-field](interfaces/__global.draymantextareafieldprops.html)
+- [drayman-timepicker](interfaces/__global.draymantimepickerprops.html)
+- [drayman-youtube-player](interfaces/__global.draymanyoutubeplayerprops.html)
+- [drayman-nebula](interfaces/__global.draymannebulaprops.html)
+
+## Installing
+
+Add Drayman Elements to your Drayman project:
+
+```bash
+npm install @drayman/elements@latest
+```
+
+Add required scripts to `public/index.html` header:
+
+```html
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/@angular/material@12.2.4/prebuilt-themes/indigo-pink.css"
+/>
+<script src="https://unpkg.com/zone.js@0.11.4/dist/zone.min.js"></script>
+```
+
+Use Drayman Elements inside component script:
+
+```tsx
+export const component: DraymanComponent = async ({ forceUpdate }) => {
+  let counter = 0;
+
+  return () => {
+    return (
+      <div>
+        <drayman-button
+          label="Click me"
+          onClick={async () => {
+            counter++;
+            await forceUpdate();
+          }}
+        />
+        <p>Button was clicked {counter} times</p>
+      </div>
+    );
+  };
+};
+```
 
 ## Development
 
-### Adding new drayman element
+### Adding new Drayman Element
 
 1. Run command:
+
 ```bash
 sudo npm run create-element -- %%element-name-in-kebab-case%% %%ElementNameInPascalCase%%
 ```
@@ -39,5 +83,3 @@ sudo npm run create-element -- %%element-name-in-kebab-case%% %%ElementNameInPas
 2. Update `package.json` with `scripts` and `drayman`.
 
 3. Update `tsconfig.json` with `inputFiles`.
-
-4. Serve!

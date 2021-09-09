@@ -3,7 +3,9 @@
   "compilerOptions": {
     "outDir": "../../out-tsc/app",
     "target": "es2015",
-    "types": []
+    "types": [
+      "@drayman/types"
+    ]
   },
   "files": [
     "src/main.ts",

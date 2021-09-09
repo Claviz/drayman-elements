@@ -1,3 +1,4 @@
+import { OverlayContainer } from '@angular/cdk/overlay';
 import { Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { MatButtonModule } from '@angular/material/button';
@@ -5,22 +6,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ElementZoneStrategyFactory } from 'elements-zone-strategy';
+import { SingleOverlayContainer } from 'mat-single-overlay';
 import { Attributes, IntersectionObserverHooks, LAZYLOAD_IMAGE_HOOKS, LazyLoadImageModule } from 'ng-lazyload-image';
 import { NgxPopperModule } from 'ngx-popper';
 
 import { ButtonComponent } from './button/button.component';
-
-class LazyLoadImageHooks extends IntersectionObserverHooks {
-  async loadImage({ imagePath }: Attributes): Promise<string> {
-    const response = await fetch(imagePath);
-    const blob = await response.blob();
-    if (blob.size) {
-      const url = URL.createObjectURL(blob);
-      return url;
-    }
-  }
-}
+import { LazyLoadImageHooks } from './lazy-load-image-hooks';
 
 @NgModule({
   imports: [
@@ -29,6 +20,7 @@ class LazyLoadImageHooks extends IntersectionObserverHooks {
     MatButtonModule,
     MatTooltipModule,
     MatIconModule,
+    LazyLoadImageModule,
     NgxPopperModule.forRoot({
       disableDefaultStyling: true,
       applyArrowClass: 'hidden',
@@ -45,9 +37,11 @@ class LazyLoadImageHooks extends IntersectionObserverHooks {
       },
       placement: 'right',
     }),
-    LazyLoadImageModule,
   ],
-  providers: [{ provide: LAZYLOAD_IMAGE_HOOKS, useClass: LazyLoadImageHooks }],
+  providers: [
+    { provide: LAZYLOAD_IMAGE_HOOKS, useClass: LazyLoadImageHooks },
+    { provide: OverlayContainer, useClass: SingleOverlayContainer, }
+  ],
   declarations: [ButtonComponent],
   exports: [ButtonComponent],
 })
@@ -56,8 +50,7 @@ export class ButtonModule {
   }
 
   ngDoBootstrap() {
-    const strategyFactory = new ElementZoneStrategyFactory(ButtonComponent, this.injector);
-    const el = createCustomElement(ButtonComponent, { injector: this.injector, strategyFactory });
+    const el = createCustomElement(ButtonComponent, { injector: this.injector, });
     customElements.define('drayman-button', el);
   }
 }

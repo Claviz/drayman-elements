@@ -1,4 +1,5 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { MatInput } from '@angular/material/input';
 import { FieldBase } from 'projects/shared/components/field-base';
 import { DraymanTextareaField } from '../models/textarea-field-options';
 
@@ -8,7 +9,17 @@ import { DraymanTextareaField } from '../models/textarea-field-options';
   styleUrls: ['./textarea-field.component.scss']
 })
 export class TextareaFieldComponent extends FieldBase<string> {
+  @ViewChild(MatInput) input: MatInput;
 
-  @Input() options: DraymanTextareaField;
+  @Input() rows?: number;
+  @Input() appearance?: 'legacy' | 'standard' | 'fill' | 'outline';
+  @Input() value?: string;
+  @Input() label?: string;
+  @Input() disabled?: boolean;
+  @Input() placeholder?: string;
+  @Input() helpText?: string;
+  @Input() error?: string;
+  @Input() onValueChange?: ElementEvent<{ value: string }>;
+  @Input() updateOnBlur?: boolean;
 
 }

@@ -1,40 +1,3 @@
-/**
- * # drayman-file-uploader
- * 
- * File uploader powered by [FilePond](https://pqina.nl/filepond/) library.
- *
- * ## Example of usage
- *
- * ![](media://drayman-file-uploader.gif)
- *
- * ```typescript
- * module.exports = async ({ forceUpdate }) => {
- *     let file;
- * 
- *     // File has been uploaded
- *     const onUpload = async (_, files) => {
- *         file = files[0];
- *         await forceUpdate();
- *         return '123';
- *     }
- * 
- *     return () => [
- *         <drayman-file-uploader
- *             key="file-upload"
- *             onUpload={onUpload}
- *         />,
- *         <html key="info">
- *             {file &&
- *                 <img
- *                     src={`data:${file.mimeType};base64,${file.buffer.toString('base64')}`}
- *                     style={{ width: '200px;' }}
- *                 />
- *             }
- *         </html>
- *     ]
- * }
- * ```
- */
 export interface DraymanFileUploader {
     /**
      * Array of files to show when uploader element appears.
@@ -63,22 +26,16 @@ export interface DraymanFileUploader {
     allowMultiple?: boolean;
     /**
      * Executed when file is uploaded.
-     * This function contains uploaded file and must return a unique file ID.
-     * This unique ID is then used to revert uploads.
+     * This function contains uploaded file as the first element of files array and must return a unique file ID.
+     * This unique ID is then can be used to revert uploads.
      */
-    onUpload?: (data: undefined, files: (File | ClientFile)[]) => Promise<string>;
+    onUpload?: (data: undefined, files: File[]) => Promise<string>;
     /**
      * Executed when user wants to remove a file.
      * Receives unique file ID `fileId`.
      * This function is usually used to remove a specific file from file system.
      */
     onRemoveUploaded?: (data: { fileId: string }) => Promise<string>;
-}
-
-interface ClientFile {
-    fieldName: string;
-    file: any;
-    fileName: string;
 }
 
 interface File {

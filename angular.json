@@ -19,7 +19,7 @@
           "builder": "ngx-build-plus:browser",
           "options": {
             "outputPath": "dist/button",
-            "index": "projects/button/src/index.html",
+            "index": "",
             "main": "projects/button/src/main.ts",
             "polyfills": "projects/button/src/polyfills.ts",
             "tsConfig": "projects/button/tsconfig.app.json",
@@ -31,29 +31,7 @@
             "styles": [
               "projects/button/src/styles.scss"
             ],
-            "scripts": [
-              {
-                "input": "node_modules/document-register-element/build/document-register-element.js"
-              },
-              {
-                "input": "node_modules/document-register-element/build/document-register-element.js"
-              },
-              {
-                "input": "node_modules/document-register-element/build/document-register-element.js"
-              },
-              {
-                "input": "node_modules/document-register-element/build/document-register-element.js"
-              },
-              {
-                "input": "node_modules/document-register-element/build/document-register-element.js"
-              },
-              {
-                "input": "node_modules/document-register-element/build/document-register-element.js"
-              },
-              {
-                "input": "node_modules/document-register-element/build/document-register-element.js"
-              }
-            ]
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -144,7 +122,7 @@
           "builder": "ngx-build-plus:browser",
           "options": {
             "outputPath": "dist/claviz-charts",
-            "index": "projects/claviz-charts/src/index.html",
+            "index": "",
             "main": "projects/claviz-charts/src/main.ts",
             "polyfills": "projects/claviz-charts/src/polyfills.ts",
             "tsConfig": "projects/claviz-charts/tsconfig.app.json",
@@ -261,7 +239,7 @@
           "builder": "ngx-build-plus:browser",
           "options": {
             "outputPath": "dist/ngx-charts",
-            "index": "projects/ngx-charts/src/index.html",
+            "index": "",
             "main": "projects/ngx-charts/src/main.ts",
             "polyfills": "projects/ngx-charts/src/polyfills.ts",
             "tsConfig": "projects/ngx-charts/tsconfig.app.json",
@@ -378,7 +356,7 @@
           "builder": "ngx-build-plus:browser",
           "options": {
             "outputPath": "dist/text-field",
-            "index": "projects/text-field/src/index.html",
+            "index": "",
             "main": "projects/text-field/src/main.ts",
             "polyfills": "projects/text-field/src/polyfills.ts",
             "tsConfig": "projects/text-field/tsconfig.app.json",
@@ -494,7 +472,7 @@
           "builder": "ngx-build-plus:browser",
           "options": {
             "outputPath": "dist/file-uploader",
-            "index": "projects/file-uploader/src/index.html",
+            "index": "",
             "main": "projects/file-uploader/src/main.ts",
             "polyfills": "projects/file-uploader/src/polyfills.ts",
             "tsConfig": "projects/file-uploader/tsconfig.app.json",
@@ -503,8 +481,6 @@
               "projects/file-uploader/src/assets"
             ],
             "styles": [
-              "./node_modules/filepond-plugin-get-file/dist/filepond-plugin-get-file.min.css",
-              "./node_modules/filepond/dist/filepond.min.css",
               "projects/file-uploader/src/styles.scss"
             ],
             "scripts": []
@@ -612,7 +588,7 @@
           "builder": "ngx-build-plus:browser",
           "options": {
             "outputPath": "dist/number-field",
-            "index": "projects/number-field/src/index.html",
+            "index": "",
             "main": "projects/number-field/src/main.ts",
             "polyfills": "projects/number-field/src/polyfills.ts",
             "tsConfig": "projects/number-field/tsconfig.app.json",
@@ -728,7 +704,7 @@
           "builder": "ngx-build-plus:browser",
           "options": {
             "outputPath": "dist/select",
-            "index": "projects/select/src/index.html",
+            "index": "",
             "main": "projects/select/src/main.ts",
             "polyfills": "projects/select/src/polyfills.ts",
             "tsConfig": "projects/select/tsconfig.app.json",
@@ -844,7 +820,7 @@
           "builder": "ngx-build-plus:browser",
           "options": {
             "outputPath": "dist/table",
-            "index": "projects/table/src/index.html",
+            "index": "",
             "main": "projects/table/src/main.ts",
             "polyfills": "projects/table/src/polyfills.ts",
             "tsConfig": "projects/table/tsconfig.app.json",
@@ -853,8 +829,6 @@
               "projects/table/src/assets"
             ],
             "styles": [
-              "./node_modules/filepond-plugin-get-file/dist/filepond-plugin-get-file.min.css",
-              "./node_modules/filepond/dist/filepond.min.css",
               "projects/table/src/styles.scss"
             ],
             "scripts": []
@@ -962,7 +936,7 @@
           "builder": "ngx-build-plus:browser",
           "options": {
             "outputPath": "dist/checkbox",
-            "index": "projects/checkbox/src/index.html",
+            "index": "",
             "main": "projects/checkbox/src/main.ts",
             "polyfills": "projects/checkbox/src/polyfills.ts",
             "tsConfig": "projects/checkbox/tsconfig.app.json",
@@ -1078,7 +1052,7 @@
           "builder": "ngx-build-plus:browser",
           "options": {
             "outputPath": "dist/textarea-field",
-            "index": "projects/textarea-field/src/index.html",
+            "index": "",
             "main": "projects/textarea-field/src/main.ts",
             "polyfills": "projects/textarea-field/src/polyfills.ts",
             "tsConfig": "projects/textarea-field/tsconfig.app.json",
@@ -1194,7 +1168,7 @@
           "builder": "ngx-build-plus:browser",
           "options": {
             "outputPath": "dist/radio-group",
-            "index": "projects/radio-group/src/index.html",
+            "index": "",
             "main": "projects/radio-group/src/main.ts",
             "polyfills": "projects/radio-group/src/polyfills.ts",
             "tsConfig": "projects/radio-group/tsconfig.app.json",
@@ -1310,7 +1284,7 @@
           "builder": "ngx-build-plus:browser",
           "options": {
             "outputPath": "dist/datepicker",
-            "index": "projects/datepicker/src/index.html",
+            "index": "",
             "main": "projects/datepicker/src/main.ts",
             "polyfills": "projects/datepicker/src/polyfills.ts",
             "tsConfig": "projects/datepicker/tsconfig.app.json",
@@ -1426,7 +1400,7 @@
           "builder": "ngx-build-plus:browser",
           "options": {
             "outputPath": "dist/timepicker",
-            "index": "projects/timepicker/src/index.html",
+            "index": "",
             "main": "projects/timepicker/src/main.ts",
             "polyfills": "projects/timepicker/src/polyfills.ts",
             "tsConfig": "projects/timepicker/tsconfig.app.json",
@@ -1542,7 +1516,7 @@
           "builder": "ngx-build-plus:browser",
           "options": {
             "outputPath": "dist/pdf-viewer",
-            "index": "projects/pdf-viewer/src/index.html",
+            "index": "",
             "main": "projects/pdf-viewer/src/main.ts",
             "polyfills": "projects/pdf-viewer/src/polyfills.ts",
             "tsConfig": "projects/pdf-viewer/tsconfig.app.json",
@@ -1658,7 +1632,7 @@
           "builder": "ngx-build-plus:browser",
           "options": {
             "outputPath": "dist/menu",
-            "index": "projects/menu/src/index.html",
+            "index": "",
             "main": "projects/menu/src/main.ts",
             "polyfills": "projects/menu/src/polyfills.ts",
             "tsConfig": "projects/menu/tsconfig.app.json",
@@ -1774,7 +1748,7 @@
           "builder": "ngx-build-plus:browser",
           "options": {
             "outputPath": "dist/ngx-graph",
-            "index": "projects/ngx-graph/src/index.html",
+            "index": "",
             "main": "projects/ngx-graph/src/main.ts",
             "polyfills": "projects/ngx-graph/src/polyfills.ts",
             "tsConfig": "projects/ngx-graph/tsconfig.app.json",
@@ -1890,7 +1864,7 @@
           "builder": "ngx-build-plus:browser",
           "options": {
             "outputPath": "dist/youtube-player",
-            "index": "projects/youtube-player/src/index.html",
+            "index": "",
             "main": "projects/youtube-player/src/main.ts",
             "polyfills": "projects/youtube-player/src/polyfills.ts",
             "tsConfig": "projects/youtube-player/tsconfig.app.json",
@@ -1991,6 +1965,127 @@
           "configurations": {
             "production": {
               "devServerTarget": "youtube-player:serve:production"
+            }
+          }
+        }
+      }
+    },
+    "nebula": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/nebula",
+      "sourceRoot": "projects/nebula/src",
+      "prefix": "drayman",
+      "architect": {
+        "build": {
+          "builder": "ngx-build-plus:browser",
+          "options": {
+            "outputPath": "dist/nebula",
+            "index": "",
+            "main": "projects/nebula/src/main.ts",
+            "polyfills": "projects/nebula/src/polyfills.ts",
+            "tsConfig": "projects/nebula/tsconfig.app.json",
+            "assets": [
+              "projects/nebula/src/favicon.ico",
+              "projects/nebula/src/assets"
+            ],
+            "styles": [
+              "projects/nebula/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/nebula/src/environments/environment.ts",
+                  "with": "projects/nebula/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "ngx-build-plus:dev-server",
+          "options": {
+            "browserTarget": "nebula:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "nebula:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "nebula:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/nebula/src/test.ts",
+            "polyfills": "projects/nebula/src/polyfills.ts",
+            "tsConfig": "projects/nebula/tsconfig.spec.json",
+            "karmaConfig": "projects/nebula/karma.conf.js",
+            "assets": [
+              "projects/nebula/src/favicon.ico",
+              "projects/nebula/src/assets"
+            ],
+            "styles": [
+              "projects/nebula/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/nebula/tsconfig.app.json",
+              "projects/nebula/tsconfig.spec.json",
+              "projects/nebula/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/nebula/e2e/protractor.conf.js",
+            "devServerTarget": "nebula:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "nebula:serve:production"
             }
           }
         }

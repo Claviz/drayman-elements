@@ -2,7 +2,6 @@ import { Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ElementZoneStrategyFactory } from 'elements-zone-strategy';
 
 import { DatepickerComponent } from './datepicker/datepicker.component';
 import { MatInputModule } from '@angular/material/input';
@@ -14,6 +13,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { DpDatePickerModule } from 'ng2-date-picker';
 import { NgxMaskModule } from 'ngx-mask';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { SingleOverlayContainer } from 'mat-single-overlay';
 
 @NgModule({
   imports: [
@@ -30,7 +31,9 @@ import { NgxMaskModule } from 'ngx-mask';
     DpDatePickerModule,
     NgxMaskModule.forRoot(),
   ],
-  providers: [],
+  providers: [
+    { provide: OverlayContainer, useClass: SingleOverlayContainer, },
+  ],
   declarations: [DatepickerComponent],
   exports: [DatepickerComponent],
 })
@@ -39,8 +42,7 @@ export class DatepickerModule {
   }
 
   ngDoBootstrap() {
-    const strategyFactory = new ElementZoneStrategyFactory(DatepickerComponent, this.injector);
-    const el = createCustomElement(DatepickerComponent, { injector: this.injector, strategyFactory });
+    const el = createCustomElement(DatepickerComponent, { injector: this.injector, });
     customElements.define('drayman-datepicker', el);
   }
 }

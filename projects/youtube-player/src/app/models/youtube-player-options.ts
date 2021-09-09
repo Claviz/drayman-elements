@@ -1,17 +1,3 @@
-
-/**
- * # drayman-youtube-player
- *
- * Youtube player powered by [Angular Material](https://material.angular.io/) library.
- *
- * ## Example of usage
- *
- * ### Header
- * ![](media://drayman-youtube-player.gif)
- *
- * ```typescript
- * ```
- */
 export interface DraymanYoutubePlayer {
     /**
      * YouTube Video ID to view.
