@@ -24,9 +24,11 @@ import { NumberFieldModule } from 'projects/number-field/src/app/app.module';
 import { SelectModule } from 'projects/select/src/app/app.module';
 import { TextFieldModule } from 'projects/text-field/src/app/app.module';
 import { TimepickerModule } from 'projects/timepicker/src/app/app.module';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html';
 import { TableComponent } from './table/table.component';
+import { AngularResizedEventModule } from 'angular-resize-event';
 
 @NgModule({
   imports: [
@@ -53,6 +55,8 @@ import { TableComponent } from './table/table.component';
     CheckboxModule,
     DatepickerModule,
     TimepickerModule,
+    AngularResizedEventModule,
+    ScrollingModule,
   ],
   declarations: [TableComponent, SafeHtmlPipe,],
   providers: [

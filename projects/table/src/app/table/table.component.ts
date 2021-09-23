@@ -1,5 +1,6 @@
 import { SelectionModel } from '@angular/cdk/collections';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkScrollable, ScrollDispatcher } from '@angular/cdk/scrolling';
 import {
   AfterViewInit,
   Component,
@@ -16,13 +17,13 @@ import { FormControl } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
+import { ResizedEvent } from 'angular-resize-event';
 import { DraymanButton } from 'projects/shared/models/button-options';
-import { Observable, Subject } from 'rxjs';
+import { merge, Observable, Subject } from 'rxjs';
 import { debounceTime, map, take, tap } from 'rxjs/operators';
 import { generate } from 'shortid';
 
 import {
-  DraymanTable,
   DraymanTableButtonCell,
   DraymanTableCheckboxCell,
   DraymanTableColumn,
@@ -104,6 +105,12 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
   @Input() onSearchChange?: (data: {
     value: string
   }) => Promise<void>;
+  @Input() onScroll?: (data: {
+    visibleNodeCount: number;
+    startNode: number;
+  }) => Promise<void>;
+  @Input() virtualScroll?: boolean;
+  @Input() virtualScrollRowHeight?: number;
   @Input() disableInternalProcessing?: boolean;
   @Input() disableHeader?: boolean;
   @Input() select?: boolean;
@@ -141,6 +148,8 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
   @ViewChild(MatTable, { static: true }) table: MatTable<any>;
   @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
   @ViewChild(MatSort, { static: true }) matSort: MatSort;
+  @ViewChild('table', { read: ElementRef }) tableRef: ElementRef;
+  @ViewChild(CdkScrollable) scrollable: CdkScrollable;
 
   displayedColumns: string[] = [];
   visibleData: DraymanTableRow[] = [];
@@ -153,6 +162,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
 
   pageChange = new Subject();
   sortChange = new Subject();
+  scrollChange = new Subject();
 
   selection = new SelectionModel<DraymanTableRow>(true, []);
   isAllSelected() {
@@ -165,12 +175,61 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
       this.selection.clear() :
       this.visibleData.forEach(row => this.selection.select(row));
   }
-  constructor(private elementRef: ElementRef, private ngZone: NgZone) { }
+  constructor(private scrollDispatcher: ScrollDispatcher, private elementRef: ElementRef, private ngZone: NgZone) { }
 
   ngOnDestroy() {
   }
 
+  startNode = 0;
+  visibleNodeCount;
+  resized$ = new Subject();
+
+  get actualItemCount() {
+    const pageSize = this.paginator.pageSize || 5;
+    if (this.disableInternalProcessing) {
+      return this.itemCount;
+    }
+    return this.pagination ? pageSize : this.data.length;
+  }
+
+  onResized(event: ResizedEvent) {
+    if (event.oldHeight && event.oldWidth) {
+      this.resized$.next();
+    }
+  }
+
+  calcScroll() {
+    if (this.scrollable && this.virtualScroll) {
+      const parentHeight = (this.elementRef.nativeElement as HTMLElement).parentElement.clientHeight;
+      const top = this.scrollable.measureScrollOffset('top');
+      let startNode = Math.floor(top / this.virtualScrollRowHeight);
+      startNode = Math.max(0, startNode);
+      let visibleNodeCount = Math.ceil(parentHeight / this.virtualScrollRowHeight);
+      visibleNodeCount = Math.min(this.actualItemCount - startNode, visibleNodeCount);
+      this.visibleNodeCount = visibleNodeCount;
+      this.startNode = startNode;
+    }
+  }
+
+  stickyStyle: any = {};
   ngAfterViewInit() {
+    if (this.virtualScroll) {
+      merge(
+        this.scrollDispatcher.scrolled(),
+        this.resized$
+      ).subscribe(() => {
+        this.ngZone.run(() => {
+          this.calcScroll();
+          const offsetY = this.startNode * this.virtualScrollRowHeight;
+          this.tableRef.nativeElement.style.top = `${offsetY}px`;
+          this.renderVisibleData();
+          if (this.disableInternalProcessing) {
+            this.scrollChange.next();
+          }
+        })
+      });
+    }
+    this.renderVisibleData();
     this.ngZone.onMicrotaskEmpty
       .pipe(take(3))
       .subscribe(() => this.table.updateStickyColumnStyles())
@@ -182,7 +241,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
         tap(() => this.loading = true),
         debounceTime(500),
         tap(({ actionName, parameters }) => {
-          if (this[actionName]) {
+          if (this[actionName] && this.disableInternalProcessing) {
             this[actionName](parameters).then((x) => {
               this.loading = false
             });
@@ -196,6 +255,16 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
   }
 
   ngOnInit() {
+    this.scrollChange.pipe(
+      map(() => ({
+        actionName: 'onScroll',
+        parameters: {
+          visibleNodeCount: this.visibleNodeCount,
+          startNode: this.startNode,
+        }
+      })),
+      this.loadingPipe()
+    ).subscribe();
     this.pageChange.pipe(
       map(() => ({
         actionName: 'onPageChange',
@@ -233,6 +302,21 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    if (this.virtualScroll && this.disableInternalProcessing) {
+      const virtualData = [];
+      for (let i = 0; i < this.itemCount; i++) {
+        let newRow = {};
+        if (this.data[i - this.startNode]) {
+          newRow = this.data[i - this.startNode];
+        } else {
+          for (const column of this.columns) {
+            newRow[column.field] = { type: 'text', value: '' };
+          }
+        }
+        virtualData.push(newRow);
+      }
+      this.data = virtualData;
+    }
     if (changes.initialSearchValue?.firstChange) {
       this.searchControl.setValue(this.initialSearchValue, { emitEvent: false });
     }
@@ -279,6 +363,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
   }
 
   renderVisibleData() {
+    this.calcScroll();
     let newVisibleData = this.data;
     if (!this.disableInternalProcessing) {
       if (this.search) {
@@ -315,6 +400,9 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
         this.paginator.pageSize = this.pageSize;
         this.paginator.pageIndex = this.pageIndex;
       }
+    }
+    if (this.virtualScroll) {
+      newVisibleData = newVisibleData.slice(this.startNode, this.startNode + this.visibleNodeCount + 1);
     }
     this.visibleData = newVisibleData;
     this.renderGrid();

@@ -52,7 +52,7 @@ export interface DraymanTable {
     */
     pageIndex?: number;
     /**
-    * Controls item count number shown in paginator if `disableInternalProcessing` is enabled.
+    * Controls item count number shown in paginator and/or virtual scroll total item count if `disableInternalProcessing` is enabled.
     */
     itemCount?: number;
     /**
@@ -130,10 +130,29 @@ export interface DraymanTable {
     }>;
     // actions?: ButtonOptionsBase[];
     /**
-     * Disables internal pagination, sorting and search algorithms applied after every data change and firing of event.
-     * Allows to apply custom logic for pagination, sort and search.
+     * Disables internal pagination, sorting, scrolling and search algorithms applied after every data change.
+     * Allows to apply custom logic for pagination, sort, search and scrolling.
      */
     disableInternalProcessing?: boolean;
+    /**
+     * Enables virtual scrolling. 
+     * In order to make virtual scrolling work properly:
+     * * a table needs to be wrapped in parent element. This parent element must have `height` property;
+     * * `virtualScrollRowHeight` must be supplied;
+     * * `itemCount` must be supplied if `disableInternalProcessing` is set to `true`.
+     */
+    virtualScroll?: boolean;
+    /**
+     * Defines height of the row for virtual scrolling.
+     */
+    virtualScrollRowHeight?: number;
+    /**
+     * Event fired when virtual scroll is enabled.
+     */
+    onScroll?: ElementEvent<{
+        visibleNodeCount: number;
+        startNode: number;
+    }>;
     /**
      * Controls appearance of the column header.
      */

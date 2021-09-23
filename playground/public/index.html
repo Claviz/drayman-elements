@@ -9,11 +9,21 @@
     <script src="/drayman-framework-client.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/@angular/material@12.2.4/prebuilt-themes/indigo-pink.css">
     <script src="https://unpkg.com/zone.js@0.11.4/dist/zone.min.js"></script>
+    <style>
+        .container {
+            border: 2px dashed;
+            width: 500px;
+            height: 400px;
+            resize: both;
+            overflow: auto;
+        }
+    </style>
 </head>
 
 <body>
-    <drayman-element component="home"></drayman-element>
-
+    <div class="container">
+        <drayman-element component="home"></drayman-element>
+    </div>
     <script>
         initializeDraymanFramework();
     </script>
