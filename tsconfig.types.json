@@ -25,6 +25,7 @@
         "./projects/number-field/src/app/models/number-field-options.ts",
         "./projects/select/src/app/models/select-options.ts",
         "./projects/youtube-player/src/app/models/youtube-player-options.ts",
+        "./projects/grid/src/app/models/grid-options.ts",
         "./projects/nebula/src/app/models/nebula-options.ts",
         "./projects/table/src/app/models/table-options.ts",
         "./projects/datepicker/src/app/models/datepicker-options.ts",

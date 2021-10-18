@@ -1849,6 +1849,127 @@
         }
       }
     },
+    "grid": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/grid",
+      "sourceRoot": "projects/grid/src",
+      "prefix": "drayman",
+      "architect": {
+        "build": {
+          "builder": "ngx-build-plus:browser",
+          "options": {
+            "outputPath": "dist/grid",
+            "index": "",
+            "main": "projects/grid/src/main.ts",
+            "polyfills": "projects/grid/src/polyfills.ts",
+            "tsConfig": "projects/grid/tsconfig.app.json",
+            "assets": [
+              "projects/grid/src/favicon.ico",
+              "projects/grid/src/assets"
+            ],
+            "styles": [
+              "projects/grid/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/grid/src/environments/environment.ts",
+                  "with": "projects/grid/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "ngx-build-plus:dev-server",
+          "options": {
+            "browserTarget": "grid:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "grid:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "grid:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/grid/src/test.ts",
+            "polyfills": "projects/grid/src/polyfills.ts",
+            "tsConfig": "projects/grid/tsconfig.spec.json",
+            "karmaConfig": "projects/grid/karma.conf.js",
+            "assets": [
+              "projects/grid/src/favicon.ico",
+              "projects/grid/src/assets"
+            ],
+            "styles": [
+              "projects/grid/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/grid/tsconfig.app.json",
+              "projects/grid/tsconfig.spec.json",
+              "projects/grid/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/grid/e2e/protractor.conf.js",
+            "devServerTarget": "grid:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "grid:serve:production"
+            }
+          }
+        }
+      }
+    },
     "youtube-player": {
       "projectType": "application",
       "schematics": {

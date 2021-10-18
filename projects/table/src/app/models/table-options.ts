@@ -7,7 +7,6 @@ import { DraymanCheckbox } from '../../../../checkbox/src/app/models/checkbox-op
 import { DraymanDatepicker } from '../../../../datepicker/src/app/models/datepicker-options';
 import { DraymanTimepicker } from '../../../../timepicker/src/app/models/timepicker-options';
 import { InputMaskOptionsBase } from '../../../../shared/models/input-mask-options-base';
-
 export interface DraymanTable {
     /**
      * Title of the table.
@@ -52,10 +51,25 @@ export interface DraymanTable {
     */
     pageIndex?: number;
     /**
-    * Controls item count number shown in paginator and/or virtual scroll total item count if `disableInternalProcessing` is enabled.
+    * Controls item count number shown in paginator if `disableInternalProcessing` is enabled.
     */
     itemCount?: number;
     /**
+
+    
+          
+            
+    
+
+          
+          
+            
+    
+
+          
+    
+    @@ -130,10 +130,29 @@ export interface DraymanTable {
+  
      * The set of provided page size options to display to the user.
      * Defaults to `[5, 10, 25, 100]`.
      */
@@ -130,32 +144,23 @@ export interface DraymanTable {
     }>;
     // actions?: ButtonOptionsBase[];
     /**
-     * Disables internal pagination, sorting, scrolling and search algorithms applied after every data change.
-     * Allows to apply custom logic for pagination, sort, search and scrolling.
+     * Disables internal pagination, sorting and search algorithms applied after every data change and firing of event.
+     * Allows to apply custom logic for pagination, sort and search.
      */
     disableInternalProcessing?: boolean;
     /**
-     * Enables virtual scrolling. 
-     * In order to make virtual scrolling work properly:
-     * * a table needs to be wrapped in parent element. This parent element must have `height` property;
-     * * `virtualScrollRowHeight` must be supplied;
-     * * `itemCount` must be supplied if `disableInternalProcessing` is set to `true`.
-     */
-    virtualScroll?: boolean;
-    /**
-     * Defines height of the row for virtual scrolling.
-     */
-    virtualScrollRowHeight?: number;
-    /**
-     * Event fired when virtual scroll is enabled.
-     */
-    onScroll?: ElementEvent<{
-        visibleNodeCount: number;
-        startNode: number;
-    }>;
-    /**
      * Controls appearance of the column header.
      */
+
+
+
+
+
+
+
+
+
+
     disableHeader?: boolean;
     /**
      * Wether to enable row selection or not.
@@ -219,22 +224,17 @@ export interface DraymanTable {
         rowIndex: number;
     }>;
 }
-
 export type CellType = 'text' | 'text-field' | 'button' | 'number-field' | 'select' | 'file-uploader' | 'checkbox' | 'datepicker' | 'timepicker';
-
 export interface GridCellBase {
     type?: CellType;
     style?: any;
 }
-
 export interface DraymanTableCellBase<T> extends GridCellBase {
     value: T;
 }
-
 export interface DraymanTableTextCell extends DraymanTableCellBase<string> {
     type: 'text';
 }
-
 export interface DraymanTableSelectCell extends DraymanTableCellBase<string> {
     type: 'select';
     /**
@@ -257,7 +257,6 @@ export interface DraymanTableSelectCell extends DraymanTableCellBase<string> {
      */
     multiple?: boolean;
 }
-
 export interface DraymanTableFileUploaderCell extends DraymanTableCellBase<string> {
     type: 'file-uploader';
     /**
@@ -286,7 +285,6 @@ export interface DraymanTableFileUploaderCell extends DraymanTableCellBase<strin
      */
     allowMultiple?: boolean;
 }
-
 export interface DraymanTableTextFieldCell extends DraymanTableCellBase<string>, InputMaskOptionsBase {
     type: 'text-field';
     /**
@@ -313,7 +311,6 @@ export interface DraymanTableTextFieldCell extends DraymanTableCellBase<string>,
      */
     suggestionsPanelWidth?: string | number;
 }
-
 export interface DraymanTableCheckboxCell extends DraymanTableCellBase<boolean> {
     type: 'checkbox';
     /**
@@ -321,7 +318,6 @@ export interface DraymanTableCheckboxCell extends DraymanTableCellBase<boolean> 
      */
     disabled?: boolean;
 }
-
 export interface DraymanTableDatepickerCell extends DraymanTableCellBase<string> {
     type: 'datepicker';
     /**
@@ -342,7 +338,6 @@ export interface DraymanTableDatepickerCell extends DraymanTableCellBase<string>
      */
     disabled?: boolean;
 }
-
 export interface DraymanTableTimepickerCell extends DraymanTableCellBase<string> {
     type: 'timepicker';
     /**
@@ -358,7 +353,6 @@ export interface DraymanTableTimepickerCell extends DraymanTableCellBase<string>
      */
     disabled?: boolean;
 }
-
 export interface DraymanTableNumberFieldCell extends DraymanTableCellBase<number> {
     type: 'number-field';
     /**
@@ -385,15 +379,12 @@ export interface DraymanTableNumberFieldCell extends DraymanTableCellBase<number
      */
     suggestionsPanelWidth?: string | number;
 }
-
 export interface DraymanTableButtonCell extends DraymanTableCellBase<string>, DraymanTableButton {
     type: 'button';
 }
-
 export interface DraymanToolbarButton extends DraymanTableButton {
     label?: string;
 }
-
 export interface DraymanTableButton {
     /**
      * Material style of the button.
@@ -422,9 +413,7 @@ export interface DraymanTableButton {
      */
     selectionButton?: boolean;
 }
-
 export type DraymanTableRow = { [field: string]: DraymanTableTextCell | DraymanTableTextFieldCell | DraymanTableButtonCell | DraymanTableNumberFieldCell | DraymanTableSelectCell | DraymanTableFileUploaderCell | DraymanTableCheckboxCell | DraymanTableDatepickerCell | DraymanTableTimepickerCell };
-
 export interface DraymanTableColumn {
     label: string;
     field: string;
@@ -436,49 +425,39 @@ export interface DraymanTableColumn {
     style?: any;
     pinned?: 'left' | 'right';
 }
-
 export interface GridTextFieldCell extends GridCellBase {
     type: 'text-field',
     options: DraymanTextField,
 }
-
 export interface GridCheckboxCell extends GridCellBase {
     type: 'checkbox',
     options: DraymanCheckbox,
 }
-
 export interface GridDatepickerCell extends GridCellBase {
     type: 'datepicker',
     options: DraymanDatepicker,
 }
-
 export interface GridTimepickerCell extends GridCellBase {
     type: 'timepicker',
     options: DraymanTimepicker,
 }
-
 export interface GridFileUploaderCell extends GridCellBase {
     type: 'file-uploader',
     options: DraymanFileUploader,
 }
-
 export interface GridSelectCell extends GridCellBase {
     type: 'select',
     options: DraymanSelect,
 }
-
 export interface GridNumberFieldCell extends GridCellBase {
     type: 'number-field',
     options: DraymanNumberField,
 }
-
 export interface GridButtonCell extends GridCellBase {
     type: 'button',
     options: DraymanButton,
 }
-
 export interface GridTextCell extends GridCellBase {
     type: 'text';
 }
-
 export type GridCellType = GridTextCell | GridTextFieldCell | GridButtonCell | GridNumberFieldCell | GridSelectCell | GridFileUploaderCell | GridCheckboxCell | GridDatepickerCell | GridTimepickerCell;

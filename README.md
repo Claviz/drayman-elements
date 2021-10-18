@@ -27,6 +27,7 @@ Default drayman elements library.
 - [drayman-textarea-field](interfaces/__global.draymantextareafieldprops.html)
 - [drayman-timepicker](interfaces/__global.draymantimepickerprops.html)
 - [drayman-youtube-player](interfaces/__global.draymanyoutubeplayerprops.html)
+- [drayman-grid](interfaces/__global.draymangridprops.html)
 - [drayman-nebula](interfaces/__global.draymannebulaprops.html)
 
 ## Installing

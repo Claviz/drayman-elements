@@ -16,10 +16,12 @@ import { DraymanTextareaField } from '../dist/types/textarea-field/src/app/model
 import { DraymanTimepicker } from '../dist/types/timepicker/src/app/models/timepicker-options';
 import { DraymanYoutubePlayer } from '../dist/types/youtube-player/src/app/models/youtube-player-options';
 import { DraymanNebula } from '../dist/types/nebula/src/app/models/nebula-options';
+import { DraymanGrid } from '../dist/types/grid/src/app/models/grid-options';
 
 declare global {
     interface DraymanElementsProps {
         style?: CSS;
+        ref?: string;
     }
     /**
      * # <drayman-button \/>
@@ -923,6 +925,106 @@ declare global {
      */
     interface DraymanTimepickerProps extends DraymanTimepicker, DraymanElementsProps { }
     /**
+     * # <drayman-grid \/>
+     *
+     * Customizable grid powered by CSS grid.
+     * 
+     * ## Example of usage
+     * 
+     * ![](media://drayman-grid.gif)
+     * 
+     * ### Grid with sticky header and server-side virtual scroll.
+     * 
+     * ```typescript
+     * export const component: DraymanComponent = async ({ forceUpdate }) => {
+     *     const data = [
+     *         { name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
+     *         { name: 'Helium', weight: 4.0026, symbol: 'He' },
+     *         { name: 'Lithium', weight: 6.941, symbol: 'Li' },
+     *         { name: 'Beryllium', weight: 9.0122, symbol: 'Be' },
+     *         { name: 'Boron', weight: 10.811, symbol: 'B' },
+     *         { name: 'Carbon', weight: 12.0107, symbol: 'C' },
+     *         { name: 'Nitrogen', weight: 14.0067, symbol: 'N' },
+     *         { name: 'Oxygen', weight: 15.9994, symbol: 'O' },
+     *         { name: 'Fluorine', weight: 18.9984, symbol: 'F' },
+     *         { name: 'Neon', weight: 20.1797, symbol: 'Ne' },
+     *     ];
+     * 
+     *     const columns = [{
+     *         field: 'name',
+     *         label: 'Name',
+     *     }, {
+     *         field: 'weight',
+     *         label: 'Weight',
+     *     }, {
+     *         field: 'symbol',
+     *         label: 'Symbol',
+     *     }];
+     * 
+     *     let header = [
+     *         {
+     *             col: 0,
+     *             row: 0,
+     *             content: [{ type: 'text', value: 'name' }]
+     *         },
+     *         {
+     *             col: 1,
+     *             row: 0,
+     *             content: [{ type: 'text', value: 'weight' }]
+     *         },
+     *         {
+     *             col: 2,
+     *             row: 0,
+     *             content: [{ type: 'text', value: 'symbol' }]
+     *         },
+     *     ];
+     *     header = header.map(x => ({ ...x, cellStyle: { position: 'sticky', backgroundColor: 'white', zIndex: 100, top: 0 } }));
+     * 
+     *     let grid = [];
+     * 
+     *     const onScroll = ({ currentRow, visibleRowCount }) => {
+     *         const visibleData = data.slice(currentRow, currentRow + visibleRowCount);
+     *         const visibleGridData = visibleData.map((x, i) => ([
+     *             {
+     *                 col: 0,
+     *                 row: currentRow + i + 1,
+     *                 content: [{ type: 'text', value: x.name }],
+     *             },
+     *             {
+     *                 col: 1,
+     *                 row: currentRow + i + 1,
+     *                 content: [{ type: 'text', value: x.weight }],
+     *             },
+     *             {
+     *                 col: 2,
+     *                 row: currentRow + i + 1,
+     *                 content: [{ type: 'text', value: x.symbol }],
+     *             },
+     *         ])).flat();
+     *         grid = [
+     *             ...header,
+     *             ...visibleGridData,
+     *         ];
+     *     };
+     * 
+     *     onScroll({ currentRow: 0, visibleRowCount: 5 });
+     * 
+     *     return () => <drayman-grid
+     *         grid={grid}
+     *         cellHeight={40}
+     *         cellWidth={100}
+     *         columnCount={3}
+     *         rowCount={data.length + 1}
+     *         onScroll={async ({ currentRow, visibleRowCount }) => {
+     *             onScroll({ currentRow, visibleRowCount });
+     *             await forceUpdate();
+     *         }}
+     *     />;
+     * }
+     * ```
+     */
+    interface DraymanGridProps extends DraymanGrid, DraymanElementsProps { }
+    /**
      * # <drayman-youtube-player \/>
      *
      * Youtube player powered by [Angular Material](https://material.angular.io/) library.
@@ -1047,6 +1149,7 @@ declare global {
             'drayman-timepicker': DraymanTimepickerProps;
             'drayman-youtube-player': DraymanYoutubePlayerProps;
             'drayman-nebula': DraymanNebulaProps;
+            'drayman-grid': DraymanGridProps;
         }
     }
 }

@@ -17,4 +17,8 @@ export class ButtonComponent {
   @Input() imgUrl?: string;
   @Input() buttonStyle?: any;
 
+  emitClick($event: PointerEvent) {
+    $event.stopPropagation();
+    this.onClick();
+  }
 }

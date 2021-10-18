@@ -1,6 +1,6 @@
 {
   "name": "@drayman/elements",
-  "version": "1.4.0",
+  "version": "1.4.19",
   "description": "A collection of web components for Drayman.",
   "license": "MIT",
   "keywords": [
@@ -12,13 +12,14 @@
     "build:types": "tsc -p ./tsconfig.types.json",
     "typedoc": "npm run build:types && typedoc --tsconfig ./tsconfig.types.json",
     "lint": "ng lint",
-    "build": "npm run build:button && npm run build:text-field && npm run build:claviz-charts && npm run build:file-uploader && npm run build:number-field && npm run build:select && npm run build:table && npm run build:checkbox && npm run build:textarea-field && npm run build:radio-group && npm run build:datepicker && npm run build:timepicker && npm run build:pdf-viewer && npm run build:ngx-charts && npm run build:menu && npm run build:ngx-graph && npm run build:youtube-player && npm run build:nebula && npm run typedoc",
+    "build": "npm run build:button && npm run build:text-field && npm run build:claviz-charts && npm run build:file-uploader && npm run build:number-field && npm run build:select && npm run build:table && npm run build:checkbox && npm run build:textarea-field && npm run build:radio-group && npm run build:datepicker && npm run build:timepicker && npm run build:pdf-viewer && npm run build:ngx-charts && npm run build:menu && npm run build:ngx-graph && npm run build:youtube-player && npm run build:nebula && npm run build:grid && npm run typedoc",
     "build:button": "ng build button --prod --single-bundle --output-hashing=none",
     "build:text-field": "ng build text-field --prod --single-bundle --output-hashing=none",
     "build:claviz-charts": "ng build claviz-charts --prod --single-bundle --output-hashing=none",
     "build:file-uploader": "ng build file-uploader --prod --single-bundle --output-hashing=none",
     "build:number-field": "ng build number-field --prod --single-bundle --output-hashing=none",
     "build:select": "ng build select --prod --single-bundle --output-hashing=none",
+    "build:grid": "ng build grid --prod --single-bundle --output-hashing=none",
     "build:youtube-player": "ng build youtube-player --prod --single-bundle --output-hashing=none",
     "build:nebula": "ng build nebula --prod --single-bundle --output-hashing=none",
     "build:table": "ng build table --prod --single-bundle --output-hashing=none",
@@ -53,6 +54,9 @@
       },
       "drayman-select": {
         "script": "./dist/select/main.js"
+      },
+      "drayman-grid": {
+        "script": "./dist/grid/main.js"
       },
       "drayman-youtube-player": {
         "script": "./dist/youtube-player/main.js"
