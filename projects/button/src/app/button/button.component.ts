@@ -15,6 +15,10 @@ export class ButtonComponent {
   @Input() tooltip?: string;
   @Input() disabled?: boolean;
   @Input() imgUrl?: string;
+  @Input() popup?: {
+    text: string;
+    style?: any;
+  };
   @Input() buttonStyle?: any;
 
   emitClick($event: PointerEvent) {

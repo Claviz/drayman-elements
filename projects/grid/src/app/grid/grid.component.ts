@@ -27,6 +27,12 @@ import { GridContentButton, GridCell } from '../models/grid-options';
 })
 export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
 
+  @Input() selectionMode?: {
+    enabled: boolean;
+    cellStyle?: any;
+  };
+  @Input() selectedCells?: GridCell[] = [];
+  @Input() onSelectedCellsChange?: (options) => Promise<any>;
   @Input() scrollTo = ({ row }) => {
     this.scrollable.scrollTo({ top: row * this.cellHeight });
   };
@@ -46,8 +52,10 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   getCellStyle(cell: GridCell) {
     const rowEnd = cell.rowSpan ? cell.row + cell.rowSpan : cell.row + 1;
     const colEnd = cell.colSpan ? cell.col + cell.colSpan : cell.col + 1;
+
     return {
       ...cell.cellStyle,
+      ...([...this.pendingSelectedCells, ...this._selectedCells].find(x => x.row === cell.row && x.col === cell.col) ? this.selectionMode.cellStyle : {}),
       gridArea: `${cell.row + 1}/${cell.col + 1}/${rowEnd + 1}/${colEnd + 1}`,
     };
   }
@@ -58,12 +66,67 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   ngOnDestroy() {
   }
 
-  // height: number;
-  // width: number;
   resized$ = new Subject();
+  _selectedCells: GridCell[] = [];
+  pendingSelectedCells: GridCell[] = [];
+  startSelectionCell: GridCell;
 
   emitCellClick(cell: GridCell) {
-    this.onCellClick?.({ cell });
+    if (this.selectionMode?.enabled) {
+      if (!this.pendingSelectedCells.length) {
+        const alreadySelected = this._selectedCells.find(x => x.row === cell.row && x.col === cell.col)
+        if (alreadySelected) {
+          this._selectedCells = this._selectedCells.filter(x => !(x.row === cell.row && x.col === cell.col));
+          this.onSelectedCellsChange({ selectedCells: this._selectedCells });
+        } else if (!cell.disableSelect && (!this._selectedCells.length || this._selectedCells[0].selectionGroup === cell.selectionGroup)) {
+          this._selectedCells.push(cell);
+          this.onSelectedCellsChange({ selectedCells: this._selectedCells });
+        }
+      }
+    } else {
+      this.onCellClick?.({ cell });
+    }
+  }
+
+  onMouseDown($event: MouseEvent, cell: GridCell) {
+    if (this.selectionMode.enabled && !this._selectedCells.length || this._selectedCells[0].selectionGroup === cell.selectionGroup) {
+      this.startSelectionCell = cell;
+    }
+  }
+
+  onMouseUp($event: MouseEvent, cell: GridCell) {
+    this.startSelectionCell = null;
+    if (this.pendingSelectedCells.length) {
+      this._selectedCells = [...this._selectedCells, ...this.pendingSelectedCells];
+      this.pendingSelectedCells = [];
+      this.onSelectedCellsChange({ selectedCells: this._selectedCells });
+    }
+  }
+
+  onMouseOver($event: MouseEvent, cell: GridCell) {
+    if (this.startSelectionCell) {
+      const minCol = Math.min(cell.col, this.startSelectionCell.col);
+      const maxCol = Math.max(cell.col, this.startSelectionCell.col);
+      const minRow = Math.min(cell.row, this.startSelectionCell.row);
+      const maxRow = Math.max(cell.row, this.startSelectionCell.row);
+      this.pendingSelectedCells = this.grid.filter(x =>
+        !x.disableSelect &&
+        x.col >= minCol &&
+        x.col <= maxCol &&
+        x.row >= minRow &&
+        x.row <= maxRow &&
+        x.selectionGroup === this.startSelectionCell.selectionGroup
+      );
+    }
+  }
+
+  onGridMouseLeave($event: MouseEvent) {
+    this.startSelectionCell = null;
+    if (this.pendingSelectedCells.length) {
+      this._selectedCells = [...this._selectedCells, ...this.pendingSelectedCells];
+      this.pendingSelectedCells = [];
+      this.onSelectedCellsChange({ selectedCells: this._selectedCells });
+    }
   }
 
   emitContentButtonClick(cell: GridCell, button: GridContentButton) {
@@ -97,6 +160,9 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   }
 
   ngOnChanges(changes: SimpleChanges) {
+    if (this.selectedCells) {
+      this._selectedCells = [...this.selectedCells];
+    }
   }
 
   get gridStyle() {
@@ -106,6 +172,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
       width: `${this.columnCount * this.cellWidth}px`,
       height: `${this.rowCount * this.cellHeight}px`,
       display: 'grid',
+      userSelect: 'none'
     }
   }
 

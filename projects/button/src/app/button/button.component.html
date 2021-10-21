@@ -1,50 +1,50 @@
 <ng-container [ngSwitch]="view">
     <ng-container *ngSwitchCase="'raised'">
         <button type="button" mat-raised-button (click)="emitClick($event)" [matTooltip]="tooltip" [disabled]="disabled"
-            [ngStyle]="buttonStyle" [popper]="thumbnailContent" [popperDisabled]="!imgUrl"
+            [ngStyle]="buttonStyle" [popper]="thumbnailContent" [popperDisabled]="!(imgUrl || popup)"
             [attr.aria-label]="label + ' raised button'">
             <ng-container *ngTemplateOutlet="button"></ng-container>
         </button>
     </ng-container>
     <ng-container *ngSwitchCase="'stroked'">
         <button type="button" mat-stroked-button (click)="emitClick($event)" [matTooltip]="tooltip"
-            [disabled]="disabled" [ngStyle]="buttonStyle" [popper]="thumbnailContent" [popperDisabled]="!imgUrl"
-            [attr.aria-label]="label + ' stroked button'">
+            [disabled]="disabled" [ngStyle]="buttonStyle" [popper]="thumbnailContent"
+            [popperDisabled]="!(imgUrl || popup)" [attr.aria-label]="label + ' stroked button'">
             <ng-container *ngTemplateOutlet="button"></ng-container>
         </button>
     </ng-container>
     <ng-container *ngSwitchCase="'flat'">
         <button type="button" mat-flat-button (click)="emitClick($event)" [matTooltip]="tooltip" [disabled]="disabled"
-            [ngStyle]="buttonStyle" [popper]="thumbnailContent" [popperDisabled]="!imgUrl"
+            [ngStyle]="buttonStyle" [popper]="thumbnailContent" [popperDisabled]="!(imgUrl || popup)"
             [attr.aria-label]="label + ' flat button'">
             <ng-container *ngTemplateOutlet="button"></ng-container>
         </button>
     </ng-container>
     <ng-container *ngSwitchCase="'icon'">
         <button type="button" mat-icon-button (click)="emitClick($event)" [matTooltip]="tooltip" [disabled]="disabled"
-            [ngStyle]="buttonStyle" [popper]="thumbnailContent" [popperDisabled]="!imgUrl"
+            [ngStyle]="buttonStyle" [popper]="thumbnailContent" [popperDisabled]="!(imgUrl || popup)"
             [attr.aria-label]="label + ' icon button'">
             <ng-container *ngTemplateOutlet="button"></ng-container>
         </button>
     </ng-container>
     <ng-container *ngSwitchCase="'fab'">
         <button type="button" mat-fab (click)="emitClick($event)" [matTooltip]="tooltip" [disabled]="disabled"
-            [ngStyle]="buttonStyle" [popper]="thumbnailContent" [popperDisabled]="!imgUrl"
+            [ngStyle]="buttonStyle" [popper]="thumbnailContent" [popperDisabled]="!(imgUrl || popup)"
             [attr.aria-label]="label + ' fab button'">
             <ng-container *ngTemplateOutlet="button"></ng-container>
         </button>
     </ng-container>
     <ng-container *ngSwitchCase="'miniFab'">
         <button type="button" mat-mini-fab (click)="emitClick($event)" [matTooltip]="tooltip" [disabled]="disabled"
-            [ngStyle]="buttonStyle" [popper]="thumbnailContent" [popperDisabled]="!imgUrl"
+            [ngStyle]="buttonStyle" [popper]="thumbnailContent" [popperDisabled]="!(imgUrl || popup)"
             [attr.aria-label]="label + ' mini fab button'">
             <ng-container *ngTemplateOutlet="button"></ng-container>
         </button>
     </ng-container>
     <ng-container *ngSwitchDefault>
         <button type="button" mat-button (click)="emitClick($event)" [matTooltip]="tooltip" [disabled]="disabled"
-            [ngStyle]="buttonStyle" [popper]="thumbnailContent" [popperDisabled]="!imgUrl" [popperAppendTo]="'body'"
-            [attr.aria-label]="label + ' basic button'">
+            [ngStyle]="buttonStyle" [popper]="thumbnailContent" [popperDisabled]="!(imgUrl || popup)"
+            [popperAppendTo]="'body'" [attr.aria-label]="label + ' basic button'">
             <ng-container *ngTemplateOutlet="button"></ng-container>
         </button>
     </ng-container>
@@ -57,4 +57,5 @@
 
 <popper-content #thumbnailContent>
     <img *ngIf="imgUrl" style="width: 150px; z-index: 1001;" [lazyLoad]="imgUrl">
+    <div *ngIf="popup" [style]="popup.style">{{popup.text}}</div>
 </popper-content>

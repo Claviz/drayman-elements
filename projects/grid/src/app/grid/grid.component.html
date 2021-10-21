@@ -1,6 +1,8 @@
 <div class="wrapper" cdkScrollable (resized)="onResized($event)">
-    <div [style]="gridStyle">
-        <div *ngFor="let cell of grid" [style]="getCellStyle(cell)" (click)="emitCellClick(cell)">
+    <div [style]="gridStyle" (mouseleave)="onGridMouseLeave($event)">
+        <div *ngFor="let cell of grid" [style]="getCellStyle(cell)" (click)="emitCellClick(cell)"
+            (mousedown)="onMouseDown($event, cell)" (mouseup)="onMouseUp($event, cell)"
+            (mouseover)="onMouseOver($event, cell)">
             <div [style]="cell.contentStyle">
                 <ng-container *ngFor="let cellItem of cell.content">
                     <div [ngSwitch]="cellItem.type" [style]="cellItem.style">
@@ -12,8 +14,8 @@
                                 [onClick]="emitContentButtonClick.bind(this, cell, cellItem.value)"
                                 [view]="cellItem.value.view" [icon]="cellItem.value.icon"
                                 [tooltip]="cellItem.value.tooltip" [disabled]="cellItem.value.disabled"
-                                [imgUrl]="cellItem.value.imgUrl" [buttonStyle]="cellItem.value.buttonStyle"
-                                [options]="cellItem.value">
+                                [imgUrl]="cellItem.value.imgUrl" [popup]="cellItem.value.popup"
+                                [buttonStyle]="cellItem.value.buttonStyle" [options]="cellItem.value">
                             </drayman-button-internal>
                         </ng-container>
                     </div>

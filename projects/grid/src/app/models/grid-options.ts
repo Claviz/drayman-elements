@@ -23,6 +23,14 @@ export interface DraymanGrid {
     cellWidth: number;
     columnCount: number;
     rowCount: number;
+    selectionMode?: {
+        enabled: boolean;
+        cellStyle?: any;
+    };
+    selectedCells?: GridCell[];
+    onSelectedCellsChange?: ElementEvent<{
+        selectedCells: GridCell[];
+    }>;
 }
 
 export interface GridCell {
@@ -36,6 +44,8 @@ export interface GridCell {
     )[];
     cellStyle?: any;
     contentStyle?: any;
+    selectionGroup?: string;
+    disableSelect?: boolean;
 }
 
 export interface GridContentButton {
