@@ -8,7 +8,7 @@ export interface ButtonOptionsBase {
      * Material style of the button.
      * `basic` by default.
      */
-    view?: 'basic' | 'raised' | 'flat' | 'stroked' | 'icon' | 'fab' | 'miniFab';
+    view?: 'basic' | 'raised' | 'flat' | 'stroked' | 'icon' | 'fab' | 'miniFab' | 'unstyled';
     /**
      * Name of the [Material icon](https://material.io/resources/icons) printed inside button.
      */

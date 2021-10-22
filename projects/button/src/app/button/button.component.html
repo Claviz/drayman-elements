@@ -41,6 +41,13 @@
             <ng-container *ngTemplateOutlet="button"></ng-container>
         </button>
     </ng-container>
+    <ng-container *ngSwitchCase="'unstyled'">
+        <button type="button" (click)="emitClick($event)" [matTooltip]="tooltip" [disabled]="disabled"
+            [ngStyle]="buttonStyle" [popper]="thumbnailContent" [popperDisabled]="!(imgUrl || popup)"
+            [attr.aria-label]="label + ' unstyled button'">
+            <ng-container *ngTemplateOutlet="button"></ng-container>
+        </button>
+    </ng-container>
     <ng-container *ngSwitchDefault>
         <button type="button" mat-button (click)="emitClick($event)" [matTooltip]="tooltip" [disabled]="disabled"
             [ngStyle]="buttonStyle" [popper]="thumbnailContent" [popperDisabled]="!(imgUrl || popup)"

@@ -10,7 +10,7 @@ export class ButtonComponent {
 
   @Input() onClick?: () => Promise<void>;
   @Input() label?: string;
-  @Input() view?: 'basic' | 'raised' | 'flat' | 'stroked' | 'icon' | 'fab' | 'miniFab';
+  @Input() view?: 'basic' | 'raised' | 'flat' | 'stroked' | 'icon' | 'fab' | 'miniFab' | 'unstyled';
   @Input() icon?: string;
   @Input() tooltip?: string;
   @Input() disabled?: boolean;
