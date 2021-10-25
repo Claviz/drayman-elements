@@ -32,6 +32,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
     cellStyle?: any;
   };
   @Input() selectedCells?: GridCell[] = [];
+  @Input() rowHoverStyle?: any;
   @Input() onSelectedCellsChange?: (options) => Promise<any>;
   @Input() scrollTo = ({ row }) => {
     this.scrollable.scrollTo({ top: row * this.cellHeight });
@@ -49,12 +50,19 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   @Input() columnCount: number;
   @Input() rowCount: number;
 
+  resized$ = new Subject();
+  _selectedCells: GridCell[] = [];
+  pendingSelectedCells: GridCell[] = [];
+  startSelectionCell: GridCell;
+  hoveredRow: number = -1;
+
   getCellStyle(cell: GridCell) {
     const rowEnd = cell.rowSpan ? cell.row + cell.rowSpan : cell.row + 1;
     const colEnd = cell.colSpan ? cell.col + cell.colSpan : cell.col + 1;
 
     return {
       ...cell.cellStyle,
+      ...(this.hoveredRow === cell.row ? this.rowHoverStyle : {}),
       ...([...this.pendingSelectedCells, ...this._selectedCells].find(x => x.row === cell.row && x.col === cell.col) ? this.selectionMode.cellStyle : {}),
       gridArea: `${cell.row + 1}/${cell.col + 1}/${rowEnd + 1}/${colEnd + 1}`,
     };
@@ -65,11 +73,6 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
 
   ngOnDestroy() {
   }
-
-  resized$ = new Subject();
-  _selectedCells: GridCell[] = [];
-  pendingSelectedCells: GridCell[] = [];
-  startSelectionCell: GridCell;
 
   emitCellClick(cell: GridCell) {
     if (this.selectionMode?.enabled) {
@@ -88,6 +91,10 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
     }
   }
 
+  onMouseLeave($event: MouseEvent, cell: GridCell) {
+    this.hoveredRow = -1;
+  }
+
   onMouseDown($event: MouseEvent, cell: GridCell) {
     if (this.selectionMode.enabled && !this._selectedCells.length || this._selectedCells[0].selectionGroup === cell.selectionGroup) {
       this.startSelectionCell = cell;
@@ -104,6 +111,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   }
 
   onMouseOver($event: MouseEvent, cell: GridCell) {
+    this.hoveredRow = cell.row;
     if (this.startSelectionCell) {
       const minCol = Math.min(cell.col, this.startSelectionCell.col);
       const maxCol = Math.max(cell.col, this.startSelectionCell.col);

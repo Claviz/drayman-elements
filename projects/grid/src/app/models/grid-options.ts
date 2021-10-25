@@ -1,4 +1,5 @@
 export interface DraymanGrid {
+    rowHoverStyle?: any;
     onLoad?: ElementEvent<{
         currentCol: number;
         visibleColCount: number;
