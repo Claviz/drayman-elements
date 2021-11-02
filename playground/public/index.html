@@ -21,18 +21,12 @@
     </style>
 </head>
 
-<body class="drayman-elements-container">
+<body>
     <div class="container">
         <drayman-element component="home"></drayman-element>
     </div>
     <script>
-        initializeDraymanFramework({
-            browserCommands: () => ({
-                moveCalendarTo: async ({ date }, [datepickerEl]) => {
-                    datepickerEl.moveCalendarTo({ date });
-                },
-            }),
-        });
+        initializeDraymanFramework();
     </script>
 </body>
 
