@@ -20,8 +20,14 @@ export interface DraymanGrid {
         currentRow: number;
         visibleRowCount: number;
     }>;
-    cellHeight: number;
-    cellWidth: number;
+    /**
+     * Height of the cell. If not specified, cell height will automatically be calculated to fit a grid.
+     */
+    cellHeight?: number;
+    /**
+     * Width of the cell. If not specified, cell width will automatically be calculated to fit a grid.
+     */
+    cellWidth?: number;
     columnCount: number;
     rowCount: number;
     selectionMode?: {
@@ -47,6 +53,7 @@ export interface GridCell {
     contentStyle?: any;
     selectionGroup?: string;
     disableSelect?: boolean;
+    selectionCellStyle?: any;
 }
 
 export interface GridContentButton {

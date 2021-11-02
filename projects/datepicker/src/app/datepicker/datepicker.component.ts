@@ -32,6 +32,12 @@ export class DatepickerComponent extends FieldBase<string> implements OnChanges 
   @Input() error?: string;
   @Input() onValueChange?: ElementEvent<{ value: string }>;
   @Input() updateOnBlur?: boolean;
+  @Input() allowedDates?: string[] = [];
+  @Input() minDate?: string;
+  @Input() maxDate?: string;
+  @Input() moveCalendarTo?= ({ date }) => {
+    this.datePickerDirective.api.moveCalendarTo(date);
+  }
 
   opened = false;
   defaultDateFormat = 'YYYY-MM-DD';
@@ -42,8 +48,27 @@ export class DatepickerComponent extends FieldBase<string> implements OnChanges 
     format: this.defaultDateFormat,
     appendTo: '.drayman-elements-container',
     firstDayOfWeek: 'mo',
+    isDayDisabledCallback: (date) => {
+      return !this.isDateAllowed(date.format(`YYYY-MM-DD`));
+    }
   };
   id = generate();
+
+  isDateAllowed(date: string) {
+    if (this.minDate && dayjs(date, `YYYY-MM-DD`).diff(dayjs(this.minDate, `YYYY-MM-DD`)) < 0) {
+      return false;
+    }
+    if (this.maxDate && dayjs(this.maxDate, `YYYY-MM-DD`).diff(dayjs(date, `YYYY-MM-DD`)) < 0) {
+      return false;
+    }
+    if (!this.allowedDates.length) {
+      return true;
+    }
+    if (this.allowedDates.includes(date)) {
+      return true;
+    }
+    return false;
+  }
 
   ngOnChanges(simpleChanges: SimpleChanges) {
     // todo: remove when fix will be available
@@ -61,6 +86,7 @@ export class DatepickerComponent extends FieldBase<string> implements OnChanges 
     const format = this.config.format;
     this.mask = format?.length === 10 && ['YYYY', 'MM', 'DD'].every(x => format.includes(x)) ?
       format.replace('YYYY', '0000').replace('MM', 'M0').replace('DD', 'd0') : null;
+    this.datePickerDirective?.api?.moveCalendarTo?.(this.value);
     super.ngOnChanges(simpleChanges);
   }
 
@@ -73,6 +99,9 @@ export class DatepickerComponent extends FieldBase<string> implements OnChanges 
   }
 
   shouldValueChange(value) {
+    if (this.value === value) {
+      return false;
+    }
     if (!value) {
       return true;
     }
@@ -81,7 +110,7 @@ export class DatepickerComponent extends FieldBase<string> implements OnChanges 
     } catch (err) {
       return false;
     }
-    return true;
+    return this.isDateAllowed(dayjs(value).format(`YYYY-MM-DD`));
   }
 
   toggleOpen() {

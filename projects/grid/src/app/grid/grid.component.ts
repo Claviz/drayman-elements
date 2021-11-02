@@ -13,6 +13,7 @@ import {
   ViewChild,
   ViewEncapsulation,
 } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ResizedEvent } from 'angular-resize-event';
 import { merge, Subject } from 'rxjs';
 import { debounce, debounceTime, throttleTime } from 'rxjs/operators';
@@ -35,7 +36,9 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   @Input() rowHoverStyle?: any;
   @Input() onSelectedCellsChange?: (options) => Promise<any>;
   @Input() scrollTo = ({ row }) => {
-    this.scrollable.scrollTo({ top: row * this.cellHeight });
+    if (this.cellHeight) {
+      this.scrollable.scrollTo({ top: row * this.cellHeight });
+    }
   };
   @Input() onLoad?: (options) => Promise<any>;
   @Input() onContentButtonClick?: (options) => Promise<any>;
@@ -45,8 +48,8 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   @Input() grid: GridCell[] = []
 
   @Input() onScroll: any;
-  @Input() cellHeight: number;
-  @Input() cellWidth: number;
+  @Input() cellHeight?: number;
+  @Input() cellWidth?: number;
   @Input() columnCount: number;
   @Input() rowCount: number;
 
@@ -63,15 +66,22 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
     return {
       ...cell.cellStyle,
       ...(this.hoveredRow === cell.row ? this.rowHoverStyle : {}),
-      ...([...this.pendingSelectedCells, ...this._selectedCells].find(x => x.row === cell.row && x.col === cell.col) ? this.selectionMode.cellStyle : {}),
+      ...(
+        [...this.pendingSelectedCells, ...this._selectedCells].find(x => x.row === cell.row && x.col === cell.col) ?
+          { ...this.selectionMode.cellStyle, ...cell.selectionCellStyle } : {}
+      ),
       gridArea: `${cell.row + 1}/${cell.col + 1}/${rowEnd + 1}/${colEnd + 1}`,
     };
   }
 
-  constructor(public elementRef: ElementRef) {
+  constructor(public elementRef: ElementRef, private sanitizer: DomSanitizer) {
   }
 
   ngOnDestroy() {
+  }
+
+  getSanitizedString(value: string) {
+    return this.sanitizer.bypassSecurityTrustHtml(value);
   }
 
   emitCellClick(cell: GridCell) {
@@ -156,10 +166,10 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
       debounceTime(50),
     ).subscribe((x) => {
       this.onScroll?.({
-        currentCol: Math.floor(this.scrollable.measureScrollOffset('left') / this.cellWidth),
-        visibleColCount: Math.ceil(this.scrollable.getElementRef().nativeElement.clientWidth / this.cellWidth),
-        currentRow: Math.floor(this.scrollable.measureScrollOffset('top') / this.cellHeight),
-        visibleRowCount: Math.ceil(this.scrollable.getElementRef().nativeElement.clientHeight / this.cellHeight),
+        currentCol: this.cellWidth ? Math.floor(this.scrollable.measureScrollOffset('left') / this.cellWidth) : 0,
+        visibleColCount: this.cellWidth ? Math.ceil(this.scrollable.getElementRef().nativeElement.clientWidth / this.cellWidth) : this.columnCount,
+        currentRow: this.cellHeight ? Math.floor(this.scrollable.measureScrollOffset('top') / this.cellHeight) : 0,
+        visibleRowCount: this.cellHeight ? Math.ceil(this.scrollable.getElementRef().nativeElement.clientHeight / this.cellHeight) : this.rowCount,
       })
     });
   }
@@ -175,10 +185,10 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
 
   get gridStyle() {
     return {
-      gridTemplateColumns: `repeat(${this.columnCount}, ${this.cellWidth}px)`,
-      gridTemplateRows: `repeat(${this.rowCount}, ${this.cellHeight}px)`,
-      width: `${this.columnCount * this.cellWidth}px`,
-      height: `${this.rowCount * this.cellHeight}px`,
+      gridTemplateColumns: `repeat(${this.columnCount}, ${this.cellWidth ? `${this.cellWidth}px` : `auto`})`,
+      gridTemplateRows: `repeat(${this.rowCount}, ${this.cellHeight ? `${this.cellHeight}px` : `autor`})`,
+      width: this.cellWidth ? `${this.columnCount * this.cellWidth}px` : `100%`,
+      height: this.cellHeight ? `${this.rowCount * this.cellHeight}px` : `100%`,
       display: 'grid',
       userSelect: 'none'
     }

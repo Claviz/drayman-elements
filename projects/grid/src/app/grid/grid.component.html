@@ -5,20 +5,23 @@
             (mouseover)="onMouseOver($event, cell)" (mouseleave)="onMouseLeave($event, cell)">
             <div [style]="cell.contentStyle">
                 <ng-container *ngFor="let cellItem of cell.content">
-                    <div [ngSwitch]="cellItem.type" [style]="cellItem.style">
+                    <ng-container [ngSwitch]="cellItem.type">
                         <ng-container *ngSwitchCase="'text'">
-                            {{cellItem.value}}
+                            <div [style]="cellItem.style" [innerHTML]="getSanitizedString(cellItem.value)">
+                            </div>
                         </ng-container>
                         <ng-container *ngSwitchCase="'button'">
-                            <drayman-button-internal [label]="cellItem.value.label"
-                                [onClick]="emitContentButtonClick.bind(this, cell, cellItem.value)"
-                                [view]="cellItem.value.view" [icon]="cellItem.value.icon"
-                                [tooltip]="cellItem.value.tooltip" [disabled]="cellItem.value.disabled"
-                                [imgUrl]="cellItem.value.imgUrl" [popup]="cellItem.value.popup"
-                                [buttonStyle]="cellItem.value.buttonStyle" [options]="cellItem.value">
-                            </drayman-button-internal>
+                            <div [style]="cellItem.style">
+                                <drayman-button-internal [label]="cellItem.value.label"
+                                    [onClick]="emitContentButtonClick.bind(this, cell, cellItem.value)"
+                                    [view]="cellItem.value.view" [icon]="cellItem.value.icon"
+                                    [tooltip]="cellItem.value.tooltip" [disabled]="cellItem.value.disabled"
+                                    [imgUrl]="cellItem.value.imgUrl" [popup]="cellItem.value.popup"
+                                    [buttonStyle]="cellItem.value.buttonStyle" [options]="cellItem.value">
+                                </drayman-button-internal>
+                            </div>
                         </ng-container>
-                    </div>
+                    </ng-container>
                 </ng-container>
             </div>
         </div>
