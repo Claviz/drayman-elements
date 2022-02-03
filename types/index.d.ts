@@ -1102,24 +1102,11 @@ declare global {
      * ### Show existing viz.
      * ```typescript
      * export const component: DraymanComponent = async ({ forceUpdate }) => {
-     *     const configuration = {
-     *         host: 'localhost',
-     *         appId: '35150d91-e2c4-4334-ae16-6bdece1b3e3d',
-     *         prefix: 'drayman',
-     *         secure: true,
-     *         identity: 'drayman-session',
-     *         urlParams: {
-     *             qlikTicket: 'ORD0PE8pzBamZHqm',
-     *         },
-     *     };
-     * 
      *     return () => {
      *         return (
      *             <div style={{ height: 500 }}>
      *                 <drayman-nebula
-     *                     showToolbar={true}
-     *                     vizId="JSpgmtC"
-     *                     configuration={configuration}
+     *                     qLayout={{}}
      *                 />
      *             </div>
      *         )

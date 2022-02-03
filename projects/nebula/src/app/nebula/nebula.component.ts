@@ -1,11 +1,8 @@
-import { Component, Input, EventEmitter, Output, OnInit, AfterViewInit, ViewEncapsulation, ViewChild, ElementRef } from '@angular/core';
-
-import { embed } from '@nebula.js/stardust';
-import enigma from 'enigma.js';
-import SenseUtilities from 'enigma.js/sense-utilities';
-import schema from 'enigma.js/schemas/12.170.2.json';
+import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
 import * as stardust from '@nebula.js/stardust';
-import { requireFrom } from 'd3-require';
+
+import EnigmaMocker from '../../enigma-mocker';
+import { requireFrom } from '../../custom-d3-require';
 
 const loadNebulaChart = requireFrom((name) => `https://unpkg.com/@nebula.js/${name}`).alias({
   '@nebula.js/stardust': stardust,
@@ -15,25 +12,103 @@ const loadNebulaChart = requireFrom((name) => `https://unpkg.com/@nebula.js/${na
   templateUrl: './nebula.component.html',
   styleUrls: ['./nebula.component.scss']
 })
-export class NebulaComponent implements AfterViewInit {
-  @Input() configuration: any;
-  @Input() vizId: string;
-  @Input() showToolbar: boolean;
+export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
+  @Input() qLayout: any;
+  @Input() onSelections?: (options) => Promise<any>;
+  @Input() onVizMethod?: (options) => Promise<any>;
+  @Input() onGetMeasure?: (options) => Promise<any>;
+  @Input() onGetObject?: (options) => Promise<any>;
 
   @ViewChild('toolbar', { static: false }) toolbarEl: ElementRef;
   @ViewChild('viz', { static: false }) vizEl: ElementRef;
 
-  async ngAfterViewInit() {
-    const url = SenseUtilities.buildUrl(this.configuration);
-    const connect = async (appId) => {
-      const enigmaGlobal = await enigma
-        .create({ schema, url, })
-        .open();
-      // enigmaGlobal.on('traffic:*', (direction, msg) => console.log(direction, msg));
+  viz: any;
+  n: any;
+  app;
 
-      return enigmaGlobal.openDoc(appId);
+  async ngAfterViewInit() {
+    await this.render();
+  }
+
+  async render() {
+    this.oldQLayout = JSON.parse(JSON.stringify(this.qLayout));
+    const genericObject = {
+      getLayout: () => {
+        return this.qLayout;
+      },
+      selectHyperCubeCells: (...args) => {
+      },
+      getEffectiveProperties: async (...args) => {
+        return await this.onVizMethod({
+          name: 'getEffectiveProperties',
+          args,
+        });
+      },
+      getHyperCubeReducedData: async (...args) => {
+        return await this.onVizMethod({
+          name: 'getHyperCubeReducedData',
+          args,
+        });
+      },
+      getHyperCubeData: async (...args) => {
+        return await this.onVizMethod({
+          name: 'getHyperCubeData',
+          args,
+        });
+      },
+      getStackedDataPages: (...args) => {
+        console.log('getStackedDataPages', args);
+        return this.qLayout.qHyperCube.qDataPages;
+      },
+      getFullPropertyTree: () => {
+        console.log("getFullPropertyTree");
+      },
+      getHyperCubeTreeData: () => {
+        console.log('getHyperCubeTreeData');
+      },
+      beginSelections: (...args) => {
+      },
+      selectHyperCubeValues: async (...args) => {
+        await this.onSelections?.({ selections: args, method: 'selectHyperCubeValues' })
+      },
+      rangeSelectHyperCubeValues: async (...args) => {
+        await this.onSelections?.({ selections: args, method: 'rangeSelectHyperCubeValues' })
+      },
+      resetMadeSelections: (...args) => {
+      },
+      clearSelections: (...args) => {
+      },
+      endSelections: (...args) => {
+      },
+      removeListener: (...args) => {
+      },
+      useKeyboard: (...args) => {
+      },
+      on: (...args) => {
+      }
+
+    };
+    this.app = await EnigmaMocker.fromGenericObjects([genericObject,]);
+    this.app.getMeasure = async (measureId) => {
+      console.log({ measureId })
+      return {
+        getMeasure: async () => {
+          return await this.onGetMeasure({ measureId });
+        }
+      };
     }
-    const app = await connect(this.configuration.appId);
+    const preservedGetObject = this.app.getObject;
+    this.app.getObject = async (objectId) => {
+      if (objectId === this.qLayout.qInfo.qId) {
+        return await preservedGetObject(this.qLayout.qInfo.qId);
+      }
+      return {
+        getLayout: async () => {
+          return await this.onGetObject({ objectId });
+        }
+      };
+    }
+
     const types = [
       ['sn-action-button', 'action-button'],
       ['sn-bar-chart', 'barchart'],
@@ -54,17 +129,34 @@ export class NebulaComponent implements AfterViewInit {
       name: t[1],
       load: () => loadNebulaChart(t[0]),
     }));
-    const baseConfig = stardust.embed.createConfiguration({ types });
-    const n = baseConfig(app);
-    console.log(await n.selections());
-    if (this.showToolbar) {
-      (await n.selections()).mount(this.toolbarEl.nativeElement);
-    }
-    if (this.vizId) {
-      n.render({
+
+    this.n = stardust.embed(this.app, {
+      types,
+    })
+
+    if (this.qLayout) {
+      this.viz = await this.n.render({
         element: this.vizEl.nativeElement,
-        id: this.vizId,
+        id: this.qLayout.qInfo.qId,
       });
+    }
+  }
+
+  destroyApp() {
+    document.querySelector(`div[data-app-id='${this.app.id}']`)?.remove();
+  }
+
+  ngOnDestroy(): void {
+    this.destroyApp();
+  }
+
+  oldQLayout: any;
+  async ngOnChanges(changes: SimpleChanges) {
+    console.log('ngOnChanges', this.viz);
+    if (this.viz && JSON.stringify(this.qLayout) !== JSON.stringify(this.oldQLayout)) {
+      this.viz.destroy();
+      this.destroyApp();
+      await this.render();
     }
   }
 

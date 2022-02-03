@@ -31,6 +31,8 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   @Input() selectionMode?: {
     enabled: boolean;
     cellStyle?: any;
+    similarGroupCellStyle?: any;
+    otherGroupCellStyle?: any;
   };
   @Input() selectedCells?: GridCell[] = [];
   @Input() rowHoverStyle?: any;
@@ -66,6 +68,14 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
     return {
       ...cell.cellStyle,
       ...(this.hoveredRow === cell.row ? this.rowHoverStyle : {}),
+      ...(
+        [...this.pendingSelectedCells, ...this._selectedCells].find(x => x.selectionGroup === cell.selectionGroup) ?
+          { ...this.selectionMode.similarGroupCellStyle, } : {}
+      ),
+      ...(
+        [...this.pendingSelectedCells, ...this._selectedCells].length && !([...this.pendingSelectedCells, ...this._selectedCells].find(x => x.selectionGroup === cell.selectionGroup)) ?
+          { ...this.selectionMode.otherGroupCellStyle, } : {}
+      ),
       ...(
         [...this.pendingSelectedCells, ...this._selectedCells].find(x => x.row === cell.row && x.col === cell.col) ?
           { ...this.selectionMode.cellStyle, ...cell.selectionCellStyle } : {}

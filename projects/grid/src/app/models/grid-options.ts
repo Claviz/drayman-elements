@@ -54,6 +54,7 @@ export interface GridCell {
     selectionGroup?: string;
     disableSelect?: boolean;
     selectionCellStyle?: any;
+    ref?: string;
 }
 
 export interface GridContentButton {

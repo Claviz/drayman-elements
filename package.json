@@ -1,6 +1,6 @@
 {
   "name": "@drayman/elements",
-  "version": "1.4.26",
+  "version": "1.4.29",
   "description": "A collection of web components for Drayman.",
   "license": "MIT",
   "keywords": [
@@ -12,7 +12,7 @@
     "build:types": "tsc -p ./tsconfig.types.json",
     "typedoc": "npm run build:types && typedoc --tsconfig ./tsconfig.types.json",
     "lint": "ng lint",
-    "build": "npm run build:button && npm run build:text-field && npm run build:claviz-charts && npm run build:file-uploader && npm run build:number-field && npm run build:select && npm run build:table && npm run build:checkbox && npm run build:textarea-field && npm run build:radio-group && npm run build:datepicker && npm run build:timepicker && npm run build:pdf-viewer && npm run build:ngx-charts && npm run build:menu && npm run build:ngx-graph && npm run build:youtube-player && npm run build:nebula && npm run build:grid && npm run typedoc",
+    "build": "npm run build:button && npm run build:text-field && npm run build:claviz-charts && npm run build:file-uploader && npm run build:number-field && npm run build:select && npm run build:table && npm run build:checkbox && npm run build:textarea-field && npm run build:radio-group && npm run build:datepicker && npm run build:timepicker && npm run build:pdf-viewer && npm run build:ngx-charts && npm run build:menu && npm run build:ngx-graph && npm run build:youtube-player && npm run build:nebula && npm run build:grid && npm run build:picasso && npm run typedoc",
     "build:button": "ng build button --prod --single-bundle --output-hashing=none",
     "build:text-field": "ng build text-field --prod --single-bundle --output-hashing=none",
     "build:claviz-charts": "ng build claviz-charts --prod --single-bundle --output-hashing=none",
@@ -119,7 +119,7 @@
     "@babel/core": "^7.11.5",
     "@compodoc/compodoc": "^1.1.11",
     "@drayman/types": "latest",
-    "@nebula.js/stardust": "^1.7.0",
+    "@nebula.js/stardust": "2.3.1",
     "@ngneat/spectator": "^5.13.2",
     "@swimlane/ngx-charts": "16.0.0",
     "@swimlane/ngx-graph": "^7.2.0",

@@ -1,49 +1,22 @@
 export interface DraymanNebula {
     /**
-     * Qlik URL configuration.
+     * Executed when user makes selections.
      */
-    configuration: {
-        host?: string;
-        port?: number;
-        /**
-         * Set to false to use an unsecure WebSocket connection (`ws://`).
-         */
-        secure?: boolean;
-        /**
-         * Additional parameters to be added to WebSocket URL (for example, `qlikTicket`).
-         */
-        urlParams?: any;
-        /**
-         * Absolute base path to use when connecting, used for proxy prefixes.
-         */
-        prefix?: string;
-        /**
-         * The ID of the app intended to be opened in the session.
-         */
-        appId?: string;
-        /**
-         * Initial route to open the WebSocket against, default is `app/engineData`.
-         */
-        route?: string;
-        /**
-         * Subpath to use, used to connect to dataprepservice in a server environment.
-         */
-        subpath?: string;
-        /**
-         * Identity (session ID) to use.
-         */
-        identity?: string;
-        /**
-         * A value in seconds that QIX Engine should keep the session alive after socket disconnect (only works if QIX Engine supports it).
-         */
-        ttl?: number;
-    };
+    onSelections?: ElementEvent<{ value: { selections: any, method: 'selectHyperCubeValues' | 'rangeSelectHyperCubeValues' } }>;
     /**
-     * Existing visualization ID to render.
+     * Executed when viz method must be called.
      */
-    vizId: string;
+    onVizMethod?: ElementEvent<{ value: { args: any, name: 'getEffectiveProperties' | 'getHyperCubeReducedData' | 'getHyperCubeData' } }>;
     /**
-    * Whether to show selections toolbar or not.
-    */
-    showToolbar: boolean;
+     * Executed when measure needs to be returned
+     */
+    onGetMeasure?: ElementEvent<{ value: { measureId: string; } }>;
+    /**
+     * Executed when object needs to be returned
+     */
+    onGetObject?: ElementEvent<{ value: { objectId: string; } }>;
+    /**
+     * Initial qLayout of the object to render.
+     */
+    qLayout: any;
 }
