@@ -2,9 +2,9 @@
   <mat-label *ngIf="label">{{label}}</mat-label>
   <input [id]="id" matInput type="number" [placeholder]="placeholder || label" [formControl]="formControl"
     [errorStateMatcher]="errorStateMatcher" autocomplete="off" (blur)="onBlur()" [matAutocomplete]="auto">
-  <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (opened)="onFocus()"
+  <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (opened)="triggerFocus()"
     [panelWidth]="suggestionsPanelWidth">
-    <mat-option *ngFor="let option of suggestions" [value]="option?.value" [ngStyle]="suggestionStyle"
+    <mat-option *ngFor="let option of filteredSuggestions" [value]="option?.value" [ngStyle]="suggestionStyle"
       [disabled]="!!suggestionStyle">
       {{option?.label}}
     </mat-option>
