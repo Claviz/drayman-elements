@@ -37,6 +37,7 @@ export interface DraymanGrid {
     selectedCells?: GridCell[];
     onSelectedCellsChange?: ElementEvent<{
         selectedCells: GridCell[];
+        clearPrevious: boolean;
     }>;
 }
 

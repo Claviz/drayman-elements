@@ -152,7 +152,6 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
 
   oldQLayout: any;
   async ngOnChanges(changes: SimpleChanges) {
-    console.log('ngOnChanges', this.viz);
     if (this.viz && JSON.stringify(this.qLayout) !== JSON.stringify(this.oldQLayout)) {
       this.viz.destroy();
       this.destroyApp();

@@ -56,10 +56,15 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   @Input() rowCount: number;
 
   resized$ = new Subject();
+  selectedCellsChanged$ = new Subject<{
+    selectedCells: GridCell[];
+    clearPrevious: boolean;
+  }>();
   _selectedCells: GridCell[] = [];
   pendingSelectedCells: GridCell[] = [];
   startSelectionCell: GridCell;
   hoveredRow: number = -1;
+  ctrl;
 
   getCellStyle(cell: GridCell) {
     const rowEnd = cell.rowSpan ? cell.row + cell.rowSpan : cell.row + 1;
@@ -94,16 +99,28 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
     return this.sanitizer.bypassSecurityTrustHtml(value);
   }
 
-  emitCellClick(cell: GridCell) {
+  oncontextmenu($event: PointerEvent, cell: GridCell) {
+    if ($event.ctrlKey) {
+      $event.preventDefault();
+      this.emitCellClick(cell, true);
+    }
+  }
+
+  emitCellClick(cell: GridCell, ctrl = false) {
     if (this.selectionMode?.enabled) {
       if (!this.pendingSelectedCells.length) {
-        const alreadySelected = this._selectedCells.find(x => x.row === cell.row && x.col === cell.col)
-        if (alreadySelected) {
-          this._selectedCells = this._selectedCells.filter(x => !(x.row === cell.row && x.col === cell.col));
-          this.onSelectedCellsChange({ selectedCells: this._selectedCells });
-        } else if (!cell.disableSelect && (!this._selectedCells.length || this._selectedCells[0].selectionGroup === cell.selectionGroup)) {
-          this._selectedCells.push(cell);
-          this.onSelectedCellsChange({ selectedCells: this._selectedCells });
+        if (ctrl) {
+          this._selectedCells = [cell];
+          this.selectedCellsChanged$.next({ selectedCells: this._selectedCells, clearPrevious: true })
+        } else {
+          const alreadySelected = this._selectedCells.find(x => x.row === cell.row && x.col === cell.col)
+          if (alreadySelected) {
+            this._selectedCells = this._selectedCells.filter(x => !(x.row === cell.row && x.col === cell.col));
+            this.selectedCellsChanged$.next({ selectedCells: this._selectedCells, clearPrevious: false });
+          } else if (!cell.disableSelect && (!this._selectedCells.length || this._selectedCells[0].selectionGroup === cell.selectionGroup)) {
+            this._selectedCells.push(cell);
+            this.selectedCellsChanged$.next({ selectedCells: this._selectedCells, clearPrevious: false });
+          }
         }
       }
     } else {
@@ -117,6 +134,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
 
   onMouseDown($event: MouseEvent, cell: GridCell) {
     if (this.selectionMode.enabled && !this._selectedCells.length || this._selectedCells[0].selectionGroup === cell.selectionGroup) {
+      this.ctrl = $event.ctrlKey;
       this.startSelectionCell = cell;
     }
   }
@@ -124,9 +142,9 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   onMouseUp($event: MouseEvent, cell: GridCell) {
     this.startSelectionCell = null;
     if (this.pendingSelectedCells.length) {
-      this._selectedCells = [...this._selectedCells, ...this.pendingSelectedCells];
+      this._selectedCells = [...(this.ctrl ? [] : this._selectedCells), ...this.pendingSelectedCells];
       this.pendingSelectedCells = [];
-      this.onSelectedCellsChange({ selectedCells: this._selectedCells });
+      this.selectedCellsChanged$.next({ selectedCells: this._selectedCells, clearPrevious: !!this.ctrl });
     }
   }
 
@@ -153,7 +171,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
     if (this.pendingSelectedCells.length) {
       this._selectedCells = [...this._selectedCells, ...this.pendingSelectedCells];
       this.pendingSelectedCells = [];
-      this.onSelectedCellsChange({ selectedCells: this._selectedCells });
+      this.selectedCellsChanged$.next({ selectedCells: this._selectedCells, clearPrevious: false });
     }
   }
 
@@ -163,7 +181,6 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
 
   onResized(event: ResizedEvent) {
     if (event.oldHeight && event.oldWidth) {
-      console.log('resize', event);
       this.resized$.next();
     }
   }
@@ -181,6 +198,16 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
         currentRow: this.cellHeight ? Math.floor(this.scrollable.measureScrollOffset('top') / this.cellHeight) : 0,
         visibleRowCount: this.cellHeight ? Math.ceil(this.scrollable.getElementRef().nativeElement.clientHeight / this.cellHeight) : this.rowCount,
       })
+    });
+    this.selectedCellsChanged$.pipe(
+      debounceTime(250),
+    ).subscribe((x) => {
+      this.onSelectedCellsChange?.({
+        ...x,
+        selectedCells: x.selectedCells.filter(
+          (xx, i) => x.selectedCells.findIndex(y => y.row === xx.row && y.col === xx.col) === i
+        ),
+      });
     });
   }
 
