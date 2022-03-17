@@ -14,6 +14,7 @@ const loadNebulaChart = requireFrom((name) => `https://unpkg.com/@nebula.js/${na
 })
 export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() qLayout: any;
+  @Input() theme: any;
   @Input() onSelections?: (options) => Promise<any>;
   @Input() onVizMethod?: (options) => Promise<any>;
   @Input() onGetMeasure?: (options) => Promise<any>;
@@ -130,8 +131,18 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
       load: () => loadNebulaChart(t[0]),
     }));
 
+    const themes = [
+      {
+        id: 'customTheme',
+        load: async () => this.theme,
+      },
+    ];
     this.n = stardust.embed(this.app, {
       types,
+      themes,
+      context: {
+        theme: 'customTheme',
+      },
     })
 
     if (this.qLayout) {
