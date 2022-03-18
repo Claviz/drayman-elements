@@ -102,11 +102,15 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   oncontextmenu($event: PointerEvent, cell: GridCell) {
     if ($event.ctrlKey) {
       $event.preventDefault();
-      this.emitCellClick(cell, true);
+      this.emitCellClick($event, cell, true);
     }
   }
 
-  emitCellClick(cell: GridCell, ctrl = false) {
+  emitCellClick($event: PointerEvent, cell: GridCell, ctrl = false) {
+    if ($event.ctrlKey) {
+      $event.preventDefault();
+      ctrl = true;
+    }
     if (this.selectionMode?.enabled) {
       if (!this.pendingSelectedCells.length) {
         if (ctrl) {

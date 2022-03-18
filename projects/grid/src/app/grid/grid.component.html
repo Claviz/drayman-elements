@@ -1,7 +1,7 @@
 <div class="wrapper" cdkScrollable (resized)="onResized($event)">
     <div [style]="gridStyle" (mouseleave)="onGridMouseLeave($event)">
         <div (contextmenu)="oncontextmenu($event, cell)" tabindex="-1" *ngFor="let cell of grid"
-            [style]="getCellStyle(cell)" (click)="emitCellClick(cell)" (mousedown)="onMouseDown($event, cell)"
+            [style]="getCellStyle(cell)" (click)="emitCellClick($event, cell)" (mousedown)="onMouseDown($event, cell)"
             (mouseup)="onMouseUp($event, cell)" (mouseover)="onMouseOver($event, cell)"
             (mouseleave)="onMouseLeave($event, cell)" [attr.ref]="cell.ref">
             <div [style]="cell.contentStyle">
