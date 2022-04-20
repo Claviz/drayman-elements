@@ -1,6 +1,6 @@
 {
   "name": "@drayman/elements",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "description": "A collection of web components for Drayman.",
   "license": "MIT",
   "keywords": [
@@ -12,7 +12,8 @@
     "build:types": "tsc -p ./tsconfig.types.json",
     "typedoc": "npm run build:types && typedoc --tsconfig ./tsconfig.types.json",
     "lint": "ng lint",
-    "build": "npm run build:button && npm run build:text-field && npm run build:claviz-charts && npm run build:file-uploader && npm run build:number-field && npm run build:select && npm run build:table && npm run build:checkbox && npm run build:textarea-field && npm run build:radio-group && npm run build:datepicker && npm run build:timepicker && npm run build:pdf-viewer && npm run build:ngx-charts && npm run build:menu && npm run build:ngx-graph && npm run build:youtube-player && npm run build:nebula && npm run build:grid && npm run build:picasso && npm run typedoc",
+    "build": "npm run build:code-editor && npm run build:button && npm run build:text-field && npm run build:claviz-charts && npm run build:file-uploader && npm run build:number-field && npm run build:select && npm run build:table && npm run build:checkbox && npm run build:textarea-field && npm run build:radio-group && npm run build:datepicker && npm run build:timepicker && npm run build:pdf-viewer && npm run build:ngx-charts && npm run build:menu && npm run build:ngx-graph && npm run build:youtube-player && npm run build:nebula && npm run build:grid && npm run build:picasso && npm run typedoc",
+    "build:code-editor": "ng build code-editor --prod --single-bundle --output-hashing=none",
     "build:button": "ng build button --prod --single-bundle --output-hashing=none",
     "build:text-field": "ng build text-field --prod --single-bundle --output-hashing=none",
     "build:claviz-charts": "ng build claviz-charts --prod --single-bundle --output-hashing=none",
@@ -45,6 +46,9 @@
       },
       "drayman-button": {
         "script": "./dist/button/main.js"
+      },
+      "drayman-code-editor": {
+        "script": "./dist/code-editor/main.js"
       },
       "drayman-claviz-charts": {
         "script": "./dist/claviz-charts/main.js"
@@ -118,6 +122,7 @@
     "@angular/youtube-player": "^10.1.0",
     "@babel/core": "^7.11.5",
     "@compodoc/compodoc": "^1.1.11",
+    "@ctrl/ngx-codemirror": "^4.1.1",
     "@drayman/types": "latest",
     "@nebula.js/stardust": "2.3.1",
     "@ngneat/spectator": "^5.13.2",
@@ -131,6 +136,7 @@
     "babel-loader": "^8.1.0",
     "claviz-charts": "0.5.0",
     "codelyzer": "6.0.0",
+    "codemirror": "^5.65.2",
     "d3-require": "^1.2.4",
     "dayjs": "^1.9.6",
     "deepmerge": "4.2.2",
@@ -141,6 +147,8 @@
     "filepond-plugin-get-file": "1.0.6",
     "jest": "26.4.2",
     "jest-preset-angular": "^8.3.1",
+    "jshint": "^2.13.4",
+    "jsonlint": "^1.6.3",
     "mat-single-overlay": "^0.0.2",
     "ng-lazyload-image": "9.1.0",
     "ng2-date-picker": "^10.0.1",

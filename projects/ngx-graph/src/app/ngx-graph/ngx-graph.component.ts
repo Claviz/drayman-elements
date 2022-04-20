@@ -17,6 +17,8 @@ export class NgxGraphComponent implements OnChanges {
   @Input() draggingEnabled?: boolean;
   @Input() autoCenter?: boolean;
   @Input() autoZoom?: boolean;
+  @Input() onNodeClick?: () => Promise<void>;
+  @Input() onLinkClick?: () => Promise<void>;
 
   ngOnChanges() {
   }

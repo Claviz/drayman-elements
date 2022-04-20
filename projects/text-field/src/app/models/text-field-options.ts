@@ -3,4 +3,5 @@ import { AutocompleteOptionsBase } from '../../../../shared/models/autocomplete-
 import { InputFieldOptionsBase } from '../../../../shared/models/input-field-options-base';
 
 export interface DraymanTextField extends InputFieldOptionsBase<string>, AutocompleteOptionsBase<string>, InputMaskOptionsBase {
+    type?: 'text' | 'password';
 }

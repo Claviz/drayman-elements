@@ -36,6 +36,7 @@ export class TextFieldComponent extends AutocompleteFieldBase<string> {
     leadZeroDateTime?: boolean;
     allowNegativeNumbers?: boolean;
   }
+  @Input() type?: 'text' | 'password' = 'text';
   id = generate();
 }
 

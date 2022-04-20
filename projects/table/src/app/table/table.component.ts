@@ -377,6 +377,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
                 suggestions: textFieldCell.suggestions,
                 suggestionsPanelWidth: textFieldCell.suggestionsPanelWidth,
                 mask: textFieldCell.mask,
+                type: textFieldCell.inputType,
                 onFocus: this.onCellFocus ? async () => {
                   return this.onCellFocus({
                     row: this.visibleData[rowIndex],

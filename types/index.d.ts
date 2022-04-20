@@ -17,6 +17,7 @@ import { DraymanTimepicker } from '../dist/types/timepicker/src/app/models/timep
 import { DraymanYoutubePlayer } from '../dist/types/youtube-player/src/app/models/youtube-player-options';
 import { DraymanNebula } from '../dist/types/nebula/src/app/models/nebula-options';
 import { DraymanGrid } from '../dist/types/grid/src/app/models/grid-options';
+import { DraymanCodeEditor } from '../dist/types/code-editor/src/app/models/code-editor-options';
 
 declare global {
     interface DraymanElementsProps {
@@ -338,6 +339,35 @@ declare global {
      * ```
      */
     interface DraymanDatepickerProps extends DraymanDatepicker, DraymanElementsProps { }
+    /**
+     * # <drayman-code-editor \/>
+     *
+     * Code Editor powered by [CodeMirror](https://codemirror.net/) library.
+     *
+     * ## Example of usage
+     *
+     * ```typescript
+     * export const component: DraymanComponent = async ({ forceUpdate }) => {
+     *     let code = `console.log('Hello, World!')`;
+     * 
+     *     return () => {
+     * 
+     *         return (
+     *             <drayman-code-editor
+     *                 label="Amazing code"
+     *                 language="javascript"
+     *                 value={code}
+     *                 onValueChange={async ({ value }) => {
+     *                     code = value;
+     *                     await forceUpdate();
+     *                 }}
+     *             />
+     *         );
+     *     }
+     * }
+     * ```
+     */
+    interface DraymanCodeEditorProps extends DraymanCodeEditor, DraymanElementsProps { }
     /**
      * # <drayman-file-uploader \/>
      *
@@ -1137,6 +1167,7 @@ declare global {
             'drayman-youtube-player': DraymanYoutubePlayerProps;
             'drayman-nebula': DraymanNebulaProps;
             'drayman-grid': DraymanGridProps;
+            'drayman-code-editor': DraymanCodeEditorProps;
         }
     }
 }

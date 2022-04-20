@@ -39,6 +39,7 @@
         "./projects/radio-group/src/app/models/radio-group-options.ts",
         "./projects/claviz-charts/src/app/models/claviz-charts-options.ts",
         "./projects/file-uploader/src/app/models/file-uploader-options.ts",
+        "./projects/code-editor/src/app/models/code-editor-options.ts",
         "./node_modules/claviz-charts/lib/models/container-chart-options.d.ts",
         "./node_modules/@drayman/types/types/index.d.ts",
         "./projects/shared/models/button-options.ts"

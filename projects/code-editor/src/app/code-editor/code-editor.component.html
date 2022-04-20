@@ -1,0 +1,8 @@
+<div style="width: calc(100% - 2px); height: calc(100% - 2px); border: 1px solid #0000001f; border-radius: 3px;"
+    [ngClass]="disabled ? 'disabled' : null" (resized)="onResized($event)">
+    <div *ngIf="label" class="label">
+        <div>{{label}}</div>
+    </div>
+    <ngx-codemirror #CodeMirror [ngModel]="editorValue" (ngModelChange)="onChange($event)" [options]="options">
+    </ngx-codemirror>
+</div>

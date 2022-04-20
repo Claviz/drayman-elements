@@ -1,22 +1,25 @@
 <div style="width: 100%; height: 100%" (resized)="onResized($event)">
-  <ngx-graph *ngIf="nodes?.length" [showMiniMap]="options?.showMiniMap" [draggingEnabled]="options?.draggingEnabled"
-    [links]="options?.links" [nodes]="options?.nodes" [autoCenter]="options?.autoCenter" [autoZoom]="options?.autoZoom">
+  <ngx-graph *ngIf="nodes?.length" [showMiniMap]="showMiniMap" [draggingEnabled]="draggingEnabled" [links]="links"
+    [nodes]="nodes" [autoCenter]="autoCenter" [autoZoom]="autoZoom">
     <ng-template #defsTemplate>
       <svg:marker id="arrow" viewBox="0 -5 10 10" refX="8" refY="0" markerWidth="4" markerHeight="4" orient="auto">
         <svg:path d="M0,-5L10,0L0,5" class="arrow-head" />
       </svg:marker>
     </ng-template>
     <ng-template #nodeTemplate let-node>
-      <svg:g class="node">
+      <svg:g class="node" [matTooltip]="node.data.tooltip"
+        (click)="onNodeClick ? onNodeClick({ nodeId: node.id }) : null" style="cursor: pointer;">
         <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height"
-          [attr.fill]="node.data.customColor || node.data.color" />
+          [attr.fill]="node.data.customColor || node.data.color" rx="4px" />
         <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="node.dimension.height / 2">
           {{node.label}}
         </svg:text>
       </svg:g>
     </ng-template>
     <ng-template #linkTemplate let-link>
-      <svg:g class="edge">
+      <svg:g class="edge"
+        (click)="onLinkClick ? onLinkClick({ sourceNodeId: link.source, targetNodeId: link.target }) : null"
+        style="cursor: pointer;">
         <svg:path class="line" stroke-width="2" marker-end="url(#arrow)">
         </svg:path>
         <svg:text class="edge-label" text-anchor="middle">

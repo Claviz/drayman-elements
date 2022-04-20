@@ -1,0 +1,27 @@
+:host {
+    min-height: 0;
+    overflow: hidden;
+}
+
+::ng-deep ngx-codemirror {
+    @import "~codemirror/addon/fold/foldgutter";
+    @import "~codemirror/lib/codemirror";
+    @import "~codemirror/addon/dialog/dialog";
+    @import "~codemirror/addon/lint/lint";
+}
+
+.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.label {
+    cursor: default;
+    background: #f7f7f7;
+    font-size: 12px;
+    height: 25px;
+    color: #0009;
+    div {
+        padding: 3px 7px;
+    }
+}

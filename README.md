@@ -29,6 +29,7 @@ Default drayman elements library.
 - [drayman-youtube-player](interfaces/__global.draymanyoutubeplayerprops.html)
 - [drayman-grid](interfaces/__global.draymangridprops.html)
 - [drayman-nebula](interfaces/__global.draymannebulaprops.html)
+- [drayman-code-editor](interfaces/__global.draymancodeeditorprops.html)
 
 ## Installing
 

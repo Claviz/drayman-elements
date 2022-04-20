@@ -3,6 +3,110 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
+    "code-editor": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss",
+          "skipTests": true
+        }
+      },
+      "root": "projects/code-editor",
+      "sourceRoot": "projects/code-editor/src",
+      "prefix": "drayman",
+      "architect": {
+        "build": {
+          "builder": "ngx-build-plus:browser",
+          "options": {
+            "outputPath": "dist/code-editor",
+            "index": "",
+            "main": "projects/code-editor/src/main.ts",
+            "polyfills": "projects/code-editor/src/polyfills.ts",
+            "tsConfig": "projects/code-editor/tsconfig.app.json",
+            "aot": false,
+            "assets": [
+              "projects/code-editor/src/favicon.ico",
+              "projects/code-editor/src/assets"
+            ],
+            "styles": [
+              "projects/code-editor/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/code-editor/src/environments/environment.ts",
+                  "with": "projects/code-editor/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "ngx-build-plus:dev-server",
+          "options": {
+            "browserTarget": "code-editor:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "code-editor:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "code-editor:build"
+          }
+        },
+        "test": {
+          "builder": "ngx-build-plus:karma"
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/code-editor/tsconfig.app.json",
+              "projects/code-editor/tsconfig.spec.json",
+              "projects/code-editor/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/code-editor/e2e/protractor.conf.js",
+            "devServerTarget": "code-editor:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "code-editor:serve:production"
+            }
+          }
+        }
+      }
+    },
     "button": {
       "projectType": "application",
       "schematics": {

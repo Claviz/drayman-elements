@@ -23,4 +23,8 @@ export interface DraymanSelect extends FieldOptionsBase<any> {
      * Whether the user should be allowed to select multiple options.
      */
     multiple?: boolean;
+    /**
+     * Whether clearing of the select field should be disabled.
+     */
+    allowSelectionClear?: boolean;
 }

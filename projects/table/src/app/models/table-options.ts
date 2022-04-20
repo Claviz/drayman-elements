@@ -287,6 +287,7 @@ export interface DraymanTableFileUploaderCell extends DraymanTableCellBase<strin
 }
 export interface DraymanTableTextFieldCell extends DraymanTableCellBase<string>, InputMaskOptionsBase {
     type: 'text-field';
+    inputType?: 'text' | 'password';
     /**
      * Error text to be shown underneath the form field control.
      */

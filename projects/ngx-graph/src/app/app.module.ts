@@ -5,6 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { AngularResizedEventModule } from 'angular-resize-event';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { NgxGraphComponent } from './ngx-graph/ngx-graph.component';
 
@@ -15,6 +16,7 @@ import { NgxGraphComponent } from './ngx-graph/ngx-graph.component';
     NgxChartsModule,
     NgxGraphModule,
     AngularResizedEventModule,
+    MatTooltipModule,
   ],
   declarations: [NgxGraphComponent],
 })
