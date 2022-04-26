@@ -158,9 +158,7 @@
       <tr [fxHide]="options?.disableHeader" mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns; let rowIndex = index" cdkDrag [cdkDragData]="row"
         [ngStyle]="options?.rowStyle ? options?.rowStyle[rowIndex] : null">
-        <div *cdkDragPreview fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="10px">
-          <mat-icon>open_with</mat-icon><span>{{row[options.columns[0].field].value}}</span>
-        </div>
+        <div class="cdk-drag-placeholder"></div>
       </tr>
       <tr class="mat-row" *matNoDataRow class="no-records-row">
         <td class="no-records-cell" [ngStyle]="noRecordsCellStyle">No records to
