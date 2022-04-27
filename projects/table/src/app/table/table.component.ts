@@ -150,7 +150,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
   cellClickCount = 0;
   cellClickTimer;
   id = generate();
-
+  dragDisabled = true;
   pageChange = new Subject();
   sortChange = new Subject();
 
@@ -237,7 +237,11 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
       this.searchControl.setValue(this.initialSearchValue, { emitEvent: false });
     }
     this.renderVisibleData();
-    this.displayedColumns = [...(this.select ? ['__select__'] : []), ...this.columns?.map(x => x.field) || []];
+    this.displayedColumns = [
+      ...(this.rowDrag ? ['__drag_handle__'] : []),
+      ...(this.select ? ['__select__'] : []),
+      ...this.columns?.map(x => x.field) || []
+    ];
     this.paginator.pageSizeOptions = this.pageSizeOptions || [5, 10, 25, 100];
     this.selection.clear();
   }
