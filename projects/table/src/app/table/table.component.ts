@@ -355,7 +355,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
                 disabled: buttonCell.disabled,
                 icon: buttonCell.icon,
                 imgUrl: buttonCell.imgUrl,
-                style: buttonCell.buttonStyle,
+                buttonStyle: buttonCell.buttonStyle,
                 tooltip: buttonCell.tooltip,
                 view: buttonCell.view,
                 onClick: this.onCellButtonClick ? async () => {
