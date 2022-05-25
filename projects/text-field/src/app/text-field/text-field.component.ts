@@ -13,6 +13,10 @@ export class TextFieldComponent extends AutocompleteFieldBase<string> {
 
   @Input() appearance?: 'legacy' | 'standard' | 'fill' | 'outline';
   @Input() onValueChange?: ElementEvent<{ value: string; }>;
+  @Input() onEnter?: ElementEvent<{ value: string; }>;
+  @Input() setValue = ({ value }) => {
+    this.formControl.setValue(value);
+  };
   @Input() onFocus?: () => Promise<void>;
   @Input() value?: string;
   @Input() label?: string;

@@ -26,6 +26,7 @@ export interface ButtonOptionsBase {
      */
     imgUrl?: string;
     buttonStyle?: any;
+    buttonIconStyle?: any;
     popup?: {
         text: string;
         style?: any;

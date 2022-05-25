@@ -16,8 +16,10 @@ export class FieldBase<T> implements OnChanges, OnDestroy, OnInit {
     value?;
     // onValueChangeStart?;
     onValueChange?;
+    onEnter?;
     updateOnBlur?;
     disabled?;
+    onEnter$: Subject<void> = new Subject();
     private valueChanges$: Subscription;
     // private debouncing = false;
     // private debounce = 500;
@@ -28,6 +30,13 @@ export class FieldBase<T> implements OnChanges, OnDestroy, OnInit {
     constructor() { }
 
     ngOnInit() {
+        this.onEnter$.pipe(
+            debounceTime(100),
+        ).subscribe(() => {
+            if (this.shouldValueChange(this.formControl.value)) {
+                this.onEnter?.({ value: this.modifyValueBeforeChange(this.formControl.value) })
+            }
+        });
         this.valueChanges$ = this.formControl.valueChanges.pipe(
             filter((value) => {
                 this.valueCanBeChanged = this.shouldValueChange(value);
@@ -59,6 +68,10 @@ export class FieldBase<T> implements OnChanges, OnDestroy, OnInit {
         }
     }
 
+    onEnterKeydown($event: KeyboardEvent) {
+        this.onEnter$.next();
+    }
+
     onBlur() {
         if (this.updateOnBlur && this.shouldValueChange(this.formControl.value)) {
             this.triggerValueChange(this.formControl.value);
@@ -85,6 +98,9 @@ export class FieldBase<T> implements OnChanges, OnDestroy, OnInit {
     ngOnDestroy() {
         if (this.valueChanges$) {
             this.valueChanges$.unsubscribe();
+        }
+        if (this.onEnter$) {
+            this.onEnter$.unsubscribe();
         }
     }
 

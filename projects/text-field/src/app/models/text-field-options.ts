@@ -4,4 +4,8 @@ import { InputFieldOptionsBase } from '../../../../shared/models/input-field-opt
 
 export interface DraymanTextField extends InputFieldOptionsBase<string>, AutocompleteOptionsBase<string>, InputMaskOptionsBase {
     type?: 'text' | 'password';
+    /**
+     * Executed with current value when ENTER key is pressed or an option from suggestions is selected.
+     */
+    onEnter?: ElementEvent<{ value: string }>;
 }

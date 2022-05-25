@@ -20,6 +20,7 @@ export class ButtonComponent {
     style?: any;
   };
   @Input() buttonStyle?: any;
+  @Input() buttonIconStyle?: any;
 
   emitClick($event: PointerEvent) {
     $event.stopPropagation();

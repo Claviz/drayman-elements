@@ -10,7 +10,13 @@
     <link rel="stylesheet" href="https://unpkg.com/@angular/material@12.2.4/prebuilt-themes/indigo-pink.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <script src="https://unpkg.com/zone.js@0.11.4/dist/zone.min.js"></script>
+    <link href="http://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
+
     <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+
         .container {
             border: 2px dashed;
             width: 500px;
@@ -26,7 +32,13 @@
         <drayman-element component="home"></drayman-element>
     </div>
     <script>
-        initializeDraymanFramework();
+        initializeDraymanFramework({
+            browserCommands: () => ({
+                emitElementEvent: async ({ event, options }, [element]) => {
+                    element[event](options);
+                },
+            })
+        });
     </script>
 </body>
 

@@ -1,4 +1,5 @@
 import { Injectable, SimpleChanges } from '@angular/core';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { Subscription } from 'rxjs';
 import { AutocompleteOptionsBase } from '../models/autocomplete-options-base';
 
@@ -9,6 +10,7 @@ export class AutocompleteFieldBase<T> extends FieldBase<T> {
 
     suggestions?;
     onFocus?;
+    onEnter?;
     filteredSuggestions: { value: any; label: any }[] = [];
     autocompleteChanges$: Subscription;
 
@@ -46,6 +48,10 @@ export class AutocompleteFieldBase<T> extends FieldBase<T> {
 
     triggerFocus() {
         this.onFocus?.();
+    }
+
+    optionSelected($event: MatAutocompleteSelectedEvent) {
+        this.onEnter$.next();
     }
 
 }
