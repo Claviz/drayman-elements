@@ -49,6 +49,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
 
   @Input() grid: GridCell[] = []
 
+  @Input() gridRef: any;
   @Input() onScroll: any;
   @Input() cellHeight?: number;
   @Input() cellWidth?: number;
@@ -75,15 +76,15 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
       ...(this.hoveredRow === cell.row ? this.rowHoverStyle : {}),
       ...(
         [...this.pendingSelectedCells, ...this._selectedCells].find(x => x.selectionGroup === cell.selectionGroup) ?
-          { ...this.selectionMode.similarGroupCellStyle, } : {}
+          { ...this.selectionMode?.similarGroupCellStyle, } : {}
       ),
       ...(
         [...this.pendingSelectedCells, ...this._selectedCells].length && !([...this.pendingSelectedCells, ...this._selectedCells].find(x => x.selectionGroup === cell.selectionGroup)) ?
-          { ...this.selectionMode.otherGroupCellStyle, } : {}
+          { ...this.selectionMode?.otherGroupCellStyle, } : {}
       ),
       ...(
         [...this.pendingSelectedCells, ...this._selectedCells].find(x => x.row === cell.row && x.col === cell.col) ?
-          { ...this.selectionMode.cellStyle, ...cell.selectionCellStyle } : {}
+          { ...this.selectionMode?.cellStyle, ...cell.selectionCellStyle } : {}
       ),
       gridArea: `${cell.row + 1}/${cell.col + 1}/${rowEnd + 1}/${colEnd + 1}`,
     };
@@ -121,7 +122,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
           if (alreadySelected) {
             this._selectedCells = this._selectedCells.filter(x => !(x.row === cell.row && x.col === cell.col));
             this.selectedCellsChanged$.next({ selectedCells: this._selectedCells, clearPrevious: false });
-          } else if (!cell.disableSelect && (!this._selectedCells.length || this._selectedCells[0].selectionGroup === cell.selectionGroup)) {
+          } else if (!cell.disableSelect && (!this._selectedCells.length || this._selectedCells[0]?.selectionGroup === cell.selectionGroup)) {
             this._selectedCells.push(cell);
             this.selectedCellsChanged$.next({ selectedCells: this._selectedCells, clearPrevious: false });
           }
@@ -137,7 +138,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   }
 
   onMouseDown($event: MouseEvent, cell: GridCell) {
-    if (this.selectionMode.enabled && !this._selectedCells.length || this._selectedCells[0].selectionGroup === cell.selectionGroup) {
+    if (this.selectionMode?.enabled && !this._selectedCells.length || this._selectedCells[0]?.selectionGroup === cell.selectionGroup) {
       this.ctrl = $event.ctrlKey;
       this.startSelectionCell = cell;
     }
@@ -165,7 +166,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
         x.col <= maxCol &&
         x.row >= minRow &&
         x.row <= maxRow &&
-        x.selectionGroup === this.startSelectionCell.selectionGroup
+        x.selectionGroup === this.startSelectionCell?.selectionGroup
       );
     }
   }
@@ -225,11 +226,12 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   }
 
   get gridStyle() {
+    const height = (this.cellHeight || 0) * (this.rowCount || 0);
     return {
       gridTemplateColumns: `repeat(${this.columnCount}, ${this.cellWidth ? `${this.cellWidth}px` : `auto`})`,
       gridTemplateRows: `repeat(${this.rowCount}, ${this.cellHeight ? `${this.cellHeight}px` : `autor`})`,
       width: this.cellWidth ? `${this.columnCount * this.cellWidth}px` : `100%`,
-      height: this.cellHeight ? `${this.rowCount * this.cellHeight}px` : `100%`,
+      height: height ? `${height}px` : `100%`,
       display: 'grid',
       userSelect: 'none'
     }

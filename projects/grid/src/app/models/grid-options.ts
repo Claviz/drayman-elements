@@ -39,6 +39,7 @@ export interface DraymanGrid {
         selectedCells: GridCell[];
         clearPrevious: boolean;
     }>;
+    gridRef?: string;
 }
 
 export interface GridCell {
