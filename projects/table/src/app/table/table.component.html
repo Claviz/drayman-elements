@@ -162,6 +162,14 @@
                 [updateOnBlur]="grid[rowIndex][columnIndex].options.updateOnBlur">
               </drayman-timepicker-internal>
             </ng-container>
+            <ng-container *ngSwitchCase="'progress'">
+              <div fxLayout fxLayoutGap="10px" fxLayoutAlign="center center">
+                <div *ngIf="grid[rowIndex][columnIndex].label" [ngStyle]="grid[rowIndex][columnIndex].labelStyle">
+                  {{grid[rowIndex][columnIndex].label}}</div>
+                <mat-progress-bar mode="determinate" [value]="grid[rowIndex][columnIndex].value"
+                  [barStyle]="grid[rowIndex][columnIndex].barStyle"></mat-progress-bar>
+              </div>
+            </ng-container>
             <ng-container *ngSwitchDefault>
               {{grid[rowIndex][columnIndex].value}}
             </ng-container>

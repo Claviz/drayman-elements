@@ -224,7 +224,7 @@ export interface DraymanTable {
         rowIndex: number;
     }>;
 }
-export type CellType = 'text' | 'text-field' | 'button' | 'number-field' | 'select' | 'file-uploader' | 'checkbox' | 'datepicker' | 'timepicker';
+export type CellType = 'text' | 'text-field' | 'button' | 'number-field' | 'select' | 'file-uploader' | 'checkbox' | 'datepicker' | 'timepicker' | 'progress';
 export interface GridCellBase {
     type?: CellType;
     style?: any;
@@ -318,6 +318,12 @@ export interface DraymanTableCheckboxCell extends DraymanTableCellBase<boolean> 
      * Whether the control is disabled.
      */
     disabled?: boolean;
+}
+export interface DraymanTableProgressCell extends DraymanTableCellBase<number> {
+    type: 'progress';
+    barLabel?: any;
+    labelStyle?: any;
+    barStyle?: any;
 }
 export interface DraymanTableDatepickerCell extends DraymanTableCellBase<string> {
     type: 'datepicker';
@@ -414,7 +420,7 @@ export interface DraymanTableButton {
      */
     selectionButton?: boolean;
 }
-export type DraymanTableRow = { [field: string]: DraymanTableTextCell | DraymanTableTextFieldCell | DraymanTableButtonCell | DraymanTableNumberFieldCell | DraymanTableSelectCell | DraymanTableFileUploaderCell | DraymanTableCheckboxCell | DraymanTableDatepickerCell | DraymanTableTimepickerCell };
+export type DraymanTableRow = { [field: string]: DraymanTableProgressCell | DraymanTableTextCell | DraymanTableTextFieldCell | DraymanTableButtonCell | DraymanTableNumberFieldCell | DraymanTableSelectCell | DraymanTableFileUploaderCell | DraymanTableCheckboxCell | DraymanTableDatepickerCell | DraymanTableTimepickerCell };
 export interface DraymanTableColumn {
     label: string;
     field: string;
@@ -442,6 +448,9 @@ export interface GridTimepickerCell extends GridCellBase {
     type: 'timepicker',
     options: DraymanTimepicker,
 }
+export interface GridProgressCell extends GridCellBase {
+    type: 'progress';
+}
 export interface GridFileUploaderCell extends GridCellBase {
     type: 'file-uploader',
     options: DraymanFileUploader,
@@ -461,4 +470,4 @@ export interface GridButtonCell extends GridCellBase {
 export interface GridTextCell extends GridCellBase {
     type: 'text';
 }
-export type GridCellType = GridTextCell | GridTextFieldCell | GridButtonCell | GridNumberFieldCell | GridSelectCell | GridFileUploaderCell | GridCheckboxCell | GridDatepickerCell | GridTimepickerCell;
+export type GridCellType = GridTextCell | GridTextFieldCell | GridButtonCell | GridNumberFieldCell | GridSelectCell | GridFileUploaderCell | GridCheckboxCell | GridDatepickerCell | GridTimepickerCell | GridProgressCell;

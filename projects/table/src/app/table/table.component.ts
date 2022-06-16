@@ -29,6 +29,7 @@ import {
   DraymanTableDatepickerCell,
   DraymanTableFileUploaderCell,
   DraymanTableNumberFieldCell,
+  DraymanTableProgressCell,
   DraymanTableRow,
   DraymanTableSelectCell,
   DraymanTableTextCell,
@@ -41,6 +42,7 @@ import {
   GridDatepickerCell,
   GridFileUploaderCell,
   GridNumberFieldCell,
+  GridProgressCell,
   GridSelectCell,
   GridTextCell,
   GridTextFieldCell,
@@ -524,6 +526,16 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
                 } : null,
               },
             } as GridDatepickerCell);
+          } else if (cell.type === 'progress') {
+            const progressFieldCell = cell as DraymanTableProgressCell;
+            row.push({
+              type: 'progress',
+              style: progressFieldCell.style,
+              value: progressFieldCell.value,
+              label: progressFieldCell.barLabel,
+              labelStyle: progressFieldCell.labelStyle,
+              barStyle: progressFieldCell.barStyle,
+            } as GridProgressCell);
           } else if (cell.type === 'timepicker') {
             const timepickerFieldCell = cell as DraymanTableTimepickerCell;
             row.push({
