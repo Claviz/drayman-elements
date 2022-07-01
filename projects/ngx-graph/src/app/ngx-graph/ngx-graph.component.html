@@ -11,8 +11,8 @@
         (click)="onNodeClick ? onNodeClick({ nodeId: node.id }) : null" style="cursor: pointer;">
         <svg:rect [attr.width]="node.dimension.width" [attr.height]="node.dimension.height"
           [attr.fill]="node.data.customColor || node.data.color" rx="4px" />
-        <svg:text alignment-baseline="central" [attr.x]="10" [attr.y]="node.dimension.height / 2">
-          {{node.label}}
+        <svg:text [innerHTML]="getSanitizedString(node.label)" alignment-baseline="central" [attr.x]="10"
+          [attr.y]="node.dimension.height / 2">
         </svg:text>
       </svg:g>
     </ng-template>

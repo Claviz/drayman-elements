@@ -1,4 +1,5 @@
 import { Component, Input, OnChanges, ViewChild, ViewContainerRef } from '@angular/core';
+import { DomSanitizer } from '@angular/platform-browser';
 import { ResizedEvent } from 'angular-resize-event';
 
 import { DraymanNgxGraph } from '../models/ngx-graph-options';
@@ -25,6 +26,12 @@ export class NgxGraphComponent implements OnChanges {
 
   onResized(event: ResizedEvent) {
     window.dispatchEvent(new Event('resize'));
+  }
+
+  constructor(private sanitizer: DomSanitizer) { }
+
+  getSanitizedString(value: string) {
+    return this.sanitizer.bypassSecurityTrustHtml(value);
   }
 
 }
