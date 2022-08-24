@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
+import { AfterViewInit, Component, Input, ViewChild, ViewEncapsulation } from '@angular/core';
 import { MatInput } from '@angular/material/input';
 import { AutocompleteFieldBase } from 'projects/shared/components/autocomplete-field-base';
 import { generate } from 'shortid';
@@ -8,8 +8,9 @@ import { generate } from 'shortid';
   templateUrl: './text-field.component.html',
   styleUrls: ['./text-field.component.scss'],
 })
-export class TextFieldComponent extends AutocompleteFieldBase<string> {
+export class TextFieldComponent extends AutocompleteFieldBase<string> implements AfterViewInit {
   @ViewChild(MatInput) input: MatInput;
+  @ViewChild('inputEl') inputEl: any;
 
   @Input() appearance?: 'legacy' | 'standard' | 'fill' | 'outline';
   @Input() onValueChange?: ElementEvent<{ value: string; }>;
@@ -17,6 +18,7 @@ export class TextFieldComponent extends AutocompleteFieldBase<string> {
   @Input() setValue = ({ value }) => {
     this.formControl.setValue(value);
   };
+  @Input() focused = false;
   @Input() onFocus?: () => Promise<void>;
   @Input() value?: string;
   @Input() label?: string;
@@ -42,5 +44,11 @@ export class TextFieldComponent extends AutocompleteFieldBase<string> {
   }
   @Input() type?: 'text' | 'password' = 'text';
   id = generate();
+
+  ngAfterViewInit() {
+    if (this.focused) {
+      this.inputEl.nativeElement.focus();
+    }
+  }
 }
 

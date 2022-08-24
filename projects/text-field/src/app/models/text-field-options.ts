@@ -8,4 +8,8 @@ export interface DraymanTextField extends InputFieldOptionsBase<string>, Autocom
      * Executed with current value when ENTER key is pressed or an option from suggestions is selected.
      */
     onEnter?: ElementEvent<{ value: string }>;
+    /**
+     * Input will be focused on appearance if set to `true`.
+     */
+    focused?: boolean;
 }
