@@ -5,7 +5,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { CodeEditorComponent } from './code-editor/code-editor.component';
-import { NgeMonacoModule } from '@mcisse/nge/monaco';
 import { CodemirrorModule } from '@ctrl/ngx-codemirror';
 import { FormsModule } from '@angular/forms';
 import { AngularResizedEventModule } from 'angular-resize-event';
