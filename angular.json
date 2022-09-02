@@ -3,6 +3,111 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
+    "calendar": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss",
+          "skipTests": true
+        }
+      },
+      "root": "projects/calendar",
+      "sourceRoot": "projects/calendar/src",
+      "prefix": "drayman",
+      "architect": {
+        "build": {
+          "builder": "ngx-build-plus:browser",
+          "options": {
+            "outputPath": "dist/calendar",
+            "index": "",
+            "main": "projects/calendar/src/main.ts",
+            "polyfills": "projects/calendar/src/polyfills.ts",
+            "tsConfig": "projects/calendar/tsconfig.app.json",
+            "aot": false,
+            "assets": [
+              "projects/calendar/src/favicon.ico",
+              "projects/calendar/src/assets"
+            ],
+            "styles": [
+              "projects/calendar/src/styles.scss",
+              "./node_modules/angular-calendar/css/angular-calendar.css"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/calendar/src/environments/environment.ts",
+                  "with": "projects/calendar/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "ngx-build-plus:dev-server",
+          "options": {
+            "browserTarget": "calendar:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "calendar:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "calendar:build"
+          }
+        },
+        "test": {
+          "builder": "ngx-build-plus:karma"
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/calendar/tsconfig.app.json",
+              "projects/calendar/tsconfig.spec.json",
+              "projects/calendar/e2e/tsconfig.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/calendar/e2e/protractor.conf.js",
+            "devServerTarget": "calendar:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "calendar:serve:production"
+            }
+          }
+        }
+      }
+    },
     "code-editor": {
       "projectType": "application",
       "schematics": {

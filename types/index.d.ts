@@ -18,12 +18,50 @@ import { DraymanYoutubePlayer } from '../dist/types/youtube-player/src/app/model
 import { DraymanNebula } from '../dist/types/nebula/src/app/models/nebula-options';
 import { DraymanGrid } from '../dist/types/grid/src/app/models/grid-options';
 import { DraymanCodeEditor } from '../dist/types/code-editor/src/app/models/code-editor-options';
+import { DraymanCalendar } from '../dist/types/calendar/src/app/models/calendar-options';
 
 declare global {
     interface DraymanElementsProps {
         style?: CSS;
         ref?: string;
     }
+    /**
+     * # <drayman-calendar \/>
+     * Calendar powered by [angular-calendar](https://mattlewis92.github.io/) library.
+     *
+     * ## Example of usage
+     *
+     * ![](media://drayman-calendar.gif)
+     *
+     * ```typescript
+     * export const component: DraymanComponent = async ({ forceUpdate }) => {
+     * 
+     *     return () => {
+     * 
+     *         return (
+     *             <drayman-calendar
+     *                 events={[
+     *                     {
+     *                         title: 'Event 1',
+     *                         start: new Date().toISOString(),
+     *                         end: new Date('2023-01-01').toISOString(),
+     *                         id: 'event_1',
+     *                         color: 'blue',
+     *                     }
+     *                 ]}
+     *                 onEventClick={async ({ id }) => {
+     *                     console.log(id);
+     *                 }}
+     *                 onDayClick={async ({ date }) => {
+     *                     console.log(date);
+     *                 }}
+     *             />
+     *         );
+     *     }
+     * }
+     * ```
+     */
+    interface DraymanCalendarProps extends DraymanCalendar, DraymanElementsProps { }
     /**
      * # <drayman-button \/>
      * Button powered by [Angular Material](https://material.angular.io/) library.
@@ -1168,6 +1206,7 @@ declare global {
             'drayman-nebula': DraymanNebulaProps;
             'drayman-grid': DraymanGridProps;
             'drayman-code-editor': DraymanCodeEditorProps;
+            'drayman-calendar': DraymanCalendarProps;
         }
     }
 }

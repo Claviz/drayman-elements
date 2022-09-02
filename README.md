@@ -30,6 +30,7 @@ Default drayman elements library.
 - [drayman-grid](interfaces/__global.draymangridprops.html)
 - [drayman-nebula](interfaces/__global.draymannebulaprops.html)
 - [drayman-code-editor](interfaces/__global.draymancodeeditorprops.html)
+- [drayman-calendar](interfaces/__global.draymancalendarprops.html)
 
 ## Installing
 

@@ -1,19 +1,25 @@
 export const component: DraymanComponent = async ({ forceUpdate }) => {
-    let counter = 0;
 
     return () => {
 
         return (
-            <div>
-                <drayman-button
-                    label="Click me"
-                    onClick={async () => {
-                        counter++;
-                        await forceUpdate();
-                    }}
-                />
-                <p>Button was clicked {counter} times</p>
-            </div>
+            <drayman-calendar
+                events={[
+                    {
+                        title: 'Event 1',
+                        start: new Date().toISOString(),
+                        end: new Date('2023-01-01').toISOString(),
+                        id: 'event_1',
+                        color: 'blue',
+                    }
+                ]}
+                onEventClick={async ({ id }) => {
+                    console.log(id);
+                }}
+                onDayClick={async ({ date }) => {
+                    console.log(date);
+                }}
+            />
         );
     }
 }
