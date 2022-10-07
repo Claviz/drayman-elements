@@ -3,6 +3,7 @@ import * as stardust from '@nebula.js/stardust';
 
 import EnigmaMocker from '../../enigma-mocker';
 import { requireFrom } from '../../custom-d3-require';
+import treemap from '../../../sn-treemap/sn-treemap';
 
 const loadNebulaChart = requireFrom((name) => `https://unpkg.com/@nebula.js/${name}`).alias({
   '@nebula.js/stardust': stardust,
@@ -126,9 +127,17 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
       ['sn-table', 'table'],
       ['sn-video-player', 'video-player'],
       ['sn-scatter-plot', 'scatterplot'],
+      ['sn-treemap', 'treemap'],
+      ['sn-pivot-table', 'pivot-table'],
+      ['sn-map', 'map'],
     ].map((t) => ({
       name: t[1],
-      load: () => loadNebulaChart(t[0]),
+      load: () => {
+        if (t[0] === 'sn-treemap') {
+          return Promise.resolve(treemap);
+        }
+        return loadNebulaChart(t[0]);
+      },
     }));
 
     const themes = [
