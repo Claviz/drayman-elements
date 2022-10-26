@@ -40,6 +40,11 @@ export interface DraymanGrid {
         clearPrevious: boolean;
     }>;
     gridRef?: string;
+    /**
+     * Width of the scrollbar. Default is narrow - 8px.
+     * Medium is 12px and wide is 16px.
+     */
+    scrollbarWidth?: 'narrow' | 'medium' | 'wide';
 }
 
 export interface GridCell {

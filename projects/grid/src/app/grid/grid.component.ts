@@ -55,6 +55,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   @Input() cellWidth?: number;
   @Input() columnCount: number;
   @Input() rowCount: number;
+  @Input() scrollbarWidth: 'narrow' | 'medium' | 'wide' = 'narrow';
 
   resized$ = new Subject();
   selectedCellsChanged$ = new Subject<{
@@ -66,6 +67,14 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   startSelectionCell: GridCell;
   hoveredRow: number = -1;
   ctrl;
+
+  get scrollbarWidthClass() {
+    if (this.scrollbarWidth === 'narrow') {
+      return null;
+    }
+
+    return `scrollbar-${this.scrollbarWidth}`;
+  }
 
   getCellStyle(cell: GridCell) {
     const rowEnd = cell.rowSpan ? cell.row + cell.rowSpan : cell.row + 1;

@@ -4,6 +4,33 @@
     overflow: auto;
 }
 
+.wrapper::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.scrollbar-medium::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+}
+
+.scrollbar-wide::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+}
+
+.wrapper::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+}
+
+.wrapper::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+}
+
 // .grid {
 //     display: grid;
 //     // grid-template-columns: repeat(20, 100px);
