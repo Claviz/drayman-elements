@@ -6,6 +6,8 @@ import { CodeEditorModule } from './app/app.module';
 import { environment } from './environments/environment';
 
 import 'codemirror/mode/javascript/javascript';
+import 'codemirror/mode/python/python';
+import 'codemirror/mode/markdown/markdown';
 
 import 'codemirror/mode/sql/sql';
 
