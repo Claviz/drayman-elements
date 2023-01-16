@@ -72,6 +72,9 @@ export class CodeEditorComponent implements OnChanges, AfterViewInit {
       if (language === 'json') {
         language = { name: 'javascript', json: true }
       }
+      if (language === 'html') {
+        language = 'htmlmixed';
+      }
       this.options = JSON.parse(JSON.stringify({
         ...this.options,
         mode: language,

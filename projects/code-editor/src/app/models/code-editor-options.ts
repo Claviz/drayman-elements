@@ -3,7 +3,7 @@ export interface DraymanCodeEditor {
      * The language of the code editor.
      * By default, the language is set to 'javascript'.
      */
-    language?: 'javascript' | 'json' | 'sql' | 'python' | 'markdown';
+    language?: 'javascript' | 'json' | 'sql' | 'python' | 'markdown' | 'html';
     /**
      * Wether code editor should be disabled.
      */
