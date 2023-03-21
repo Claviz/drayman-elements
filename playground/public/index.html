@@ -35,7 +35,7 @@
         initializeDraymanFramework({
             browserCommands: () => ({
                 emitElementEvent: async ({ event, options }, [element]) => {
-                    element[event](options);
+                    return element[event](options);
                 },
             })
         });

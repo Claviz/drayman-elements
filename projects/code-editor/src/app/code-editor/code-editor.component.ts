@@ -13,6 +13,9 @@ export class CodeEditorComponent implements OnChanges, AfterViewInit {
   @Input() readOnly = false;
   @Input() value?: string;
   @Input() onValueChange?: (data: { value: string; }) => Promise<void>;
+  @Input() getSelectionValue?= () => {
+    return this.ref.codeMirror.getSelection();
+  }
 
   @ViewChild('CodeMirror') ref: any
 
@@ -50,6 +53,12 @@ export class CodeEditorComponent implements OnChanges, AfterViewInit {
     this.ref.codeMirror.on('blur', () => {
       this.focused = false;
     });
+    // // get selected text on selection end:
+    // this.ref.codeMirror.on('cursorActivity', (x) => {
+    //   console.log(x, this.ref.codeMirror.getSelection());
+    // });
+
+
   }
 
   onChange(value: string) {
