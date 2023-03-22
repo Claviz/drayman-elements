@@ -1,5 +1,5 @@
 <div [ngClass]="pagination ? 'table-wrapper' : 'table-wrapper-no-pagination'" class="table-wrapper" fxLayout="column">
-  <div [attr.aria-label]="title ? title + ' table' : 'Table'" fxLayout="column"
+  <div *ngIf="!disableToolbar" [attr.aria-label]="title ? title + ' table' : 'Table'" fxLayout="column"
     [ngClass]="{'table-header-selection-active': selection.selected.length}">
     <div aria-label="Table header" fxLayout="row" fxLayoutAlign="center center" class="table-header">
       <h3 *ngIf="selection.selected.length">{{selection.selected.length}} row(s) selected</h3>
@@ -176,9 +176,9 @@
           </ng-container>
         </td>
       </ng-container>
-      <tr [fxHide]="options?.disableHeader" mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr [fxHide]="disableHeader" mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns; let rowIndex = index" cdkDrag lockAxis="y"
-        [cdkDragData]="row" [ngStyle]="options?.rowStyle ? options?.rowStyle[rowIndex] : null" [cdkDragData]="row"
+        [cdkDragData]="row" [ngStyle]="rowStyle ? rowStyle[rowIndex] : null" [cdkDragData]="row"
         [cdkDragDisabled]="dragDisabled" (cdkDragReleased)="dragDisabled = true">
         <div class="cdk-drag-placeholder"></div>
       </tr>

@@ -108,6 +108,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
   }) => Promise<void>;
   @Input() disableInternalProcessing?: boolean;
   @Input() disableHeader?: boolean;
+  @Input() disableToolbar?: boolean;
   @Input() select?: boolean;
   @Input() toolbarButtons?: DraymanToolbarButton[];
   @Input() onToolbarButtonClick?: (data: {

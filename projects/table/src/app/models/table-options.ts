@@ -55,21 +55,6 @@ export interface DraymanTable {
     */
     itemCount?: number;
     /**
-
-    
-          
-            
-    
-
-          
-          
-            
-    
-
-          
-    
-    @@ -130,10 +130,29 @@ export interface DraymanTable {
-  
      * The set of provided page size options to display to the user.
      * Defaults to `[5, 10, 25, 100]`.
      */
@@ -149,18 +134,12 @@ export interface DraymanTable {
      */
     disableInternalProcessing?: boolean;
     /**
+     * Controls appearance of the table toolbar.
+     */
+    disableToolbar?: boolean;
+    /**
      * Controls appearance of the column header.
      */
-
-
-
-
-
-
-
-
-
-
     disableHeader?: boolean;
     /**
      * Wether to enable row selection or not.
