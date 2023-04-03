@@ -9,6 +9,7 @@ import 'codemirror/mode/javascript/javascript';
 import 'codemirror/mode/python/python';
 import 'codemirror/mode/markdown/markdown';
 import 'codemirror/mode/htmlmixed/htmlmixed';
+import 'codemirror/mode/handlebars/handlebars';
 
 import 'codemirror/mode/sql/sql';
 
