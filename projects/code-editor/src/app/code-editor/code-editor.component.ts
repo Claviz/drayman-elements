@@ -80,11 +80,9 @@ export class CodeEditorComponent implements OnChanges, AfterViewInit {
       let language = this.language;
       if (language === 'json') {
         language = { name: 'javascript', json: true }
-      }
-      if (language === 'html') {
+      } else if (language === 'html') {
         language = 'htmlmixed';
-      }
-      if (language?.startsWith('handlebars')) {
+      } else if (language && language?.startsWith('handlebars')) {
         const parsed = language.split(':');
         language = {
           name: 'handlebars',
