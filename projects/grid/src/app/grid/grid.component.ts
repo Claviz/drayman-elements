@@ -4,6 +4,7 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  HostListener,
   Input,
   NgZone,
   OnChanges,
@@ -28,6 +29,16 @@ import { GridContentButton, GridCell } from '../models/grid-options';
 })
 export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
 
+  @ViewChild('container') containerRef: ElementRef;
+  @HostListener('wheel', ['$event'])
+  onWheel(event: WheelEvent) {
+    if (this.scrollDirection === 'horizontal') {
+      event.preventDefault();
+      const container = this.containerRef.nativeElement as HTMLDivElement;
+      container.scrollLeft += event.deltaY;
+    }
+  }
+
   @Input() selectionMode?: {
     enabled: boolean;
     cellStyle?: any;
@@ -49,6 +60,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
 
   @Input() grid: GridCell[] = []
 
+  @Input() scrollDirection: 'vertical' | 'horizontal' = 'vertical';
   @Input() gridRef: any;
   @Input() onScroll: any;
   @Input() cellHeight?: number;

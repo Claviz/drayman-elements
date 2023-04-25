@@ -20,6 +20,7 @@ export interface DraymanGrid {
         currentRow: number;
         visibleRowCount: number;
     }>;
+    scrollDirection?: 'vertical' | 'horizontal';
     /**
      * Height of the cell. If not specified, cell height will automatically be calculated to fit a grid.
      */
