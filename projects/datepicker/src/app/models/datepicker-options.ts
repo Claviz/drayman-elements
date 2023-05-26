@@ -10,4 +10,8 @@ export interface DraymanDatepicker extends InputFieldOptionsBase<string> {
      * Wether to show today button or not.
      */
     showTodayButton?: boolean;
+    /**
+     * If true, the datepicker will work in month picker mode.
+     */
+    monthPicker?: boolean;
 }
