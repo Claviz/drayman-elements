@@ -1,18 +1,20 @@
 <div #container class="wrapper" [ngClass]="scrollbarWidthClass" cdkScrollable (resized)="onResized($event)">
     <div [attr.ref]="gridRef" [style]="gridStyle" (mouseleave)="onGridMouseLeave($event)">
-        <div (contextmenu)="oncontextmenu($event, cell)" tabindex="-1" *ngFor="let cell of grid"
-            [style]="getCellStyle(cell)" (click)="emitCellClick($event, cell)" (mousedown)="onMouseDown($event, cell)"
-            (mouseup)="onMouseUp($event, cell)" (mouseover)="onMouseOver($event, cell)"
-            (mouseleave)="onMouseLeave($event, cell)" [attr.ref]="cell.ref">
+        <div (mouseenter)="cell.hovered = true" (contextmenu)="oncontextmenu($event, cell)" tabindex="-1"
+            *ngFor="let cell of grid" [style]="getCellStyle(cell)" (click)="emitCellClick($event, cell)"
+            (mousedown)="onMouseDown($event, cell)" (mouseup)="onMouseUp($event, cell)"
+            (mouseover)="onMouseOver($event, cell)" (mouseleave)="onMouseLeave($event, cell); cell.hovered = false;"
+            [attr.ref]="cell.ref">
             <div [style]="cell.contentStyle">
                 <ng-container *ngFor="let cellItem of cell.content">
                     <ng-container [ngSwitch]="cellItem.type">
                         <ng-container *ngSwitchCase="'text'">
-                            <div [style]="cellItem.style" [innerHTML]="getSanitizedString(cellItem.value)">
+                            <div [style]="(cell.hovered && cellItem.hoverStyle) ? cellItem.hoverStyle : cellItem.style"
+                                [innerHTML]="getSanitizedString(cellItem.value)">
                             </div>
                         </ng-container>
                         <ng-container *ngSwitchCase="'button'">
-                            <div [style]="cellItem.style">
+                            <div [style]="(cell.hovered && cellItem.hoverStyle) ? cellItem.hoverStyle : cellItem.style">
                                 <drayman-button-internal [label]="cellItem.value.label"
                                     [onClick]="emitContentButtonClick.bind(this, cell, cellItem.value)"
                                     [view]="cellItem.value.view" [icon]="cellItem.value.icon"
