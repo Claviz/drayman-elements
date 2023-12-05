@@ -24,4 +24,12 @@ export interface DraymanNebula {
      * Structure can be found here - https://help.qlik.com/en-US/sense-developer/Subsystems/Extensions/Content/Sense_Extensions/CustomThemes/custom-themes-properties.htm.
      */
     theme: any;
+    /**
+     * Executed when field values needs to be returned
+     */
+    onGetFieldDescription?: ElementEvent<{ fieldId: string; }>;
+    /**
+     * Executed when field values needs to be selected
+     */
+    onSelectFieldValues?: ElementEvent<{ fieldId, arr, toggle, softlock }>;
 }

@@ -52,15 +52,23 @@ table {
 }
 
 ::-webkit-scrollbar {
-    -webkit-appearance: none;
-    height: 10px;
-    width: 10px;
+    width: 14px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f0f0f000;
 }
 
 ::-webkit-scrollbar-thumb {
-    border: 2px solid white;
-    border-radius: 6px;
-    background-color: rgba(0, 0, 0, 0.3);
+    background: #88888840;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #888888;
+}
+
+::-webkit-scrollbar-thumb:window-inactive {
+    background: var(--component-A-color);
 }
 
 .no-records-cell {

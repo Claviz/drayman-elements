@@ -20,6 +20,8 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() onVizMethod?: (options) => Promise<any>;
   @Input() onGetMeasure?: (options) => Promise<any>;
   @Input() onGetObject?: (options) => Promise<any>;
+  @Input() onSelectFieldValues?: (options) => Promise<any>;
+  @Input() onGetFieldDescription?: (options) => Promise<any>;
 
   @ViewChild('toolbar', { static: false }) toolbarEl: ElementRef;
   @ViewChild('viz', { static: false }) vizEl: ElementRef;
@@ -59,14 +61,11 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
         });
       },
       getStackedDataPages: (...args) => {
-        console.log('getStackedDataPages', args);
         return this.qLayout.qHyperCube.qDataPages;
       },
       getFullPropertyTree: () => {
-        console.log("getFullPropertyTree");
       },
       getHyperCubeTreeData: () => {
-        console.log('getHyperCubeTreeData');
       },
       beginSelections: (...args) => {
       },
@@ -87,12 +86,14 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
       useKeyboard: (...args) => {
       },
       on: (...args) => {
-      }
-
+      },
+      getField: (...args) => {
+      },
+      selectValues: (...args) => {
+      },
     };
     this.app = await EnigmaMocker.fromGenericObjects([genericObject,]);
     this.app.getMeasure = async (measureId) => {
-      console.log({ measureId })
       return {
         getMeasure: async () => {
           return await this.onGetMeasure({ measureId });
@@ -109,6 +110,16 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
           return await this.onGetObject({ objectId });
         }
       };
+    }
+    this.app.getField = async (fieldId) => {
+      return {
+        selectValues: async (arr, toggle, softlock) => {
+          return await this.onSelectFieldValues({ fieldId, arr, toggle, softlock });
+        }
+      }
+    }
+    this.app.getFieldDescription = async (fieldId) => {
+      return this.onGetFieldDescription({ fieldId })
     }
 
     const types = [
