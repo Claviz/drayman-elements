@@ -6,12 +6,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ClavizChartsComponent } from './claviz-charts/claviz-charts.component';
 
 @NgModule({
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-  ],
-  declarations: [ClavizChartsComponent],
-  entryComponents: [ClavizChartsComponent],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+    ],
+    declarations: [ClavizChartsComponent]
 })
 export class ClavizChartsModule {
   constructor(private injector: Injector) {

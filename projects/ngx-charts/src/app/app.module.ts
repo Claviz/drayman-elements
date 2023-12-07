@@ -8,14 +8,13 @@ import { AngularResizedEventModule } from 'angular-resize-event';
 import { NgxChartsComponent } from './ngx-charts/ngx-charts.component';
 
 @NgModule({
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    NgxChartsModule,
-    AngularResizedEventModule,
-  ],
-  declarations: [NgxChartsComponent],
-  entryComponents: [NgxChartsComponent],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        NgxChartsModule,
+        AngularResizedEventModule,
+    ],
+    declarations: [NgxChartsComponent]
 })
 export class AppModule {
   constructor(private injector: Injector) {
