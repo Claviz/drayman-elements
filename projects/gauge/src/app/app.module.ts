@@ -6,7 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { GaugeComponent } from './gauge/gauge.component';
-import { NgxGaugeModule } from 'ngx-gauge';
+import { NgxGaugeModule } from 'ngx-claviz-gauge';
 import { AngularResizedEventModule } from 'angular-resize-event';
 
 @NgModule({

@@ -88,4 +88,9 @@ export interface DraymanGauge {
      * Specifies the style of the text to display inside the Gauge's bar.
      */
     valueStyle?: any;
+
+    /**
+     * Specifies if the marker labels should be horizontal.
+     */
+    horizontalMarkerLabels?: boolean;
 }

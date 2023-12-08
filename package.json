@@ -1,6 +1,6 @@
 {
   "name": "@drayman/elements",
-  "version": "1.25.0",
+  "version": "1.26.0",
   "description": "A collection of web components for Drayman.",
   "license": "MIT",
   "keywords": [
@@ -167,7 +167,7 @@
     "ngx-device-detector": "2.0.0",
     "ngx-filepond": "5.0.1",
     "ngx-filesize": "2.0.16",
-    "ngx-gauge": "5.0.0",
+    "ngx-claviz-gauge": "5.0.1",
     "ngx-mask": "11.1.4",
     "ngx-mat-select-search": "5.0.0",
     "ngx-popper": "7.0.0",

@@ -1,8 +1,8 @@
 <div fxLayoutAlign="center center" style="width: 100%; height: 100%;" (resized)="onResized($event)">
-  <ngx-gauge [size]="size" [type]="type" [min]="min" [max]="max" [value]="value" [cap]="cap" [thick]="thick"
-    [label]="label" [foregroundColor]="foregroundColor" [backgroundColor]="backgroundColor" [append]="append"
-    [prepend]="prepend" [duration]="duration" [thresholds]="thresholds" [markers]="markers" [margin]="margin"
-    [animate]="animate">
+  <ngx-gauge [horizontalMarkerLabels]="horizontalMarkerLabels" [size]="size" [type]="type" [min]="min" [max]="max"
+    [value]="value" [cap]="cap" [thick]="thick" [label]="label" [foregroundColor]="foregroundColor"
+    [backgroundColor]="backgroundColor" [append]="append" [prepend]="prepend" [duration]="duration"
+    [thresholds]="thresholds" [markers]="markers" [margin]="margin" [animate]="animate">
     <ngx-gauge-value>
       <div [ngStyle]="valueStyle" style="display: contents;">
         {{valueLabel || value}}

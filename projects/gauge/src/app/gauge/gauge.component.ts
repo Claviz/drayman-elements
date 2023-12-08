@@ -27,6 +27,7 @@ export class GaugeComponent implements OnChanges {
   @Input() animate = true;
   @Input() valueLabel;
   @Input() valueStyle;
+  @Input() horizontalMarkerLabels = false;
 
   size = 200;
 
