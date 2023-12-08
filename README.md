@@ -15,6 +15,7 @@ Default drayman elements library.
 - [drayman-checkbox](interfaces/__global.draymancheckboxprops.html)
 - [drayman-claviz-charts](interfaces/__global.draymanclavizchartsprops.html)
 - [drayman-datepicker](interfaces/__global.draymandatepickerprops.html)
+- [drayman-gauge](interfaces/__global.draymangaugeprops.html)
 - [drayman-file-uploader](interfaces/__global.draymanfileuploaderprops.html)
 - [drayman-ngx-charts](interfaces/__global.draymanngxchartsprops.html)
 - [drayman-ngx-graph](interfaces/__global.draymanngxgraphprops.html)
@@ -43,10 +44,7 @@ npm install @drayman/elements@latest
 Add required scripts to `public/index.html` header:
 
 ```html
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/@angular/material@12.2.4/prebuilt-themes/indigo-pink.css"
-/>
+<link rel="stylesheet" href="https://unpkg.com/@angular/material@12.2.4/prebuilt-themes/indigo-pink.css" />
 <script src="https://unpkg.com/zone.js@0.11.4/dist/zone.min.js"></script>
 ```
 

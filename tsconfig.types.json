@@ -29,6 +29,7 @@
         "./projects/nebula/src/app/models/nebula-options.ts",
         "./projects/table/src/app/models/table-options.ts",
         "./projects/datepicker/src/app/models/datepicker-options.ts",
+        "./projects/gauge/src/app/models/gauge-options.ts",
         "./projects/menu/src/app/models/menu-options.ts",
         "./projects/timepicker/src/app/models/timepicker-options.ts",
         "./projects/ngx-charts/src/app/models/ngx-charts-options.ts",
