@@ -1,6 +1,7 @@
 import { DraymanCheckbox } from '../dist/types/checkbox/src/app/models/checkbox-options';
 import { DraymanClavizCharts } from '../dist/types/claviz-charts/src/app/models/claviz-charts-options';
 import { DraymanDatepicker } from '../dist/types/datepicker/src/app/models/datepicker-options';
+import { DraymanGauge } from '../dist/types/gauge/src/app/models/gauge-options';
 import { DraymanFileUploader } from '../dist/types/file-uploader/src/app/models/file-uploader-options';
 import { DraymanMenu } from '../dist/types/menu/src/app/models/menu-options';
 import { DraymanNgxCharts } from '../dist/types/ngx-charts/src/app/models/ngx-charts-options';
@@ -377,6 +378,40 @@ declare global {
      * ```
      */
     interface DraymanDatepickerProps extends DraymanDatepicker, DraymanElementsProps { }
+    /**
+     * # <drayman-gauge \/>
+     *
+     * Gauge powered by [Angular Material](https://material.angular.io/) library.
+     *
+     * ## Example of usage
+     *
+     * ![](media://drayman-gauge.gif)
+     *
+     * ```typescript
+     * export const component: DraymanComponent = async ({ forceUpdate }) => {
+     *     let value = Math.round(Math.random() * 100);
+     * 
+     *     setInterval(() => {
+     *         value = Math.round(Math.random() * 100);
+     *         forceUpdate();
+     *     }, 3000);
+     * 
+     *     return async () => {
+     *         return (
+     *             <drayman-gauge
+     *                 type="arch"
+     *                 min={0}
+     *                 max={100}
+     *                 value={value}
+     *                 thick={35}
+     *                 margin={20}
+     *             />
+     *         );
+     *     };
+     * }
+     * ```
+     */
+    interface DraymanGaugeProps extends DraymanGauge, DraymanElementsProps { }
     /**
      * # <drayman-code-editor \/>
      *

@@ -12,14 +12,13 @@ registerPlugin(FilePondPluginGetFile);
 registerPlugin(FilePondPluginFileValidateSize);
 
 @NgModule({
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    FilePondModule,
-  ],
-  declarations: [FileUploaderComponent],
-  entryComponents: [FileUploaderComponent],
-  exports: [FileUploaderComponent],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        FilePondModule,
+    ],
+    declarations: [FileUploaderComponent],
+    exports: [FileUploaderComponent]
 })
 export class FileUploaderModule {
   constructor(private injector: Injector) {

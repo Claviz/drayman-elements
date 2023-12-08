@@ -39,19 +39,21 @@ export class CodeEditorComponent implements OnChanges, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.ref.codeMirror.setOption("extraKeys", {
-      'Shift-Alt-F': (cm) => {
-        const totalLines = this.ref.codeMirror.lineCount();
-        const currentCursor = cm.getCursor();
-        this.ref.codeMirror.autoFormatRange({ line: 0, ch: 0 }, { line: totalLines });
-        cm.setCursor(currentCursor);
-      }
-    });
-    this.ref.codeMirror.on('focus', () => {
-      this.focused = true;
-    });
-    this.ref.codeMirror.on('blur', () => {
-      this.focused = false;
+    requestAnimationFrame(() => {
+      this.ref.codeMirror.setOption("extraKeys", {
+        'Shift-Alt-F': (cm) => {
+          const totalLines = this.ref.codeMirror.lineCount();
+          const currentCursor = cm.getCursor();
+          this.ref.codeMirror.autoFormatRange({ line: 0, ch: 0 }, { line: totalLines });
+          cm.setCursor(currentCursor);
+        }
+      });
+      this.ref.codeMirror.on('focus', () => {
+        this.focused = true;
+      });
+      this.ref.codeMirror.on('blur', () => {
+        this.focused = false;
+      });
     });
     // // get selected text on selection end:
     // this.ref.codeMirror.on('cursorActivity', (x) => {
