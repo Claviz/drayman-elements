@@ -23,7 +23,9 @@ export class ButtonComponent {
   @Input() buttonIconStyle?: any;
 
   emitClick($event: PointerEvent) {
-    $event.stopPropagation();
-    this.onClick();
+    if (this.onClick) {
+      $event.stopPropagation();
+      this.onClick();
+    }
   }
 }
