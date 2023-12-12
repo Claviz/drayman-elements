@@ -22,6 +22,7 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() onGetObject?: (options) => Promise<any>;
   @Input() onSelectFieldValues?: (options) => Promise<any>;
   @Input() onGetFieldDescription?: (options) => Promise<any>;
+  @Input() onClearField?: (options) => Promise<any>;
 
   @ViewChild('toolbar', { static: false }) toolbarEl: ElementRef;
   @ViewChild('viz', { static: false }) vizEl: ElementRef;
@@ -115,6 +116,9 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
       return {
         selectValues: async (arr, toggle, softlock) => {
           return await this.onSelectFieldValues({ fieldId, arr, toggle, softlock });
+        },
+        clear: async () => {
+          return await this.onClearField({ fieldId });
         }
       }
     }

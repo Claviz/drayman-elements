@@ -32,4 +32,8 @@ export interface DraymanNebula {
      * Executed when field values needs to be selected
      */
     onSelectFieldValues?: ElementEvent<{ fieldId, arr, toggle, softlock }>;
+    /**
+     * Executed when field values needs to be cleared
+     */
+    onClearField?: ElementEvent<{ fieldId }>
 }
