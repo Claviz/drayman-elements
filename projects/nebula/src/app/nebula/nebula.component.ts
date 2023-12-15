@@ -127,7 +127,7 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
     }
 
     const types = [
-      ['sn-action-button', 'action-button'],
+      ['sn-action-button@1.38.1', 'action-button'],
       ['sn-bar-chart', 'barchart'],
       ['sn-bullet-chart', 'bullet-chart'],
       ['sn-combo-chart', 'combo-chart'],
