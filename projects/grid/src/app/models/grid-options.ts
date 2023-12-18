@@ -13,6 +13,10 @@ export interface DraymanGrid {
         cell: GridCell;
         button: GridContentButton;
     }>;
+    onContextMenuItemClick?: ElementEvent<{
+        cell: GridCell;
+        label: string;
+    }>;
     grid: GridCell[];
     onScroll?: ElementEvent<{
         currentCol: number;
@@ -63,6 +67,7 @@ export interface GridCell {
     disableSelect?: boolean;
     selectionCellStyle?: any;
     ref?: string;
+    contextMenuItems?: string[];
 }
 
 export interface GridContentButton {

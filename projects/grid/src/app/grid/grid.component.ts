@@ -19,6 +19,7 @@ import { ResizedEvent } from 'angular-resize-event';
 import { merge, Subject } from 'rxjs';
 import { debounce, debounceTime, throttleTime } from 'rxjs/operators';
 import { GridContentButton, GridCell } from '../models/grid-options';
+import { MatMenuTrigger } from '@angular/material/menu';
 // import CustomStore from 'devextreme/data/custom_store';
 // import { LoadOptions } from 'devextreme/data/load_options';
 
@@ -29,6 +30,7 @@ import { GridContentButton, GridCell } from '../models/grid-options';
 })
 export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
 
+  @ViewChild(MatMenuTrigger, { static: true }) matMenuTrigger: MatMenuTrigger;
   @ViewChild('container') containerRef: ElementRef;
   @HostListener('wheel', ['$event'])
   onWheel(event: WheelEvent) {
@@ -56,6 +58,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   @Input() onLoad?: (options) => Promise<any>;
   @Input() onContentButtonClick?: (options) => Promise<any>;
   @Input() onCellClick?: (options) => Promise<any>;
+  @Input() onContextMenuItemClick?: (options) => Promise<any>;
   @ViewChild(CdkScrollable) scrollable: CdkScrollable;
 
   @Input() grid: GridCell[] = []
@@ -79,6 +82,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   startSelectionCell: GridCell;
   hoveredRow: number = -1;
   ctrl;
+  menuTopLeftPosition = { x: '0', y: '0' }
 
   get scrollbarWidthClass() {
     if (this.scrollbarWidth === 'narrow') {
@@ -125,7 +129,19 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
     if ($event.ctrlKey) {
       $event.preventDefault();
       this.emitCellClick($event, cell, true);
+    } else {
+      if (cell.contextMenuItems?.length) {
+        $event.preventDefault();
+        this.menuTopLeftPosition.x = $event.clientX + 'px';
+        this.menuTopLeftPosition.y = $event.clientY + 'px';
+        this.matMenuTrigger.menuData = { items: cell.contextMenuItems.map(x => ({ label: x, cell })) }
+        this.matMenuTrigger.openMenu();
+      }
     }
+  }
+
+  emitContextMenuItemClick($event: PointerEvent, item: { label: string; cell: GridCell; }) {
+    this.onContextMenuItemClick?.(item);
   }
 
   emitCellClick($event: PointerEvent, cell: GridCell, ctrl = false) {

@@ -7,6 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AngularResizedEventModule } from 'angular-resize-event';
 import { SingleOverlayContainer } from 'mat-single-overlay';
 import { ButtonModule } from 'projects/button/src/app/app.module';
+import { MatMenuModule } from '@angular/material/menu';
 
 import { GridComponent } from './grid/grid.component';
 
@@ -17,6 +18,7 @@ import { GridComponent } from './grid/grid.component';
     ScrollingModule,
     AngularResizedEventModule,
     ButtonModule,
+    MatMenuModule,
   ],
   declarations: [GridComponent,],
   providers: [
