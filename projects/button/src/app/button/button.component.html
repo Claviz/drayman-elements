@@ -1,57 +1,57 @@
 <ng-container [ngSwitch]="view">
     <ng-container *ngSwitchCase="'raised'">
-        <button type="button" mat-raised-button (click)="emitClick($event)" [matTooltip]="tooltip" [disabled]="disabled"
-            [ngStyle]="buttonStyle" [popper]="thumbnailContent" [popperDisabled]="!(imgUrl || popup)"
-            [attr.aria-label]="label + ' raised button'">
+        <button [attr.ref]="buttonRef" type="button" mat-raised-button (click)="emitClick($event)"
+            [matTooltip]="tooltip" [disabled]="disabled" [ngStyle]="buttonStyle" [popper]="thumbnailContent"
+            [popperDisabled]="!(imgUrl || popup)" [attr.aria-label]="label + ' raised button'">
             <ng-container *ngTemplateOutlet="button"></ng-container>
         </button>
     </ng-container>
     <ng-container *ngSwitchCase="'stroked'">
-        <button type="button" mat-stroked-button (click)="emitClick($event)" [matTooltip]="tooltip"
-            [disabled]="disabled" [ngStyle]="buttonStyle" [popper]="thumbnailContent"
+        <button [attr.ref]="buttonRef" type="button" mat-stroked-button (click)="emitClick($event)"
+            [matTooltip]="tooltip" [disabled]="disabled" [ngStyle]="buttonStyle" [popper]="thumbnailContent"
             [popperDisabled]="!(imgUrl || popup)" [attr.aria-label]="label + ' stroked button'">
             <ng-container *ngTemplateOutlet="button"></ng-container>
         </button>
     </ng-container>
     <ng-container *ngSwitchCase="'flat'">
-        <button type="button" mat-flat-button (click)="emitClick($event)" [matTooltip]="tooltip" [disabled]="disabled"
-            [ngStyle]="buttonStyle" [popper]="thumbnailContent" [popperDisabled]="!(imgUrl || popup)"
-            [attr.aria-label]="label + ' flat button'">
+        <button [attr.ref]="buttonRef" type="button" mat-flat-button (click)="emitClick($event)" [matTooltip]="tooltip"
+            [disabled]="disabled" [ngStyle]="buttonStyle" [popper]="thumbnailContent"
+            [popperDisabled]="!(imgUrl || popup)" [attr.aria-label]="label + ' flat button'">
             <ng-container *ngTemplateOutlet="button"></ng-container>
         </button>
     </ng-container>
     <ng-container *ngSwitchCase="'icon'">
-        <button type="button" mat-icon-button (click)="emitClick($event)" [matTooltip]="tooltip" [disabled]="disabled"
-            [ngStyle]="buttonStyle" [popper]="thumbnailContent" [popperDisabled]="!(imgUrl || popup)"
-            [attr.aria-label]="label + ' icon button'">
+        <button [attr.ref]="buttonRef" type="button" mat-icon-button (click)="emitClick($event)" [matTooltip]="tooltip"
+            [disabled]="disabled" [ngStyle]="buttonStyle" [popper]="thumbnailContent"
+            [popperDisabled]="!(imgUrl || popup)" [attr.aria-label]="label + ' icon button'">
             <ng-container *ngTemplateOutlet="button"></ng-container>
         </button>
     </ng-container>
     <ng-container *ngSwitchCase="'fab'">
-        <button type="button" mat-fab (click)="emitClick($event)" [matTooltip]="tooltip" [disabled]="disabled"
-            [ngStyle]="buttonStyle" [popper]="thumbnailContent" [popperDisabled]="!(imgUrl || popup)"
-            [attr.aria-label]="label + ' fab button'">
+        <button [attr.ref]="buttonRef" type="button" mat-fab (click)="emitClick($event)" [matTooltip]="tooltip"
+            [disabled]="disabled" [ngStyle]="buttonStyle" [popper]="thumbnailContent"
+            [popperDisabled]="!(imgUrl || popup)" [attr.aria-label]="label + ' fab button'">
             <ng-container *ngTemplateOutlet="button"></ng-container>
         </button>
     </ng-container>
     <ng-container *ngSwitchCase="'miniFab'">
-        <button type="button" mat-mini-fab (click)="emitClick($event)" [matTooltip]="tooltip" [disabled]="disabled"
-            [ngStyle]="buttonStyle" [popper]="thumbnailContent" [popperDisabled]="!(imgUrl || popup)"
-            [attr.aria-label]="label + ' mini fab button'">
+        <button [attr.ref]="buttonRef" type="button" mat-mini-fab (click)="emitClick($event)" [matTooltip]="tooltip"
+            [disabled]="disabled" [ngStyle]="buttonStyle" [popper]="thumbnailContent"
+            [popperDisabled]="!(imgUrl || popup)" [attr.aria-label]="label + ' mini fab button'">
             <ng-container *ngTemplateOutlet="button"></ng-container>
         </button>
     </ng-container>
     <ng-container *ngSwitchCase="'unstyled'">
-        <button type="button" (click)="emitClick($event)" [matTooltip]="tooltip" [disabled]="disabled"
-            [ngStyle]="buttonStyle" [popper]="thumbnailContent" [popperDisabled]="!(imgUrl || popup)"
-            [attr.aria-label]="label + ' unstyled button'">
+        <button [attr.ref]="buttonRef" type="button" (click)="emitClick($event)" [matTooltip]="tooltip"
+            [disabled]="disabled" [ngStyle]="buttonStyle" [popper]="thumbnailContent"
+            [popperDisabled]="!(imgUrl || popup)" [attr.aria-label]="label + ' unstyled button'">
             <ng-container *ngTemplateOutlet="button"></ng-container>
         </button>
     </ng-container>
     <ng-container *ngSwitchDefault>
-        <button type="button" mat-button (click)="emitClick($event)" [matTooltip]="tooltip" [disabled]="disabled"
-            [ngStyle]="buttonStyle" [popper]="thumbnailContent" [popperDisabled]="!(imgUrl || popup)"
-            [popperAppendTo]="'body'" [attr.aria-label]="label + ' basic button'">
+        <button [attr.ref]="buttonRef" type="button" mat-button (click)="emitClick($event)" [matTooltip]="tooltip"
+            [disabled]="disabled" [ngStyle]="buttonStyle" [popper]="thumbnailContent"
+            [popperDisabled]="!(imgUrl || popup)" [popperAppendTo]="'body'" [attr.aria-label]="label + ' basic button'">
             <ng-container *ngTemplateOutlet="button"></ng-container>
         </button>
     </ng-container>

@@ -92,5 +92,9 @@ export interface GridContentButton {
      * Image shown on hover.
      */
     imgUrl?: string;
+    /**
+     * Reference to the button.
+     */
+    buttonRef?: string;
     buttonStyle?: any;
 }

@@ -31,4 +31,8 @@ export interface ButtonOptionsBase {
         text: string;
         style?: any;
     };
+    /**
+     * Reference to the button.
+     */
+    buttonRef?: string;
 }

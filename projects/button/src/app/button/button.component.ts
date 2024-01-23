@@ -21,6 +21,7 @@ export class ButtonComponent {
   };
   @Input() buttonStyle?: any;
   @Input() buttonIconStyle?: any;
+  @Input() buttonRef?: any;
 
   emitClick($event: PointerEvent) {
     if (this.onClick) {

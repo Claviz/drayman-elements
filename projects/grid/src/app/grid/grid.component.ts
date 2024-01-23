@@ -92,6 +92,14 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
     return `scrollbar-${this.scrollbarWidth}`;
   }
 
+  cellTrackByFn(index, cell: GridCell) {
+    return cell.row + '-' + cell.col;
+  }
+
+  cellItemTrackByFn(cell: GridCell, index, item) {
+    return cell.row + '-' + cell.col + '-' + index;
+  }
+
   getCellStyle(cell: GridCell) {
     const rowEnd = cell.rowSpan ? cell.row + cell.rowSpan : cell.row + 1;
     const colEnd = cell.colSpan ? cell.col + cell.colSpan : cell.col + 1;
