@@ -1,6 +1,6 @@
 <mat-form-field [appearance]="appearance || 'outline'" [floatLabel]="'auto'">
   <mat-label *ngIf="label">{{label}}</mat-label>
-  <input [id]="id" matInput step="any" type="number" [placeholder]="placeholder || label" [formControl]="formControl"
+  <input (wheel)="$event.preventDefault()" [id]="id" matInput step="any" type="number" [placeholder]="placeholder || label" [formControl]="formControl"
     [errorStateMatcher]="errorStateMatcher" autocomplete="off" (blur)="onBlur()" [matAutocomplete]="auto">
   <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete" (opened)="triggerFocus()"
     [panelWidth]="suggestionsPanelWidth">

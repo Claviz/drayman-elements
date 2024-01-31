@@ -1,7 +1,7 @@
 <div #container class="wrapper" [ngClass]="scrollbarWidthClass" cdkScrollable (resized)="onResized($event)">
     <div [attr.ref]="gridRef" [style]="gridStyle" (mouseleave)="onGridMouseLeave($event)">
         <div (mouseenter)="cell.hovered = true" (contextmenu)="oncontextmenu($event, cell)" tabindex="-1"
-            *ngFor="let cell of grid; trackBy: cellTrackByFn" [style]="getCellStyle(cell)"
+            *ngFor="let cell of grid; trackBy: cellTrackByFn; let i = index" [style]="getCellStyle(cell)"
             (click)="emitCellClick($event, cell)" (mousedown)="onMouseDown($event, cell)"
             (mouseup)="onMouseUp($event, cell)" (mouseover)="onMouseOver($event, cell)"
             (mouseleave)="onMouseLeave($event, cell); cell.hovered = false;" [attr.ref]="cell.ref">
@@ -26,6 +26,10 @@
                         </ng-container>
                     </ng-container>
                 </ng-container>
+            </div>
+            <div *ngIf="columnWidths" [ngClass]="cell.row === 0 ? 'resizable-gutter' : null"
+                [enableResize]="cell.row === 0" (resize)="onResize($event, i)" appResizable>
+                <div resizable-gutter-inside></div>
             </div>
         </div>
     </div>

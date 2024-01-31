@@ -10,6 +10,7 @@ import { ButtonModule } from 'projects/button/src/app/app.module';
 import { MatMenuModule } from '@angular/material/menu';
 
 import { GridComponent } from './grid/grid.component';
+import { ResizableDirective } from './grid/resizable.directive';
 
 @NgModule({
   imports: [
@@ -20,7 +21,7 @@ import { GridComponent } from './grid/grid.component';
     ButtonModule,
     MatMenuModule,
   ],
-  declarations: [GridComponent,],
+  declarations: [GridComponent, ResizableDirective],
   providers: [
     { provide: OverlayContainer, useClass: SingleOverlayContainer, },
   ],

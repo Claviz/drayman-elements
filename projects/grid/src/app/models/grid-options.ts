@@ -50,6 +50,17 @@ export interface DraymanGrid {
      * Medium is 12px and wide is 16px.
      */
     scrollbarWidth?: 'narrow' | 'medium' | 'wide';
+    /**
+     * Width of each column.
+     */
+    columnWidths?: number[];
+    /**
+     * Index of the column that has been resized.
+     */
+    changedWidthIndex?: ElementEvent<{
+        columnWidths: number[];
+        changedColumnWidthIndex: number;
+    }>;
 }
 
 export interface GridCell {

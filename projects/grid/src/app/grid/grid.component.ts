@@ -59,6 +59,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   @Input() onContentButtonClick?: (options) => Promise<any>;
   @Input() onCellClick?: (options) => Promise<any>;
   @Input() onContextMenuItemClick?: (options) => Promise<any>;
+  @Input() onColumnWidthChange?: (options) => Promise<any>;
   @ViewChild(CdkScrollable) scrollable: CdkScrollable;
 
   @Input() grid: GridCell[] = []
@@ -68,6 +69,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   @Input() onScroll: any;
   @Input() cellHeight?: number;
   @Input() cellWidth?: number;
+  @Input() columnWidths?: number[];
   @Input() columnCount: number;
   @Input() rowCount: number;
   @Input() scrollbarWidth: 'narrow' | 'medium' | 'wide' = 'narrow';
@@ -243,8 +245,12 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
       debounceTime(50),
     ).subscribe((x) => {
       this.onScroll?.({
-        currentCol: this.cellWidth ? Math.floor(this.scrollable.measureScrollOffset('left') / this.cellWidth) : 0,
-        visibleColCount: this.cellWidth ? Math.ceil(this.scrollable.getElementRef().nativeElement.clientWidth / this.cellWidth) : this.columnCount,
+        currentCol: this.getCurrentColumn(this.scrollable.measureScrollOffset('left')),
+        visibleColCount: this.getVisibleColumnCount(
+          this.scrollable.getElementRef().nativeElement.clientWidth,
+          this.getCurrentColumn(this.scrollable.measureScrollOffset('left')),
+          this.scrollable.measureScrollOffset('left')
+        ),
         currentRow: this.cellHeight ? Math.floor(this.scrollable.measureScrollOffset('top') / this.cellHeight) : 0,
         visibleRowCount: this.cellHeight ? Math.ceil(this.scrollable.getElementRef().nativeElement.clientHeight / this.cellHeight) : this.rowCount,
       })
@@ -261,6 +267,49 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
     });
   }
 
+  getCurrentColumn(scrollOffset) {
+    if (this.columnWidths && this.columnWidths.length > 0) {
+      let accumulatedWidth = 0;
+      for (let i = 0; i < this.columnWidths.length; i++) {
+        accumulatedWidth += this.columnWidths[i];
+        if (scrollOffset < accumulatedWidth) {
+          return i;
+        }
+      }
+      return this.columnWidths.length - 1;
+    }
+    return this.cellWidth ? Math.floor(scrollOffset / this.cellWidth) : 0;
+  }
+
+  getVisibleColumnCount(clientWidth, startingCol, scrollOffset) {
+    if (this.columnWidths && this.columnWidths.length > 0) {
+      let accumulatedWidth = 0;
+      for (let i = 0; i < startingCol; i++) {
+        accumulatedWidth += this.columnWidths[i];
+      }
+      let remainingWidthInStartingCol = Math.max(0, (accumulatedWidth + this.columnWidths[startingCol]) - scrollOffset);
+      let adjustedClientWidth = clientWidth - remainingWidthInStartingCol;
+      let colCount = remainingWidthInStartingCol > 0 ? 1 : 0;
+      for (let i = startingCol + 1; i < this.columnWidths.length && adjustedClientWidth > 0; i++) {
+        adjustedClientWidth -= this.columnWidths[i];
+        colCount++;
+      }
+      return colCount;
+    }
+    return this.cellWidth ? Math.ceil(clientWidth / this.cellWidth) : this.columnCount;
+  }
+
+
+  onResize(newWidth: number, index: number) {
+    if (this.columnWidths) {
+      console.log('Resized width:', newWidth);
+      index = this.getCurrentColumn(this.scrollable.measureScrollOffset('left')) + index;
+      this.columnWidths = [...this.columnWidths.slice(0, index), newWidth, ...this.columnWidths.slice(index + 1)];
+      this.onColumnWidthChange?.({ columnWidths: this.columnWidths, changedWidthIndex: index, });
+    }
+  }
+
+
   ngOnInit() {
   }
 
@@ -272,14 +321,20 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
 
   get gridStyle() {
     const height = (this.cellHeight || 0) * (this.rowCount || 0);
+    const gridTemplateColumns = this.columnWidths
+      ? this.columnWidths.map(width => `${width}px`).join(' ')
+      : `repeat(${this.columnCount}, ${this.cellWidth ? `${this.cellWidth}px` : 'auto'})`;
     return {
-      gridTemplateColumns: `repeat(${this.columnCount}, ${this.cellWidth ? `${this.cellWidth}px` : `auto`})`,
-      gridTemplateRows: `repeat(${this.rowCount}, ${this.cellHeight ? `${this.cellHeight}px` : `autor`})`,
-      width: this.cellWidth ? `${this.columnCount * this.cellWidth}px` : `100%`,
+      gridTemplateColumns: gridTemplateColumns,
+      gridTemplateRows: `repeat(${this.rowCount}, ${this.cellHeight ? `${this.cellHeight}px` : 'auto'})`,
+      width: this.columnWidths
+        ? `${this.columnWidths.reduce((acc, width) => acc + width, 0)}px`
+        : (this.cellWidth ? `${this.columnCount * this.cellWidth}px` : `100%`),
       height: height ? `${height}px` : `100%`,
       display: 'grid',
       userSelect: 'none'
-    }
+    };
   }
+
 
 }
