@@ -302,8 +302,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
 
   onResize(newWidth: number, index: number) {
     if (this.columnWidths) {
-      console.log('Resized width:', newWidth);
-      index = this.getCurrentColumn(this.scrollable.measureScrollOffset('left')) + index;
+      // index = this.getCurrentColumn(this.scrollable.measureScrollOffset('left')) + index;
       this.columnWidths = [...this.columnWidths.slice(0, index), newWidth, ...this.columnWidths.slice(index + 1)];
       this.onColumnWidthChange?.({ columnWidths: this.columnWidths, changedWidthIndex: index, });
     }
