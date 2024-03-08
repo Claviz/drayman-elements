@@ -1,6 +1,6 @@
 {
   "name": "@drayman/elements",
-  "version": "1.32.0",
+  "version": "1.33.0",
   "description": "A collection of web components for Drayman.",
   "license": "MIT",
   "keywords": [
@@ -132,7 +132,7 @@
     "@compodoc/compodoc": "1.1.11",
     "@ctrl/ngx-codemirror": "5.1.1",
     "@drayman/types": "latest",
-    "@nebula.js/stardust": "2.3.1",
+    "@nebula.js/stardust": "4.13.0",
     "@ngneat/spectator": "5.13.2",
     "@swimlane/ngx-charts": "16.0.0",
     "@swimlane/ngx-graph": "8.0.0",

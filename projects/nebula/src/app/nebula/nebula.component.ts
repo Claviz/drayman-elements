@@ -145,6 +145,7 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
       ['sn-treemap', 'treemap'],
       ['sn-pivot-table', 'pivot-table'],
       ['sn-map', 'map'],
+      // ['sn-text', 'text-image'],
     ].map((t) => ({
       name: t[1],
       load: () => {
@@ -167,7 +168,10 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
       context: {
         theme: 'customTheme',
       },
-    })
+      flags: {
+        IM_1869_HIDE_DIM_MEA_LINE: true
+      },
+    } as any)
 
     if (this.qLayout) {
       this.viz = await this.n.render({
