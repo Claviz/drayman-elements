@@ -169,7 +169,8 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
         theme: 'customTheme',
       },
       flags: {
-        IM_1869_HIDE_DIM_MEA_LINE: true
+        IM_1869_HIDE_DIM_MEA_LINE: true,
+        CLIENT_IM_3365: true,
       },
     } as any)
 
