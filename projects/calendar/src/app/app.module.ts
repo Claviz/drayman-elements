@@ -1,4 +1,4 @@
-import { Injector, NgModule } from '@angular/core';
+import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { FormsModule } from '@angular/forms';
@@ -9,7 +9,7 @@ import { adapterFactory } from 'angular-calendar/date-adapters/date-fns';
 import { MatButtonModule } from '@angular/material/button';
 
 import { CalendarComponent } from './calendar/calendar.component';
-import { MatIconModule } from '@angular/material/icon';
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
@@ -30,6 +30,14 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     // NgeMonacoModule.forRoot({}),
   ],
   providers: [
+    {
+      provide: APP_INITIALIZER,
+      multi: true,
+      useFactory: (iconRegistry: MatIconRegistry) => () => {
+        iconRegistry.setDefaultFontSetClass('material-symbols-rounded');
+      },
+      deps: [MatIconRegistry]
+    }
   ],
   declarations: [CalendarComponent],
   exports: [CalendarComponent],

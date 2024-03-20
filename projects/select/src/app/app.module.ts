@@ -1,4 +1,4 @@
-import { Injector, NgModule } from '@angular/core';
+import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
@@ -7,7 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 
 import { SelectComponent } from './select/select.component';
-import { MatIconModule } from '@angular/material/icon';
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { OverlayContainer } from '@angular/cdk/overlay';
@@ -27,7 +27,15 @@ import { SingleOverlayContainer } from 'mat-single-overlay';
   declarations: [SelectComponent],
   exports: [SelectComponent],
   providers: [
-    { provide: OverlayContainer, useClass: SingleOverlayContainer, }
+    { provide: OverlayContainer, useClass: SingleOverlayContainer, },
+    {
+      provide: APP_INITIALIZER,
+      multi: true,
+      useFactory: (iconRegistry: MatIconRegistry) => () => {
+        iconRegistry.setDefaultFontSetClass('material-symbols-rounded');
+      },
+      deps: [MatIconRegistry]
+    }
   ]
 })
 export class SelectModule {

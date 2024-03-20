@@ -1,11 +1,11 @@
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { Injector, NgModule } from '@angular/core';
+import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIconModule } from '@angular/material/icon';
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
@@ -32,6 +32,14 @@ import { TimepickerComponent } from './timepicker/timepicker.component';
   declarations: [TimepickerComponent],
   providers: [
     { provide: OverlayContainer, useClass: SingleOverlayContainer, },
+    {
+      provide: APP_INITIALIZER,
+      multi: true,
+      useFactory: (iconRegistry: MatIconRegistry) => () => {
+        iconRegistry.setDefaultFontSetClass('material-symbols-rounded');
+      },
+      deps: [MatIconRegistry]
+    }
   ],
 })
 export class TimepickerModule {

@@ -1,8 +1,8 @@
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { Injector, NgModule } from '@angular/core';
+import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { MatIconModule, MatIconRegistry } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -40,7 +40,15 @@ import { LazyLoadImageHooks } from './lazy-load-image-hooks';
   ],
   providers: [
     { provide: LAZYLOAD_IMAGE_HOOKS, useClass: LazyLoadImageHooks },
-    { provide: OverlayContainer, useClass: SingleOverlayContainer, }
+    { provide: OverlayContainer, useClass: SingleOverlayContainer, },
+    {
+      provide: APP_INITIALIZER,
+      multi: true,
+      useFactory: (iconRegistry: MatIconRegistry) => () => {
+        iconRegistry.setDefaultFontSetClass('material-symbols-rounded');
+      },
+      deps: [MatIconRegistry]
+    }
   ],
   declarations: [ButtonComponent],
   exports: [ButtonComponent],
