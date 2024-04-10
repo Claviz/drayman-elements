@@ -11,6 +11,7 @@ import { MatMenuModule } from '@angular/material/menu';
 
 import { GridComponent } from './grid/grid.component';
 import { ResizableDirective } from './grid/resizable.directive';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   imports: [
@@ -20,6 +21,7 @@ import { ResizableDirective } from './grid/resizable.directive';
     AngularResizedEventModule,
     ButtonModule,
     MatMenuModule,
+    MatTooltipModule,
   ],
   declarations: [GridComponent, ResizableDirective],
   providers: [

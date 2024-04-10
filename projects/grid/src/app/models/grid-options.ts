@@ -69,7 +69,7 @@ export interface GridCell {
     rowSpan?: number;
     colSpan?: number;
     content: (
-        { type: 'text', value: string, style?: any, hoverStyle?: any } |
+        { type: 'text', value: string, style?: any, hoverStyle?: any, tooltip?: string, } |
         { type: 'button', value: GridContentButton, style?: any, hoverStyle?: any }
     )[];
     cellStyle?: any;
