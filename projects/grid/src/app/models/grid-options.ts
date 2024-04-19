@@ -64,6 +64,9 @@ export interface DraymanGrid {
 }
 
 export interface GridCell {
+    overlay?: string;
+    overlayContainerStyle?: string;
+    overlayInnerStyle?: string;
     row: number;
     col: number;
     rowSpan?: number;

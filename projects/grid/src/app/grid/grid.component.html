@@ -9,7 +9,7 @@
                 <ng-container *ngFor="let cellItem of cell.content; trackBy: cellItemTrackByFn.bind(this, cell)">
                     <ng-container [ngSwitch]="cellItem.type">
                         <ng-container *ngSwitchCase="'text'">
-                            <div  [matTooltip]="cellItem.tooltip" [attr.title]="cellItem.value"
+                            <div [matTooltip]="cellItem.tooltip" [attr.title]="cellItem.value"
                                 [style]="(cell.hovered && cellItem.hoverStyle) ? cellItem.hoverStyle : cellItem.style"
                                 [innerHTML]="getSanitizedString(cellItem.value)">
                             </div>
@@ -25,12 +25,63 @@
                                 </drayman-button-internal>
                             </div>
                         </ng-container>
+                        <ng-container *ngSwitchCase="'text-field'">
+                            <div [style]="(cell.hovered && cellItem.hoverStyle) ? cellItem.hoverStyle : cellItem.style">
+                                <drayman-text-field-internal [appearance]="cellItem.value.appearance"
+                                    [onValueChange]="cell.onValueChanges" [type]="cellItem.value.type"
+                                    [value]="cellItem.value.value" [label]="cellItem.value.label"
+                                    [disabled]="cellItem.value.placeholder" [helpText]="cellItem.value.helpText"
+                                    [error]="cellItem.value.error" [updateOnBlur]="cellItem.value.updateOnBlur"
+                                    [suggestions]="cellItem.value.suggestions"
+                                    [suggestionsPanelWidth]="cellItem.value.suggestionsPanelWidth"
+                                    [mask]="cellItem.value.mask">
+                                </drayman-text-field-internal>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'datepicker'">
+                            <div [style]="(cell.hovered && cellItem.hoverStyle) ? cellItem.hoverStyle : cellItem.style">
+                                <drayman-datepicker-internal [appearance]="cellItem.value.appearance"
+                                    [onValueChange]="cell.onValueChanges" [dateFormat]="cellItem.value.dateFormat"
+                                    [showTodayButton]="cellItem.value.showTodayButton"
+                                    [appearance]="cellItem.value.appearance" [value]="cellItem.value.value"
+                                    [label]="cellItem.value.label" [disabled]="cellItem.value.disabled"
+                                    [placeholder]="cellItem.value.placeholder" [helpText]="cellItem.value.helpText"
+                                    [error]="cellItem.value.error" [updateOnBlur]="cellItem.value.updateOnBlur">
+                                </drayman-datepicker-internal>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'select'">
+                            <div [style]="(cell.hovered && cellItem.hoverStyle) ? cellItem.hoverStyle : cellItem.style">
+                                <drayman-select-internal [appearance]="cellItem.value.appearance"
+                                    [onValueChange]="cell.onValueChanges" [options]="cellItem.value.options"
+                                    [multiple]="cellItem.value.multiple" [value]="cellItem.value.value"
+                                    [label]="cellItem.value.label" [disabled]="cellItem.value.disabled"
+                                    [placeholder]="cellItem.value.placeholder" [helpText]="cellItem.value.helpText"
+                                    [error]="cellItem.value.error"
+                                    [updateOnBlur]="cellItem.value.updateOnBlur"></drayman-select-internal>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngSwitchCase="'checkbox'">
+                            <div [style]="(cell.hovered && cellItem.hoverStyle) ? cellItem.hoverStyle : cellItem.style">
+                                <drayman-checkbox-internal [onValueChange]="cell.onValueChanges"
+                                    [value]="cellItem.value.value" [label]="cellItem.value.label"
+                                    [disabled]="cellItem.value.disabled" [placeholder]="cellItem.value.placeholder"
+                                    [helpText]="cellItem.value.helpText" [error]="cellItem.value.error"
+                                    [updateOnBlur]="cellItem.value.updateOnBlur">
+                                </drayman-checkbox-internal>
+                            </div>
+                        </ng-container>
                     </ng-container>
                 </ng-container>
             </div>
             <div *ngIf="columnWidths" [ngClass]="cell.row === 0 ? 'resizable-gutter' : null"
                 [enableResize]="cell.row === 0" (resize)="onResize($event, i)" appResizable>
                 <div resizable-gutter-inside></div>
+            </div>
+            <div *ngIf="cell.overlay" [style]="cell.overlayContainerStyle">
+                <div [style]="cell.overlayInnerStyle">
+                    {{cell.overlay}}
+                </div>
             </div>
         </div>
     </div>

@@ -12,6 +12,10 @@ import { MatMenuModule } from '@angular/material/menu';
 import { GridComponent } from './grid/grid.component';
 import { ResizableDirective } from './grid/resizable.directive';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TextFieldModule } from 'projects/text-field/src/app/app.module';
+import { DatepickerModule } from 'projects/datepicker/src/app/app.module';
+import { SelectModule } from 'projects/select/src/app/app.module';
+import { CheckboxModule } from 'projects/checkbox/src/app/app.module';
 
 @NgModule({
   imports: [
@@ -22,6 +26,10 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     ButtonModule,
     MatMenuModule,
     MatTooltipModule,
+    TextFieldModule,
+    DatepickerModule,
+    SelectModule,
+    CheckboxModule,
   ],
   declarations: [GridComponent, ResizableDirective],
   providers: [
