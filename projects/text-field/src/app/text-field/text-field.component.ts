@@ -12,6 +12,7 @@ export class TextFieldComponent extends AutocompleteFieldBase<string> implements
   @ViewChild(MatInput) input: MatInput;
   @ViewChild('inputEl') inputEl: any;
 
+  @Input() metaData?: any;
   @Input() appearance?: 'legacy' | 'standard' | 'fill' | 'outline';
   @Input() onValueChange?: ElementEvent<{ value: string; }>;
   @Input() onEnter?: ElementEvent<{ value: string; }>;

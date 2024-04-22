@@ -86,7 +86,6 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   hoveredRow: number = -1;
   ctrl;
   menuTopLeftPosition = { x: '0', y: '0' };
-  onValueChangesDict = {};
 
   get scrollbarWidthClass() {
     if (this.scrollbarWidth === 'narrow') {
@@ -314,15 +313,15 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   ngOnInit() {
   }
 
+  onCellContentValueChange =({ metaData, value }) => {
+    const [row, col] = metaData.split('_').map(x => parseInt(x));
+    const cell = this.grid.find(x => x.row === row && x.col === col);
+    this.onContentValueChange?.({ cell, value });
+  }
+
   ngOnChanges(changes: SimpleChanges) {
     if (this.selectedCells) {
       this._selectedCells = [...this.selectedCells];
-    }
-    this.onValueChangesDict = {};
-    for (const cell of this.grid) {
-      (cell as any).onValueChanges = async ({ value }) => {
-        this.onContentValueChange?.({ cell, value });
-      };
     }
   }
 

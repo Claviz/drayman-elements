@@ -13,6 +13,7 @@ import { DraymanSelect } from '../models/select-options';
 })
 export class SelectComponent extends FieldBase<any> {
 
+  @Input() metaData?: any;
   @Input() options?: {
     value: any;
     label: string;

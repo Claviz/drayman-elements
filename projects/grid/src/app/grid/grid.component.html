@@ -27,11 +27,12 @@
                         </ng-container>
                         <ng-container *ngSwitchCase="'text-field'">
                             <div [style]="(cell.hovered && cellItem.hoverStyle) ? cellItem.hoverStyle : cellItem.style">
-                                <drayman-text-field-internal [appearance]="cellItem.value.appearance"
-                                    [onValueChange]="cell.onValueChanges" [type]="cellItem.value.type"
-                                    [value]="cellItem.value.value" [label]="cellItem.value.label"
-                                    [disabled]="cellItem.value.placeholder" [helpText]="cellItem.value.helpText"
-                                    [error]="cellItem.value.error" [updateOnBlur]="cellItem.value.updateOnBlur"
+                                <drayman-text-field-internal [metaData]="cell.row + '_' + cell.col"
+                                    [appearance]="cellItem.value.appearance" [onValueChange]="onCellContentValueChange"
+                                    [type]="cellItem.value.type" [value]="cellItem.value.value"
+                                    [label]="cellItem.value.label" [disabled]="cellItem.value.placeholder"
+                                    [helpText]="cellItem.value.helpText" [error]="cellItem.value.error"
+                                    [updateOnBlur]="cellItem.value.updateOnBlur"
                                     [suggestions]="cellItem.value.suggestions"
                                     [suggestionsPanelWidth]="cellItem.value.suggestionsPanelWidth"
                                     [mask]="cellItem.value.mask">
@@ -40,8 +41,9 @@
                         </ng-container>
                         <ng-container *ngSwitchCase="'datepicker'">
                             <div [style]="(cell.hovered && cellItem.hoverStyle) ? cellItem.hoverStyle : cellItem.style">
-                                <drayman-datepicker-internal [appearance]="cellItem.value.appearance"
-                                    [onValueChange]="cell.onValueChanges" [dateFormat]="cellItem.value.dateFormat"
+                                <drayman-datepicker-internal [metaData]="cell.row + '_' + cell.col"
+                                    [appearance]="cellItem.value.appearance" [onValueChange]="onCellContentValueChange"
+                                    [dateFormat]="cellItem.value.dateFormat"
                                     [showTodayButton]="cellItem.value.showTodayButton"
                                     [appearance]="cellItem.value.appearance" [value]="cellItem.value.value"
                                     [label]="cellItem.value.label" [disabled]="cellItem.value.disabled"
@@ -52,22 +54,22 @@
                         </ng-container>
                         <ng-container *ngSwitchCase="'select'">
                             <div [style]="(cell.hovered && cellItem.hoverStyle) ? cellItem.hoverStyle : cellItem.style">
-                                <drayman-select-internal [appearance]="cellItem.value.appearance"
-                                    [onValueChange]="cell.onValueChanges" [options]="cellItem.value.options"
-                                    [multiple]="cellItem.value.multiple" [value]="cellItem.value.value"
-                                    [label]="cellItem.value.label" [disabled]="cellItem.value.disabled"
-                                    [placeholder]="cellItem.value.placeholder" [helpText]="cellItem.value.helpText"
-                                    [error]="cellItem.value.error"
+                                <drayman-select-internal [metaData]="cell.row + '_' + cell.col"
+                                    [appearance]="cellItem.value.appearance" [onValueChange]="onCellContentValueChange"
+                                    [options]="cellItem.value.options" [multiple]="cellItem.value.multiple"
+                                    [value]="cellItem.value.value" [label]="cellItem.value.label"
+                                    [disabled]="cellItem.value.disabled" [placeholder]="cellItem.value.placeholder"
+                                    [helpText]="cellItem.value.helpText" [error]="cellItem.value.error"
                                     [updateOnBlur]="cellItem.value.updateOnBlur"></drayman-select-internal>
                             </div>
                         </ng-container>
                         <ng-container *ngSwitchCase="'checkbox'">
                             <div [style]="(cell.hovered && cellItem.hoverStyle) ? cellItem.hoverStyle : cellItem.style">
-                                <drayman-checkbox-internal [onValueChange]="cell.onValueChanges"
-                                    [value]="cellItem.value.value" [label]="cellItem.value.label"
-                                    [disabled]="cellItem.value.disabled" [placeholder]="cellItem.value.placeholder"
-                                    [helpText]="cellItem.value.helpText" [error]="cellItem.value.error"
-                                    [updateOnBlur]="cellItem.value.updateOnBlur">
+                                <drayman-checkbox-internal [metaData]="cell.row + '_' + cell.col"
+                                    [onValueChange]="onCellContentValueChange" [value]="cellItem.value.value"
+                                    [label]="cellItem.value.label" [disabled]="cellItem.value.disabled"
+                                    [placeholder]="cellItem.value.placeholder" [helpText]="cellItem.value.helpText"
+                                    [error]="cellItem.value.error" [updateOnBlur]="cellItem.value.updateOnBlur">
                                 </drayman-checkbox-internal>
                             </div>
                         </ng-container>

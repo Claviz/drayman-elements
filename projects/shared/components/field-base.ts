@@ -10,6 +10,7 @@ import { FieldOptionsBase } from '../models/field-options-base';
 export class FieldBase<T> implements OnChanges, OnDestroy, OnInit {
 
     input: MatInput;
+    metaData?: any;
     errorStateMatcher: ErrorStateMatcher = { isErrorState: () => !!this.error || (!this.valueCanBeChanged && this.formControl.dirty) };
     formControl = new FormControl('');
     error?;
@@ -63,7 +64,7 @@ export class FieldBase<T> implements OnChanges, OnDestroy, OnInit {
         if (this.onValueChange) {
             // this.debouncing = false;
             // this.pendingRequests++;
-            this.onValueChange({ value: this.modifyValueBeforeChange(value) })
+            this.onValueChange({ value: this.modifyValueBeforeChange(value), metaData: this.metaData })
             // .then(() => this.pendingRequests--);
         }
     }

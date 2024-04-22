@@ -9,6 +9,7 @@ import { generate } from 'shortid';
 })
 export class CheckboxComponent extends FieldBase<boolean> implements OnChanges {
 
+  @Input() metaData?: any;
   @Input() onValueChange?: (data: { value: boolean; }) => Promise<void>;
   @Input() value?: boolean;
   @Input() label?: string;

@@ -21,6 +21,7 @@ export class DatepickerComponent extends FieldBase<string> implements OnChanges 
   @ViewChild(MatInput) input: MatInput;
   @ViewChild('dateDirectivePicker') datePickerDirective: DatePickerDirective;
 
+  @Input() metaData?: any;
   @Input() monthPicker?: boolean;
   @Input() dateFormat?: string;
   @Input() showTodayButton?: boolean;
