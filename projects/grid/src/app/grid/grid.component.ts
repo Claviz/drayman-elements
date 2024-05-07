@@ -313,7 +313,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   ngOnInit() {
   }
 
-  onCellContentValueChange =({ metaData, value }) => {
+  onCellContentValueChange = ({ metaData, value }) => {
     const [row, col] = metaData.split('_').map(x => parseInt(x));
     const cell = this.grid.find(x => x.row === row && x.col === col);
     this.onContentValueChange?.({ cell, value });
@@ -322,6 +322,12 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   ngOnChanges(changes: SimpleChanges) {
     if (this.selectedCells) {
       this._selectedCells = [...this.selectedCells];
+    }
+    const domParser = new DOMParser();
+    for (const cell of this.grid) {
+      for (const item of cell.content) {
+          (item as any)._parsedValue = domParser.parseFromString(item.value as any, 'text/html')?.body?.textContent;
+      }
     }
   }
 

@@ -9,7 +9,7 @@
                 <ng-container *ngFor="let cellItem of cell.content; trackBy: cellItemTrackByFn.bind(this, cell)">
                     <ng-container [ngSwitch]="cellItem.type">
                         <ng-container *ngSwitchCase="'text'">
-                            <div [matTooltip]="cellItem.tooltip" [attr.title]="cellItem.value"
+                            <div [matTooltip]="cellItem.tooltip" [title]="cellItem._parsedValue"
                                 [style]="(cell.hovered && cellItem.hoverStyle) ? cellItem.hoverStyle : cellItem.style"
                                 [innerHTML]="getSanitizedString(cellItem.value)">
                             </div>
