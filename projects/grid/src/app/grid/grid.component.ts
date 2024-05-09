@@ -266,6 +266,16 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
         ),
       });
     });
+    this.onLoad?.({
+      currentCol: this.getCurrentColumn(this.scrollable.measureScrollOffset('left')),
+      visibleColCount: this.getVisibleColumnCount(
+        this.scrollable.getElementRef().nativeElement.clientWidth,
+        this.getCurrentColumn(this.scrollable.measureScrollOffset('left')),
+        this.scrollable.measureScrollOffset('left')
+      ),
+      currentRow: this.cellHeight ? Math.floor(this.scrollable.measureScrollOffset('top') / this.cellHeight) : 0,
+      visibleRowCount: this.cellHeight ? Math.ceil(this.scrollable.getElementRef().nativeElement.clientHeight / this.cellHeight) : this.rowCount,
+    });
   }
 
   getCurrentColumn(scrollOffset) {
@@ -326,7 +336,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
     const domParser = new DOMParser();
     for (const cell of this.grid) {
       for (const item of cell.content) {
-          (item as any)._parsedValue = domParser.parseFromString(item.value as any, 'text/html')?.body?.textContent;
+        (item as any)._parsedValue = domParser.parseFromString(item.value as any, 'text/html')?.body?.textContent;
       }
     }
   }
