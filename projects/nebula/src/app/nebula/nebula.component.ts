@@ -61,6 +61,12 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
           args,
         });
       },
+      getHyperCubeStackData: async (...args) => {
+        return await this.onVizMethod({
+          name: 'getHyperCubeStackData',
+          args,
+        });
+      },
       getStackedDataPages: (...args) => {
         return this.qLayout.qHyperCube.qDataPages;
       },

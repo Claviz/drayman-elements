@@ -6,7 +6,7 @@ export interface DraymanNebula {
     /**
      * Executed when viz method must be called.
      */
-    onVizMethod?: ElementEvent<{ args: any, name: 'getEffectiveProperties' | 'getHyperCubeReducedData' | 'getHyperCubeData' }>;
+    onVizMethod?: ElementEvent<{ args: any, name: 'getEffectiveProperties' | 'getHyperCubeReducedData' | 'getHyperCubeData' | 'getHyperCubeStackData' }>;
     /**
      * Executed when measure needs to be returned
      */
