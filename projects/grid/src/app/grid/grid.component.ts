@@ -156,6 +156,9 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   }
 
   emitCellClick($event: PointerEvent, cell: GridCell, ctrl = false) {
+    if (!($event.target as Element).classList.contains('selectable')) {
+      return;
+    }
     if ($event.ctrlKey) {
       $event.preventDefault();
       ctrl = true;
@@ -186,6 +189,9 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   }
 
   onMouseDown($event: MouseEvent, cell: GridCell) {
+    if (!($event.target as Element).classList.contains('selectable')) {
+      return;
+    }
     if (this.selectionMode?.enabled && !this._selectedCells.length || this._selectedCells[0]?.selectionGroup === cell.selectionGroup) {
       this.ctrl = $event.ctrlKey;
       this.startSelectionCell = cell;
@@ -193,6 +199,9 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   }
 
   onMouseUp($event: MouseEvent, cell: GridCell) {
+    if (!this.pendingSelectedCells.length && !($event.target as Element).classList.contains('selectable')) {
+      return;
+    }
     this.startSelectionCell = null;
     if (this.pendingSelectedCells.length) {
       this._selectedCells = [...(this.ctrl ? [] : this._selectedCells), ...this.pendingSelectedCells];
