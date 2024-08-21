@@ -4,6 +4,10 @@
     <input #inputEl [id]="id" matInput [type]="type" [placeholder]="placeholder || label" [formControl]="formControl"
       [errorStateMatcher]="errorStateMatcher" autocomplete="off" (blur)="onBlur()" [matAutocomplete]="auto"
       (keydown.enter)="onEnterKeydown($event)">
+    <button (click)="emitSuffixClick($event)" [matTooltip]="suffix?.tooltip"
+      *ngIf="suffix && (isFocused || !suffix.showOnBlur)" mat-icon-button matSuffix>
+      <mat-icon>{{suffix.icon}}</mat-icon>
+    </button>
     <mat-autocomplete #auto="matAutocomplete" (opened)="triggerFocus()" [panelWidth]="suggestionsPanelWidth"
       (optionSelected)="optionSelected($event)">
       <mat-option *ngFor="let option of filteredSuggestions" [value]="option?.value" [ngStyle]="suggestionStyle"
@@ -26,6 +30,10 @@
       [showMaskTyped]="mask?.showMaskTyped" [thousandSeparator]="mask?.thousandSeparator"
       [leadZeroDateTime]="mask?.leadZeroDateTime" [allowNegativeNumbers]="mask?.allowNegativeNumbers"
       (keydown.enter)="onEnterKeydown($event)">
+    <button (click)="emitSuffixClick($event)" [matTooltip]="suffix?.tooltip"
+      *ngIf="suffix && (isFocused || !suffix.showOnBlur)" mat-icon-button matSuffix>
+      <mat-icon>{{suffix.icon}}</mat-icon>
+    </button>
     <mat-hint>{{helpText}}</mat-hint>
     <mat-error *ngIf="error">
       {{error}}

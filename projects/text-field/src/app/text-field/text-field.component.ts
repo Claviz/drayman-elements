@@ -44,11 +44,29 @@ export class TextFieldComponent extends AutocompleteFieldBase<string> implements
     allowNegativeNumbers?: boolean;
   }
   @Input() type?: 'text' | 'password' = 'text';
+  @Input() onSuffixClick?: () => Promise<void>;
+  @Input() suffix?: {
+    icon?: string;
+    showOnBlur?: boolean;
+    tooltip?: string;
+  };
+
   id = generate();
 
   ngAfterViewInit() {
     if (this.focused) {
       this.inputEl.nativeElement.focus();
+    }
+  }
+
+  get isFocused() {
+    return this.input?.focused;
+  }
+
+  emitSuffixClick($event: PointerEvent) {
+    if (this.onSuffixClick) {
+      $event.stopPropagation();
+      this.onSuffixClick();
     }
   }
 }

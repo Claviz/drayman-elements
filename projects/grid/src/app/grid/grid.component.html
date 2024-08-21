@@ -1,7 +1,7 @@
 <div #container class="wrapper" [ngClass]="scrollbarWidthClass" cdkScrollable (resized)="onResized($event)">
     <div [attr.ref]="gridRef" [style]="gridStyle" (mouseleave)="onGridMouseLeave($event)">
-        <div class="selectable" (mouseenter)="cell.hovered = true" (contextmenu)="oncontextmenu($event, cell)" tabindex="-1"
-            *ngFor="let cell of grid; trackBy: cellTrackByFn; let i = index" [style]="getCellStyle(cell)"
+        <div class="selectable" (mouseenter)="cell.hovered = true" (contextmenu)="oncontextmenu($event, cell)"
+            tabindex="-1" *ngFor="let cell of grid; trackBy: cellTrackByFn; let i = index" [style]="getCellStyle(cell)"
             (click)="emitCellClick($event, cell)" (mousedown)="onMouseDown($event, cell)"
             (mouseup)="onMouseUp($event, cell)" (mouseover)="onMouseOver($event, cell)"
             (mouseleave)="onMouseLeave($event, cell); cell.hovered = false;" [attr.ref]="cell.ref">
@@ -30,9 +30,10 @@
                                 <drayman-text-field-internal [metaData]="cell.row + '_' + cell.col"
                                     [appearance]="cellItem.value.appearance" [onValueChange]="onCellContentValueChange"
                                     [type]="cellItem.value.type" [value]="cellItem.value.value"
-                                    [label]="cellItem.value.label" [disabled]="cellItem.value.placeholder"
-                                    [helpText]="cellItem.value.helpText" [error]="cellItem.value.error"
-                                    [updateOnBlur]="cellItem.value.updateOnBlur"
+                                    [label]="cellItem.value.label" [disabled]="cellItem.value.disabled"
+                                    [placeholder]="cellItem.value.placeholder" [helpText]="cellItem.value.helpText"
+                                    [suffix]="cellItem.value.suffix"
+                                    [error]="cellItem.value.error" [updateOnBlur]="cellItem.value.updateOnBlur"
                                     [suggestions]="cellItem.value.suggestions"
                                     [suggestionsPanelWidth]="cellItem.value.suggestionsPanelWidth"
                                     [mask]="cellItem.value.mask">

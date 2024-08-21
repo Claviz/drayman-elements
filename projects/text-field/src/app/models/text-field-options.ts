@@ -12,4 +12,10 @@ export interface DraymanTextField extends InputFieldOptionsBase<string>, Autocom
      * Input will be focused on appearance if set to `true`.
      */
     focused?: boolean;
+    onSuffixClick?: ElementEvent<{}>;
+    suffix?: {
+        icon?: string;
+        showOnBlur?: boolean;
+        tooltip?: string;
+    }
 }
