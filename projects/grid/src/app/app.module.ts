@@ -16,6 +16,7 @@ import { TextFieldModule } from 'projects/text-field/src/app/app.module';
 import { DatepickerModule } from 'projects/datepicker/src/app/app.module';
 import { SelectModule } from 'projects/select/src/app/app.module';
 import { CheckboxModule } from 'projects/checkbox/src/app/app.module';
+import { SparklineComponent } from './sparkline/sparkline.component';
 
 @NgModule({
   imports: [
@@ -31,7 +32,7 @@ import { CheckboxModule } from 'projects/checkbox/src/app/app.module';
     SelectModule,
     CheckboxModule,
   ],
-  declarations: [GridComponent, ResizableDirective],
+  declarations: [GridComponent, ResizableDirective, SparklineComponent],
   providers: [
     { provide: OverlayContainer, useClass: SingleOverlayContainer, },
   ],

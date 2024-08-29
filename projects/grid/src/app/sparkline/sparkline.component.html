@@ -1,0 +1,16 @@
+<svg [attr.viewBox]="'0 0 ' + (viewBoxWidth + padding * 2) + ' ' + (viewBoxHeight + padding * 2)"
+    preserveAspectRatio="none" width="100%" height="100%">
+    <path [attr.d]="getPath()" [attr.stroke]="lineColor" fill="none" stroke-width="1"></path>
+
+    <!-- Circles for max points -->
+    <ng-container *ngFor="let point of maxPoints">
+        <circle [matTooltip]="point.tooltip" [attr.cx]="point.x" [attr.cy]="point.y" r="3" [attr.fill]="maxPointColor">
+        </circle>
+    </ng-container>
+
+    <!-- Circles for min points -->
+    <ng-container *ngFor="let point of minPoints">
+        <circle [matTooltip]="point.tooltip" [attr.cx]="point.x" [attr.cy]="point.y" r="3" [attr.fill]="minPointColor">
+        </circle>
+    </ng-container>
+</svg>
