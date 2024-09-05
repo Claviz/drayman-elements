@@ -4,6 +4,7 @@ import * as stardust from '@nebula.js/stardust';
 import EnigmaMocker from '../../enigma-mocker';
 import { requireFrom } from '../../custom-d3-require';
 import treemap from '../../../sn-treemap/sn-treemap';
+import datepicker from 'nebula-date-range-picker/dist/nebula-date-range-picker';
 
 const loadNebulaChart = requireFrom((name) => `https://unpkg.com/@nebula.js/${name}`).alias({
   '@nebula.js/stardust': stardust,
@@ -79,6 +80,9 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
       selectHyperCubeValues: async (...args) => {
         await this.onSelections?.({ selections: args, method: 'selectHyperCubeValues' })
       },
+      selectListObjectValues: async (...args) => {
+        await this.onSelections?.({ selections: args, method: 'selectListObjectValues' })
+      },
       rangeSelectHyperCubeValues: async (...args) => {
         await this.onSelections?.({ selections: args, method: 'rangeSelectHyperCubeValues' })
       },
@@ -149,6 +153,7 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
       ['sn-video-player', 'video-player'],
       ['sn-scatter-plot', 'scatterplot'],
       ['sn-treemap', 'treemap'],
+      ['nebula-date-range-picker', 'qlik-date-picker'],
       ['sn-pivot-table', 'pivot-table'],
       ['sn-map', 'map'],
       // ['sn-text', 'text-image'],
@@ -157,6 +162,9 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
       load: () => {
         if (t[0] === 'sn-treemap') {
           return Promise.resolve(treemap);
+        }
+        if (t[0] === 'nebula-date-range-picker') {
+          return Promise.resolve(datepicker);
         }
         return loadNebulaChart(t[0]);
       },

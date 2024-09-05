@@ -1,11 +1,11 @@
-import { Component, ElementRef, Input, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, ElementRef, Input, AfterViewInit, OnDestroy, OnChanges } from '@angular/core';
 
 @Component({
     selector: 'drayman-sparkline-internal',
     templateUrl: './sparkline.component.html',
     styleUrls: ['./sparkline.component.scss']
 })
-export class SparklineComponent implements AfterViewInit, OnDestroy {
+export class SparklineComponent implements AfterViewInit, OnDestroy, OnChanges {
 
     @Input() data: { value: number, tooltip?: any }[] = [];
     @Input() lineColor: string = '#7b7a78';
@@ -37,6 +37,10 @@ export class SparklineComponent implements AfterViewInit, OnDestroy {
         }
     }
 
+    ngOnChanges(): void {
+        this.recalculateViewBox();
+    }
+
     recalculateViewBox(): void {
         const parentElement = this.elementRef.nativeElement.parentElement.parentElement.parentElement;
         const parentWidth = parentElement.offsetWidth;
@@ -56,18 +60,22 @@ export class SparklineComponent implements AfterViewInit, OnDestroy {
         this.maxPoints = [];
         this.minPoints = [];
 
-        if (allEqual) {
+        if (this.data.length === 1) {
+            const x = this.viewBoxWidth / 2 + this.padding;
+            const y = this.viewBoxHeight / 2 + this.padding;
+            this.maxPoints = [{ x, y, tooltip: this.data[0].tooltip }];
+        } else if (allEqual) {
             const startX = this.padding;
             const endX = this.viewBoxWidth + this.padding;
             const y = this.viewBoxHeight / 2 + this.padding;
             this.data.forEach((_, index) => {
-                const x = startX + (index / (this.data.length - 1)) * (endX - startX);
+                const x = this.data.length > 1 ? startX + (index / (this.data.length - 1)) * (endX - startX) : startX;
                 this.maxPoints.push({ x, y, tooltip: _.tooltip });
             });
         } else {
-            const range = maxValue - minValue;
+            const range = maxValue - minValue || 1;
             this.data.forEach((value, index) => {
-                const x = this.padding + (index / (this.data.length - 1)) * this.viewBoxWidth;
+                const x = this.data.length > 1 ? this.padding + (index / (this.data.length - 1)) * this.viewBoxWidth : this.padding;
                 const y = this.padding + this.viewBoxHeight - ((value.value - minValue) / range * this.viewBoxHeight);
                 if (value.value === maxValue) {
                     this.maxPoints.push({ x, y, tooltip: value.tooltip });
@@ -81,9 +89,6 @@ export class SparklineComponent implements AfterViewInit, OnDestroy {
 
     getPath(): string {
         if (this.data.length === 1) {
-            const x = this.viewBoxWidth / 2 + this.padding;
-            const y = this.viewBoxHeight / 2 + this.padding;
-            this.maxPoints = [{ x, y, tooltip: this.data[0].tooltip }];
             return '';
         }
 
@@ -97,7 +102,7 @@ export class SparklineComponent implements AfterViewInit, OnDestroy {
 
         const maxValue = Math.max(...this.data.map(x => x.value));
         const minValue = Math.min(...this.data.map(x => x.value));
-        const range = maxValue - minValue;
+        const range = maxValue - minValue || 1;
 
         const points = this.data.map((value, index) => {
             const x = this.padding + (index / (this.data.length - 1)) * this.viewBoxWidth;
