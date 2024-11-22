@@ -35,5 +35,10 @@ export interface DraymanNebula {
     /**
      * Executed when field values needs to be cleared
      */
-    onClearField?: ElementEvent<{ fieldId }>
+    onClearField?: ElementEvent<{ fieldId }>;
+    /**
+     * Custom URL for Nebula packages.
+     * By default, Nebula packages are loaded from https://unpkg.com/@nebula.js/PACKAGE_NAME.
+     */
+    nebulaPackagesUrl?: string;
 }

@@ -3,12 +3,9 @@ import * as stardust from '@nebula.js/stardust';
 
 import EnigmaMocker from '../../enigma-mocker';
 import { requireFrom } from '../../custom-d3-require';
-import treemap from '../../../sn-treemap/sn-treemap';
-import datepicker from 'nebula-date-range-picker/dist/nebula-date-range-picker';
+// import treemap from '../../../sn-treemap/sn-treemap';
+// import datepicker from 'nebula-date-range-picker/dist/nebula-date-range-picker';
 
-const loadNebulaChart = requireFrom((name) => `https://unpkg.com/@nebula.js/${name}`).alias({
-  '@nebula.js/stardust': stardust,
-});
 @Component({
   selector: 'drayman-nebula-internal',
   templateUrl: './nebula.component.html',
@@ -24,6 +21,7 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() onSelectFieldValues?: (options) => Promise<any>;
   @Input() onGetFieldDescription?: (options) => Promise<any>;
   @Input() onClearField?: (options) => Promise<any>;
+  @Input() nebulaPackagesUrl?: string;
 
   @ViewChild('toolbar', { static: false }) toolbarEl: ElementRef;
   @ViewChild('viz', { static: false }) vizEl: ElementRef;
@@ -136,6 +134,9 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
       return this.onGetFieldDescription({ fieldId })
     }
 
+    const loadNebulaChart = requireFrom((name) => (this.nebulaPackagesUrl ? `${this.nebulaPackagesUrl}/${name}` : `https://unpkg.com/@nebula.js/${name}`)).alias({
+      '@nebula.js/stardust': stardust,
+    });
     const types = [
       ['sn-action-button@1.38.1', 'action-button'],
       ['sn-bar-chart', 'barchart'],
@@ -160,12 +161,12 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
     ].map((t) => ({
       name: t[1],
       load: () => {
-        if (t[0] === 'sn-treemap') {
-          return Promise.resolve(treemap);
-        }
-        if (t[0] === 'nebula-date-range-picker') {
-          return Promise.resolve(datepicker);
-        }
+        // if (t[0] === 'sn-treemap') {
+        //   return Promise.resolve(treemap);
+        // }
+        // if (t[0] === 'nebula-date-range-picker') {
+        //   return Promise.resolve(datepicker);
+        // }
         return loadNebulaChart(t[0]);
       },
     }));
