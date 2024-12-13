@@ -4,13 +4,15 @@
 
     <!-- Circles for max points -->
     <ng-container *ngFor="let point of maxPoints">
-        <circle [matTooltip]="point.tooltip" [attr.cx]="point.x" [attr.cy]="point.y" r="3" [attr.fill]="maxPointColor">
+        <circle *ngIf="maxPointColor !== 'none'" [matTooltip]="point.tooltip" [attr.cx]="point.x" [attr.cy]="point.y"
+            r="3" [attr.fill]="maxPointColor">
         </circle>
     </ng-container>
 
     <!-- Circles for min points -->
     <ng-container *ngFor="let point of minPoints">
-        <circle [matTooltip]="point.tooltip" [attr.cx]="point.x" [attr.cy]="point.y" r="3" [attr.fill]="minPointColor">
+        <circle *ngIf="minPointColor !== 'none'" [matTooltip]="point.tooltip" [attr.cx]="point.x" [attr.cy]="point.y"
+            r="3" [attr.fill]="minPointColor">
         </circle>
     </ng-container>
 </svg>

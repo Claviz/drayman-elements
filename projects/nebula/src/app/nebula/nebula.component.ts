@@ -66,6 +66,12 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
           args,
         });
       },
+      getHyperCubeContinuousData: async (...args) => {
+        return await this.onVizMethod({
+          name: 'getHyperCubeContinuousData',
+          args,
+        });
+      },
       getStackedDataPages: (...args) => {
         return this.qLayout.qHyperCube.qDataPages;
       },
@@ -74,6 +80,9 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
       getHyperCubeTreeData: () => {
       },
       beginSelections: (...args) => {
+      },
+      selectHyperCubeContinuousRange: async (...args) => {
+        await this.onSelections?.({ selections: args, method: 'selectHyperCubeContinuousRange' })
       },
       selectHyperCubeValues: async (...args) => {
         await this.onSelections?.({ selections: args, method: 'selectHyperCubeValues' })

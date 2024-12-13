@@ -76,7 +76,10 @@
                         </ng-container>
                         <ng-container *ngSwitchCase="'sparkline'">
                             <div [style]="(cell.hovered && cellItem.hoverStyle) ? cellItem.hoverStyle : cellItem.style">
-                                <drayman-sparkline-internal [data]="cellItem.value.data"></drayman-sparkline-internal>
+                                <drayman-sparkline-internal [data]="cellItem.value.data"
+                                    [lineColor]="cellItem.value.lineColor"
+                                    [minPointColor]="cellItem.value.minPointColor"
+                                    [maxPointColor]="cellItem.value.maxPointColor"></drayman-sparkline-internal>
                             </div>
                         </ng-container>
                     </ng-container>
