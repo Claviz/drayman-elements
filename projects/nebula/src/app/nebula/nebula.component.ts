@@ -19,6 +19,8 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() onGetMeasure?: (options) => Promise<any>;
   @Input() onGetObject?: (options) => Promise<any>;
   @Input() onSelectFieldValues?: (options) => Promise<any>;
+  @Input() onFieldSelectPossible?: (options) => Promise<any>;
+  @Input() onFieldSelectAll?: (options) => Promise<any>;
   @Input() onGetFieldDescription?: (options) => Promise<any>;
   @Input() onClearField?: (options) => Promise<any>;
   @Input() nebulaPackagesUrl?: string;
@@ -136,7 +138,13 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
         },
         clear: async () => {
           return await this.onClearField({ fieldId });
-        }
+        },
+        selectAll: async (softlock) => {
+          return await this.onFieldSelectAll({ fieldId, softlock });
+        },
+        selectPossible: async (softlock) => {
+          return await this.onFieldSelectPossible({ fieldId, softlock });
+        },
       }
     }
     this.app.getFieldDescription = async (fieldId) => {
