@@ -174,7 +174,7 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
       ['nebula-date-range-picker', 'qlik-date-picker'],
       ['sn-pivot-table', 'pivot-table'],
       ['sn-map', 'map'],
-      // ['sn-text', 'text-image'],
+      ['sn-text', 'sn-text'],
     ].map((t) => ({
       name: t[1],
       load: () => {
