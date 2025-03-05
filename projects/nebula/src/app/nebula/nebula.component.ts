@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnDestroy, SimpleChanges, ViewChild } from '@angular/core';
 import * as stardust from '@nebula.js/stardust';
 
-import EnigmaMocker from '../../enigma-mocker';
+// import EnigmaMocker from '../../enigma-mocker';
 import { requireFrom } from '../../custom-d3-require';
 // import treemap from '../../../sn-treemap/sn-treemap';
 // import datepicker from 'nebula-date-range-picker/dist/nebula-date-range-picker';
@@ -23,6 +23,7 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() onFieldSelectAll?: (options) => Promise<any>;
   @Input() onGetFieldDescription?: (options) => Promise<any>;
   @Input() onClearField?: (options) => Promise<any>;
+  @Input() onGetMeasureProperties?: (options) => Promise<any>;
   @Input() nebulaPackagesUrl?: string;
 
   @ViewChild('toolbar', { static: false }) toolbarEl: ElementRef;
@@ -79,7 +80,11 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
       },
       getFullPropertyTree: () => {
       },
-      getHyperCubeTreeData: () => {
+      getHyperCubeTreeData: async (...args) => {
+        return await this.onVizMethod({
+          name: 'getHyperCubeTreeData',
+          args,
+        });
       },
       beginSelections: (...args) => {
       },
@@ -91,6 +96,9 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
       },
       selectListObjectValues: async (...args) => {
         await this.onSelections?.({ selections: args, method: 'selectListObjectValues' })
+      },
+      selectPivotCells: async (...args) => {
+        await this.onSelections?.({ selections: args, method: 'selectPivotCells' })
       },
       rangeSelectHyperCubeValues: async (...args) => {
         await this.onSelections?.({ selections: args, method: 'rangeSelectHyperCubeValues' })
@@ -112,11 +120,14 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
       selectValues: (...args) => {
       },
     };
-    this.app = await EnigmaMocker.fromGenericObjects([genericObject,]);
+    this.app = await stardust.EnigmaMocker.fromGenericObjects([genericObject,]);
     this.app.getMeasure = async (measureId) => {
       return {
         getMeasure: async () => {
           return await this.onGetMeasure({ measureId });
+        },
+        getProperties: async (...args) => {
+          return await this.onGetMeasureProperties({ measureId, args });
         }
       };
     }
@@ -175,6 +186,7 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
       ['sn-pivot-table', 'pivot-table'],
       ['sn-map', 'map'],
       ['sn-text', 'sn-text'],
+      ['sn-distplot', 'distributionplot'],
     ].map((t) => ({
       name: t[1],
       load: () => {
