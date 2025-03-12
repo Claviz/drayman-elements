@@ -183,6 +183,7 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
       ['sn-scatter-plot', 'scatterplot'],
       ['sn-treemap', 'treemap'],
       ['nebula-date-range-picker', 'qlik-date-picker'],
+      ['nebula-radar-chart', 'qlik-radar-chart'],
       ['sn-pivot-table', 'pivot-table'],
       ['sn-map', 'map'],
       ['sn-text', 'sn-text'],
