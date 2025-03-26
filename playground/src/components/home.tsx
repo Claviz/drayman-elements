@@ -1,25 +1,24 @@
 export const component: DraymanComponent = async ({ forceUpdate }) => {
 
-    return () => {
+    let currentValue = 0;
 
+    return () => {
         return (
-            <drayman-calendar
-                events={[
-                    {
-                        title: 'Event 1',
-                        start: new Date().toISOString(),
-                        end: new Date('2023-01-01').toISOString(),
-                        id: 'event_1',
-                        color: 'blue',
-                    }
-                ]}
-                onEventClick={async ({ id }) => {
-                    console.log(id);
-                }}
-                onDayClick={async ({ date }) => {
-                    console.log(date);
-                }}
-            />
+            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', flexDirection: 'column' }}>
+                <drayman-slider
+                    onValueChange={async ({ value }) => {
+                        currentValue = value;
+                        await forceUpdate();
+                    }}
+                    enableThumbLabel
+                    color="orange"
+                    alwaysOnThumb
+                    min={-1000}
+                    max={1000}
+                    value={currentValue}
+                />
+                <div>Current value on server: {currentValue}</div>
+            </div>
         );
     }
 }

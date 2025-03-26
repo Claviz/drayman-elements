@@ -20,6 +20,7 @@ import { DraymanNebula } from '../dist/types/nebula/src/app/models/nebula-option
 import { DraymanGrid } from '../dist/types/grid/src/app/models/grid-options';
 import { DraymanCodeEditor } from '../dist/types/code-editor/src/app/models/code-editor-options';
 import { DraymanCalendar } from '../dist/types/calendar/src/app/models/calendar-options';
+import { DraymanSlider } from '../dist/types/slider/src/app/models/slider-options';
 
 declare global {
     interface DraymanElementsProps {
@@ -274,6 +275,44 @@ declare global {
      * ```
      */
     interface DraymanCheckboxProps extends DraymanCheckbox, DraymanElementsProps { }
+    /**
+     * # <drayman-slider \/>
+     *
+     * Slider powered by [Angular Material](https://material.angular.io/) library.
+     *
+     * ## Example of usage
+     *
+     * ### Orange slider with thumb label always on
+     * ![](media://drayman-slider.gif)
+     *
+     * ```typescript
+     * export const component: DraymanComponent = async ({ forceUpdate }) => {
+     * 
+     *     let currentValue = 0;
+     * 
+     *     return () => {
+     *         return (
+     *             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', flexDirection: 'column' }}>
+     *                 <drayman-slider
+     *                     onValueChange={async ({ value }) => {
+     *                         currentValue = value;
+     *                         await forceUpdate();
+     *                     }}
+     *                     enableThumbLabel
+     *                     color="orange"
+     *                     alwaysOnThumb
+     *                     min={-1000}
+     *                     max={1000}
+     *                     value={currentValue}
+     *                 />
+     *                 <div>Current value on server: {currentValue}</div>
+     *             </div>
+     *         );
+     *     }
+     * }
+     * ```
+     */
+    interface DraymanSliderProps extends DraymanSlider, DraymanElementsProps { }
     /**
      * # <drayman-claviz-charts \/>
      *

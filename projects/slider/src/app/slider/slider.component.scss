@@ -1,0 +1,18 @@
+::ng-deep {
+    .always-on-indicator .mat-slider-thumb-label {
+        transform: rotate(45deg) !important;
+        border-radius: 50% 50% 0 !important;
+    }
+    .always-on-indicator .mat-slider-thumb {
+        transform: scale(0) !important;
+    }
+    .always-on-indicator .mat-slider-thumb-label-text {
+        opacity: 1 !important;
+    }
+
+    .mat-slider-track-fill,
+    .mat-slider-thumb-label,
+    .mat-slider-thumb {
+        background-color: var(--accent-color, #000) !important;
+    }
+}

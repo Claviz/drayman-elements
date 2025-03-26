@@ -13,6 +13,7 @@ Default drayman elements library.
 - [drayman-button](interfaces/__global.draymanbuttonprops.html)
 - [drayman-menu](interfaces/__global.draymanmenuprops.html)
 - [drayman-checkbox](interfaces/__global.draymancheckboxprops.html)
+- [drayman-slider](interfaces/__global.draymansliderprops.html)
 - [drayman-claviz-charts](interfaces/__global.draymanclavizchartsprops.html)
 - [drayman-datepicker](interfaces/__global.draymandatepickerprops.html)
 - [drayman-gauge](interfaces/__global.draymangaugeprops.html)

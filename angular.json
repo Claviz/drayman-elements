@@ -1103,6 +1103,109 @@
         }
       }
     },
+    "slider": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/slider",
+      "sourceRoot": "projects/slider/src",
+      "prefix": "drayman",
+      "architect": {
+        "build": {
+          "builder": "ngx-build-plus:browser",
+          "options": {
+            "outputPath": "dist/slider",
+            "index": "",
+            "main": "projects/slider/src/main.ts",
+            "polyfills": "projects/slider/src/polyfills.ts",
+            "tsConfig": "projects/slider/tsconfig.app.json",
+            "assets": [
+              "projects/slider/src/favicon.ico",
+              "projects/slider/src/assets"
+            ],
+            "styles": [
+              "projects/slider/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/slider/src/environments/environment.ts",
+                  "with": "projects/slider/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "ngx-build-plus:dev-server",
+          "options": {
+            "browserTarget": "slider:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "slider:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "slider:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/slider/src/test.ts",
+            "polyfills": "projects/slider/src/polyfills.ts",
+            "tsConfig": "projects/slider/tsconfig.spec.json",
+            "karmaConfig": "projects/slider/karma.conf.js",
+            "assets": [
+              "projects/slider/src/favicon.ico",
+              "projects/slider/src/assets"
+            ],
+            "styles": [
+              "projects/slider/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/slider/e2e/protractor.conf.js",
+            "devServerTarget": "slider:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "slider:serve:production"
+            }
+          }
+        }
+      }
+    },
     "textarea-field": {
       "projectType": "application",
       "schematics": {
