@@ -1,5 +1,5 @@
 <div #container class="wrapper" [ngClass]="scrollbarWidthClass" cdkScrollable (resized)="onResized($event)">
-    <div [attr.ref]="gridRef" [style]="gridStyle" (mouseleave)="onGridMouseLeave($event)">
+    <div [attr.ref]="gridRef" [style]="customGridStyle" (mouseleave)="onGridMouseLeave($event)">
         <div class="selectable" (mouseenter)="cell.hovered = true" (contextmenu)="oncontextmenu($event, cell)"
             tabindex="-1" *ngFor="let cell of grid; trackBy: cellTrackByFn; let i = index" [style]="getCellStyle(cell)"
             (click)="emitCellClick($event, cell)" (mousedown)="onMouseDown($event, cell)"

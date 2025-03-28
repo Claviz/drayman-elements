@@ -16,8 +16,8 @@ import {
 } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ResizedEvent } from 'angular-resize-event';
-import { merge, Subject } from 'rxjs';
-import { debounce, debounceTime, throttleTime } from 'rxjs/operators';
+import { merge, Subject, Subscription } from 'rxjs';
+import { auditTime, debounce, debounceTime, throttleTime } from 'rxjs/operators';
 import { GridContentButton, GridCell } from '../models/grid-options';
 import { MatMenuTrigger } from '@angular/material/menu';
 // import CustomStore from 'devextreme/data/custom_store';
@@ -34,10 +34,20 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   @ViewChild('container') containerRef: ElementRef;
   @HostListener('wheel', ['$event'])
   onWheel(event: WheelEvent) {
+    const container = this.containerRef.nativeElement as HTMLDivElement;
     if (this.scrollDirection === 'horizontal') {
       event.preventDefault();
-      const container = this.containerRef.nativeElement as HTMLDivElement;
       container.scrollLeft += event.deltaY;
+    } else if (this.scrollSnap) {
+      event.preventDefault();
+      if (this.cellHeight) {
+        const currentScrollTop = container.scrollTop;
+        let nextScrollTop = event.deltaY > 0
+          ? currentScrollTop + this.cellHeight
+          : currentScrollTop - this.cellHeight;
+        nextScrollTop = Math.max(0, Math.min(nextScrollTop, container.scrollHeight - container.clientHeight));
+        this.scrollable.scrollTo({ top: nextScrollTop });
+      }
     }
   }
 
@@ -73,6 +83,8 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   @Input() columnWidths?: number[];
   @Input() columnCount: number;
   @Input() rowCount: number;
+  @Input() gridStyle?: any;
+  @Input() scrollSnap?: boolean = false;
   @Input() scrollbarWidth: 'narrow' | 'medium' | 'wide' = 'narrow';
 
   resized$ = new Subject();
@@ -86,6 +98,11 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   hoveredRow: number = -1;
   ctrl;
   menuTopLeftPosition = { x: '0', y: '0' };
+  selectedCellChangeSubscription: Subscription;
+  scrollableSubscription: Subscription;
+  scrollSnapSubscription: Subscription;
+  isUserDraggingScrollbar = false;
+  scrollSnapTimeout: any;
 
   get scrollbarWidthClass() {
     if (this.scrollbarWidth === 'narrow') {
@@ -130,6 +147,15 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   }
 
   ngOnDestroy() {
+    if (this.scrollableSubscription) {
+      this.scrollableSubscription.unsubscribe();
+    }
+    if (this.scrollSnapSubscription) {
+      this.scrollSnapSubscription.unsubscribe();
+    }
+    if (this.selectedCellChangeSubscription) {
+      this.selectedCellChangeSubscription.unsubscribe();
+    }
   }
 
   getSanitizedString(value: string) {
@@ -246,26 +272,87 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
       this.resized$.next();
     }
   }
+
+  snapToGrid() {
+    const scrollElement = this.scrollable.getElementRef().nativeElement;
+    if (this.cellHeight) {
+      const currentScrollTop = this.scrollable.measureScrollOffset('top');
+      const scrollHeight = scrollElement.scrollHeight;
+      const clientHeight = scrollElement.clientHeight;
+      const maxScrollTop = scrollHeight - clientHeight;
+      const remainder = currentScrollTop % this.cellHeight;
+      if (remainder !== 0) {
+        let target = remainder < this.cellHeight / 2
+          ? currentScrollTop - remainder
+          : currentScrollTop + (this.cellHeight - remainder);
+        if (target > maxScrollTop - this.cellHeight / 2) {
+          target = maxScrollTop;
+        }
+        this.scrollable.scrollTo({ top: target });
+      }
+    }
+    if (this.cellWidth && !this.columnWidths?.length) {
+      const currentScrollLeft = this.scrollable.measureScrollOffset('left');
+      const scrollWidth = scrollElement.scrollWidth;
+      const clientWidth = scrollElement.clientWidth;
+      const maxScrollLeft = scrollWidth - clientWidth;
+      const remainder = currentScrollLeft % this.cellWidth;
+      if (remainder !== 0) {
+        let target = remainder < this.cellWidth / 2
+          ? currentScrollLeft - remainder
+          : currentScrollLeft + (this.cellWidth - remainder);
+        if (target > maxScrollLeft - this.cellWidth / 2) {
+          target = maxScrollLeft;
+        }
+        this.scrollable.scrollTo({ left: target });
+      }
+    }
+  }
   ngAfterViewInit() {
-    merge(
+    const scrollElement = this.scrollable.getElementRef().nativeElement;
+
+    scrollElement.addEventListener('mousedown', () => {
+      this.isUserDraggingScrollbar = true;
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (this.isUserDraggingScrollbar) {
+        this.isUserDraggingScrollbar = false;
+        setTimeout(() => {
+          this.snapToGrid();
+        }, 100);
+      }
+    });
+    if (this.scrollSnap) {
+      this.scrollSnapSubscription = this.scrollable.elementScrolled().subscribe(() => {
+        if (!this.isUserDraggingScrollbar) {
+          clearTimeout(this.scrollSnapTimeout);
+          this.scrollSnapTimeout = setTimeout(() => {
+            this.snapToGrid();
+          }, 50);
+        }
+      });
+    }
+    this.scrollableSubscription = merge(
       this.scrollable.elementScrolled(),
       this.resized$,
     ).pipe(
-      // debounceTime(500)
-      debounceTime(50),
+      debounceTime(500),
     ).subscribe((x) => {
-      this.onScroll?.({
-        currentCol: this.getCurrentColumn(this.scrollable.measureScrollOffset('left')),
-        visibleColCount: this.getVisibleColumnCount(
-          this.scrollable.getElementRef().nativeElement.clientWidth,
-          this.getCurrentColumn(this.scrollable.measureScrollOffset('left')),
-          this.scrollable.measureScrollOffset('left')
-        ),
-        currentRow: this.cellHeight ? Math.floor(this.scrollable.measureScrollOffset('top') / this.cellHeight) : 0,
-        visibleRowCount: this.cellHeight ? Math.ceil(this.scrollable.getElementRef().nativeElement.clientHeight / this.cellHeight) : this.rowCount,
-      })
+      if (!this.isUserDraggingScrollbar) {
+        this.onScroll?.({
+          currentCol: this.getCurrentColumn(this.scrollable.measureScrollOffset('left')),
+          visibleColCount: this.getVisibleColumnCount(
+            this.scrollable.getElementRef().nativeElement.clientWidth,
+            this.getCurrentColumn(this.scrollable.measureScrollOffset('left')),
+            this.scrollable.measureScrollOffset('left')
+          ),
+          currentRow: this.cellHeight ? Math.floor(this.scrollable.measureScrollOffset('top') / this.cellHeight) : 0,
+          visibleRowCount: this.cellHeight ? Math.ceil(this.scrollable.getElementRef().nativeElement.clientHeight / this.cellHeight) : this.rowCount,
+        })
+      }
     });
-    this.selectedCellsChanged$.pipe(
+    this.selectedCellChangeSubscription = this.selectedCellsChanged$.pipe(
       debounceTime(250),
     ).subscribe((x) => {
       this.onSelectedCellsChange?.({
@@ -350,7 +437,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
     }
   }
 
-  get gridStyle() {
+  get customGridStyle() {
     const height = (this.cellHeight || 0) * (this.rowCount || 0);
     const gridTemplateColumns = this.columnWidths
       ? this.columnWidths.map(width => `${width}px`).join(' ')
@@ -363,7 +450,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
         : (this.cellWidth ? `${this.columnCount * this.cellWidth}px` : `100%`),
       height: height ? `${height}px` : `100%`,
       display: 'grid',
-      userSelect: 'none'
+      ...(this.gridStyle || {}),
     };
   }
 
