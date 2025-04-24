@@ -1,6 +1,6 @@
 {
   "name": "@drayman/elements",
-  "version": "1.57.0",
+  "version": "1.58.0",
   "description": "A collection of web components for Drayman.",
   "license": "MIT",
   "keywords": [
@@ -12,7 +12,7 @@
     "build:types": "tsc -p ./tsconfig.types.json",
     "typedoc": "npm run build:types && typedoc --tsconfig ./tsconfig.types.json",
     "lint": "ng lint",
-    "build": "npm run build:calendar && npm run build:code-editor && npm run build:button && npm run build:text-field && npm run build:claviz-charts && npm run build:file-uploader && npm run build:number-field && npm run build:select && npm run build:table && npm run build:checkbox && npm run build:slider && npm run build:textarea-field && npm run build:radio-group && npm run build:datepicker && npm run build:timepicker && npm run build:pdf-viewer && npm run build:ngx-charts && npm run build:menu && npm run build:ngx-graph && npm run build:youtube-player && npm run build:nebula && npm run build:grid && npm run build:gauge && npm run typedoc",
+    "build": "npm run build:calendar && npm run build:code-editor && npm run build:button && npm run build:text-field && npm run build:claviz-charts && npm run build:file-uploader && npm run build:number-field && npm run build:select && npm run build:table && npm run build:checkbox && npm run build:slider && npm run build:textarea-field && npm run build:radio-group && npm run build:datepicker && npm run build:timepicker && npm run build:pdf-viewer && npm run build:ngx-charts && npm run build:menu && npm run build:ngx-graph && npm run build:youtube-player && npm run build:nebula && npm run build:grid && npm run build:gauge && npm run build:year-calendar && npm run typedoc",
     "build:code-editor": "ng build code-editor --extra-webpack-config webpack.partial.js --configuration production --single-bundle --output-hashing=none",
     "build:calendar": "ng build calendar --configuration production --single-bundle --output-hashing=none",
     "build:button": "ng build button --configuration production --single-bundle --output-hashing=none",
@@ -36,6 +36,7 @@
     "build:ngx-charts": "ng build ngx-charts --configuration production --single-bundle --output-hashing=none",
     "build:ngx-graph": "ng build ngx-graph --configuration production --single-bundle --output-hashing=none",
     "build:menu": "ng build menu --configuration production --single-bundle --output-hashing=none",
+    "build:year-calendar": "cpx \"projects/year-calendar/index.js\" dist/year-calendar",
     "create-element": "./element-generator/create.sh",
     "e2e": "ng e2e"
   },
@@ -52,6 +53,9 @@
       },
       "drayman-calendar": {
         "script": "./dist/calendar/main.js"
+      },
+      "drayman-year-calendar": {
+        "script": "./dist/year-calendar/index.js"
       },
       "drayman-code-editor": {
         "script": "./dist/code-editor/main.js"
@@ -151,6 +155,7 @@
     "claviz-charts": "0.5.0",
     "codelyzer": "^6.0.0",
     "codemirror": "5.65.2",
+    "cpx": "^1.5.0",
     "d3-require": "1.2.4",
     "date-fns": "2.29.2",
     "dayjs": "1.9.6",

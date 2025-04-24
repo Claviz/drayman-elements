@@ -3,6 +3,7 @@ import { DraymanClavizCharts } from '../dist/types/claviz-charts/src/app/models/
 import { DraymanDatepicker } from '../dist/types/datepicker/src/app/models/datepicker-options';
 import { DraymanGauge } from '../dist/types/gauge/src/app/models/gauge-options';
 import { DraymanFileUploader } from '../dist/types/file-uploader/src/app/models/file-uploader-options';
+import { DraymanYearCalendar } from '../dist/types/year-calendar/options';
 import { DraymanMenu } from '../dist/types/menu/src/app/models/menu-options';
 import { DraymanNgxCharts } from '../dist/types/ngx-charts/src/app/models/ngx-charts-options';
 import { DraymanNgxGraph } from '../dist/types/ngx-graph/src/app/models/ngx-graph-options';
@@ -313,6 +314,44 @@ declare global {
      * ```
      */
     interface DraymanSliderProps extends DraymanSlider, DraymanElementsProps { }
+    /**
+     * # <drayman-year-calendar \/>
+     *
+     * Year calendar.
+     *
+     * ## Example of usage
+     *
+     * ### Year calendar with selected dates.
+     * ![](media://drayman-year-calendar.gif)
+     *
+     * ```typescript
+     * export const component: DraymanComponent = async ({ forceUpdate }) => {
+     * 
+     *     let selectedDates = ['2025-01-01'];
+     * 
+     *     return () => {
+     *         return (
+     *             <div>
+     *                 <p>Selected dates count: {selectedDates.length}</p>
+     *                 <drayman-year-calendar
+     *                     selectedDates={selectedDates}
+     *                     year={2025}
+     *                     onDayClick={async ({ date }) => {
+     *                         if (selectedDates.includes(date)) {
+     *                             selectedDates = selectedDates.filter((d) => d !== date);
+     *                         } else {
+     *                             selectedDates.push(date);
+     *                         }
+     *                         await forceUpdate();
+     *                     }}
+     *                 />
+     *             </div>
+     *         );
+     *     }
+     * }
+     * ```
+     */
+    interface DraymanYearCalendarProps extends DraymanYearCalendar, DraymanElementsProps { }
     /**
      * # <drayman-claviz-charts \/>
      *
