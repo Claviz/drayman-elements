@@ -1,0 +1,16 @@
+<div class="calendar">
+    <div class="month" *ngFor="let month of months;">
+        <div class="cell header">{{ month.name }}</div>
+        <div class="cell weekday" *ngFor="let d of daysOfWeek">
+            {{ d }}
+        </div>
+        <ng-container *ngFor="let week of month.weeks; trackBy: trackByWeek">
+            <ng-container *ngFor="let cell of week; trackBy: trackByCell">
+                <div class="cell" [class.clickable]="cell.inMonth" [class.selected]="cell.selected"
+                    (click)="onCellClick(cell)">
+                    {{ cell.label }}
+                </div>
+            </ng-container>
+        </ng-container>
+    </div>
+</div>

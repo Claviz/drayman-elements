@@ -1,0 +1,45 @@
+.calendar {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  gap: 1rem;
+}
+
+.month {
+  display: grid;
+  grid-template-columns: repeat(7, 40px);
+  grid-template-rows: auto auto repeat(6, 20px);
+  gap: 1px;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 20px;
+  box-sizing: border-box;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.header {
+  grid-column: span 7;
+  font-weight: bold;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.weekday {
+  font-weight: bold;
+  background-color: #f0f0f0;
+  border-bottom: 1px solid #000;
+}
+
+.selected {
+  background-color: red;
+}

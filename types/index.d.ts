@@ -3,7 +3,7 @@ import { DraymanClavizCharts } from '../dist/types/claviz-charts/src/app/models/
 import { DraymanDatepicker } from '../dist/types/datepicker/src/app/models/datepicker-options';
 import { DraymanGauge } from '../dist/types/gauge/src/app/models/gauge-options';
 import { DraymanFileUploader } from '../dist/types/file-uploader/src/app/models/file-uploader-options';
-import { DraymanYearCalendar } from '../dist/types/year-calendar/options';
+import { DraymanYearCalendar } from '../dist/types/year-calendar/src/app/models/year-calendar-options';
 import { DraymanMenu } from '../dist/types/menu/src/app/models/menu-options';
 import { DraymanNgxCharts } from '../dist/types/ngx-charts/src/app/models/ngx-charts-options';
 import { DraymanNgxGraph } from '../dist/types/ngx-graph/src/app/models/ngx-graph-options';

@@ -43,7 +43,7 @@
         "./projects/file-uploader/src/app/models/file-uploader-options.ts",
         "./projects/code-editor/src/app/models/code-editor-options.ts",
         "./projects/calendar/src/app/models/calendar-options.ts",
-        "./projects/year-calendar/index.ts",
+        "./projects/year-calendar/src/app/models/year-calendar-options.ts",
         "./node_modules/claviz-charts/lib/models/container-chart-options.d.ts",
         "./node_modules/@drayman/types/types/index.d.ts",
         "./projects/shared/models/button-options.ts"

@@ -1,6 +1,6 @@
 {
   "name": "@drayman/elements",
-  "version": "1.58.0",
+  "version": "1.59.0",
   "description": "A collection of web components for Drayman.",
   "license": "MIT",
   "keywords": [
@@ -36,7 +36,7 @@
     "build:ngx-charts": "ng build ngx-charts --configuration production --single-bundle --output-hashing=none",
     "build:ngx-graph": "ng build ngx-graph --configuration production --single-bundle --output-hashing=none",
     "build:menu": "ng build menu --configuration production --single-bundle --output-hashing=none",
-    "build:year-calendar": "cpx \"projects/year-calendar/index.js\" dist/year-calendar",
+    "build:year-calendar": "ng build year-calendar --configuration production --single-bundle --output-hashing=none",
     "create-element": "./element-generator/create.sh",
     "e2e": "ng e2e"
   },
@@ -55,7 +55,7 @@
         "script": "./dist/calendar/main.js"
       },
       "drayman-year-calendar": {
-        "script": "./dist/year-calendar/index.js"
+        "script": "./dist/year-calendar/main.js"
       },
       "drayman-code-editor": {
         "script": "./dist/code-editor/main.js"

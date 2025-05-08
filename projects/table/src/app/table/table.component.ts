@@ -232,7 +232,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
   }
 
   trackByFn(index, item) {
-    return index;
+    return item?._id?.value || index;
   }
 
   ngOnChanges(changes: SimpleChanges) {

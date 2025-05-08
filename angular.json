@@ -2246,6 +2246,114 @@
         }
       }
     },
+    "year-calendar": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        }
+      },
+      "root": "projects/year-calendar",
+      "sourceRoot": "projects/year-calendar/src",
+      "prefix": "drayman",
+      "architect": {
+        "build": {
+          "builder": "ngx-build-plus:browser",
+          "options": {
+            "outputPath": "dist/year-calendar",
+            "index": "",
+            "main": "projects/year-calendar/src/main.ts",
+            "polyfills": "projects/year-calendar/src/polyfills.ts",
+            "tsConfig": "projects/year-calendar/tsconfig.app.json",
+            "assets": [
+              "projects/year-calendar/src/favicon.ico",
+              "projects/year-calendar/src/assets"
+            ],
+            "styles": [
+              "projects/year-calendar/src/styles.scss"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/year-calendar/src/environments/environment.ts",
+                  "with": "projects/year-calendar/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb",
+                  "maximumError": "10kb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "ngx-build-plus:dev-server",
+          "options": {
+            "browserTarget": "year-calendar:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "year-calendar:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "year-calendar:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/year-calendar/src/test.ts",
+            "polyfills": "projects/year-calendar/src/polyfills.ts",
+            "tsConfig": "projects/year-calendar/tsconfig.spec.json",
+            "karmaConfig": "projects/year-calendar/karma.conf.js",
+            "assets": [
+              "projects/year-calendar/src/favicon.ico",
+              "projects/year-calendar/src/assets"
+            ],
+            "styles": [
+              "projects/year-calendar/src/styles.scss"
+            ],
+            "scripts": []
+          }
+        },
+        "e2e": {
+          "builder": "@angular-devkit/build-angular:protractor",
+          "options": {
+            "protractorConfig": "projects/year-calendar/e2e/protractor.conf.js",
+            "devServerTarget": "year-calendar:serve"
+          },
+          "configurations": {
+            "production": {
+              "devServerTarget": "year-calendar:serve:production"
+            }
+          }
+        }
+      }
+    },
     "nebula": {
       "projectType": "application",
       "schematics": {
