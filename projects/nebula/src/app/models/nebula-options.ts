@@ -41,4 +41,5 @@ export interface DraymanNebula {
      * By default, Nebula packages are loaded from https://unpkg.com/@nebula.js/PACKAGE_NAME.
      */
     nebulaPackagesUrl?: string;
+    onEvaluate?: ElementEvent<{ expression: string; }>;
 }

@@ -22,6 +22,7 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
   @Input() onFieldSelectPossible?: (options) => Promise<any>;
   @Input() onFieldSelectAll?: (options) => Promise<any>;
   @Input() onGetFieldDescription?: (options) => Promise<any>;
+  @Input() onEvaluate?: (options) => Promise<any>;
   @Input() onClearField?: (options) => Promise<any>;
   @Input() onGetMeasureProperties?: (options) => Promise<any>;
   @Input() nebulaPackagesUrl?: string;
@@ -160,6 +161,9 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
     }
     this.app.getFieldDescription = async (fieldId) => {
       return this.onGetFieldDescription({ fieldId })
+    }
+    this.app.evaluate = async (expression) => {
+      return this.onEvaluate({ expression })
     }
 
     const loadNebulaChart = requireFrom((name) => (this.nebulaPackagesUrl ? `${this.nebulaPackagesUrl}/${name}` : `https://unpkg.com/@nebula.js/${name}`)).alias({
