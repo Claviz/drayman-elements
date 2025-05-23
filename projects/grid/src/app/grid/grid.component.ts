@@ -35,18 +35,24 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   @HostListener('wheel', ['$event'])
   onWheel(event: WheelEvent) {
     const container = this.containerRef.nativeElement as HTMLDivElement;
-    if (this.scrollDirection === 'horizontal') {
-      event.preventDefault();
-      container.scrollLeft += event.deltaY;
-    } else if (this.scrollSnap) {
-      event.preventDefault();
-      if (this.cellHeight) {
+    const isShift = event.shiftKey;
+    const shouldScrollHorizontally = (this.scrollDirection === 'horizontal') !== isShift;
+    event.preventDefault();
+    if (shouldScrollHorizontally) {
+      const delta = event.deltaY || event.deltaX;
+      container.scrollLeft += delta;
+    } else {
+      const delta = event.deltaY || event.deltaX;
+      if (this.scrollSnap && this.cellHeight) {
         const currentScrollTop = container.scrollTop;
-        let nextScrollTop = event.deltaY > 0
+        let nextScrollTop = delta > 0
           ? currentScrollTop + this.cellHeight
           : currentScrollTop - this.cellHeight;
+
         nextScrollTop = Math.max(0, Math.min(nextScrollTop, container.scrollHeight - container.clientHeight));
         this.scrollable.scrollTo({ top: nextScrollTop });
+      } else {
+        container.scrollTop += delta;
       }
     }
   }
