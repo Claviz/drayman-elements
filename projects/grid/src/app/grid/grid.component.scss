@@ -1,64 +1,132 @@
 .wrapper {
+    position: relative;
     width: 100%;
     height: 100%;
     overflow: auto;
 }
-
 .wrapper::-webkit-scrollbar {
     width: 10px;
     height: 10px;
 }
-
 .scrollbar-medium::-webkit-scrollbar {
     width: 14px;
     height: 14px;
 }
-
 .scrollbar-wide::-webkit-scrollbar {
     width: 16px;
     height: 16px;
 }
-
 .wrapper::-webkit-scrollbar-track {
     background: #f0f0f000;
 }
-
 .wrapper::-webkit-scrollbar-thumb {
     background: #88888840;
 }
-
 .wrapper::-webkit-scrollbar-thumb:hover {
     background: #888888;
 }
-
 .wrapper::-webkit-scrollbar-thumb:window-inactive {
     background: var(--component-A-color);
 }
 
-.resizable-gutter {
-    width: 10px; 
-    height: 100%;
+.spacer {
     position: absolute;
-    right: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.virtual-grid-container {
+    pointer-events: auto;
+    z-index: 1;
+}
+
+.selectable {
+    position: relative;
+    pointer-events: auto;
+    z-index: 2;
+}
+
+.resizable-gutter {
+    position: absolute;
     top: 0;
     bottom: 0;
+    right: 0;
+    width: 10px;
     cursor: col-resize;
-    z-index: 1;
-    background-color: transparent; 
+    pointer-events: auto;
+    z-index: 3;
+    background-color: transparent;
 }
 
 .resizable-gutter::before {
     content: "";
-    display: block;
-    background-color: #ccc;
-    width: 5px; 
-    height: 100%;
     position: absolute;
     right: 0;
-    opacity: 0; 
-    transition: opacity 0.3s ease; 
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    background-color: #ccc;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+.resizable-gutter:hover::before {
+    opacity: 1;
 }
 
-.resizable-gutter:hover::before {
-    opacity: 1; 
+[resizable-gutter-inside] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 10px;
+    cursor: col-resize;
+    pointer-events: auto;
+}
+
+.sticky-grid-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 3;
+
+    .selectable {
+        pointer-events: auto;
+    }
+}
+
+.virtual-grid-container {
+    z-index: 1;
+}
+
+.sticky-grid-container [style*="position: sticky"] {
+    will-change: transform;
+}
+
+.spacer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 0;
+    --row-height: 40px;
+    background-image: repeating-linear-gradient(
+        to bottom,
+        transparent,
+        transparent calc(var(--row-height) - 1px),
+        rgba(0, 0, 0, 0.07) calc(var(--row-height) - 1px),
+        rgba(0, 0, 0, 0.07) var(--row-height)
+    );
+    background-size: 100% var(--row-height);
+}
+
+.selectable {
+    transition:
+        background-color 150ms ease-in-out,
+        color 150ms ease-in-out,
+        transform 150ms ease-in-out;
 }

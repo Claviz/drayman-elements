@@ -1,10 +1,8 @@
-import { CdkScrollable } from '@angular/cdk/scrolling';
-import { NgStyle } from '@angular/common';
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
-  HostListener,
   Input,
   NgZone,
   OnChanges,
@@ -12,18 +10,16 @@ import {
   OnInit,
   SimpleChanges,
   ViewChild,
-  ViewEncapsulation,
 } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ResizedEvent } from 'angular-resize-event';
-import { merge, Subject, Subscription } from 'rxjs';
-import { auditTime, debounce, debounceTime, throttleTime } from 'rxjs/operators';
+import { animationFrameScheduler, fromEvent, merge, Observable, Subject, Subscription } from 'rxjs';
+import { debounceTime, skipWhile, throttleTime } from 'rxjs/operators';
 import { GridContentButton, GridCell } from '../models/grid-options';
 import { MatMenuTrigger } from '@angular/material/menu';
-// import CustomStore from 'devextreme/data/custom_store';
-// import { LoadOptions } from 'devextreme/data/load_options';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'drayman-grid-internal',
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.scss'],
@@ -31,31 +27,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
 export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestroy {
 
   @ViewChild(MatMenuTrigger, { static: true }) matMenuTrigger: MatMenuTrigger;
-  @ViewChild('container') containerRef: ElementRef;
-  @HostListener('wheel', ['$event'])
-  onWheel(event: WheelEvent) {
-    const container = this.containerRef.nativeElement as HTMLDivElement;
-    const isShift = event.shiftKey;
-    const shouldScrollHorizontally = (this.scrollDirection === 'horizontal') !== isShift;
-    event.preventDefault();
-    if (shouldScrollHorizontally) {
-      const delta = event.deltaY || event.deltaX;
-      container.scrollLeft += delta;
-    } else {
-      const delta = event.deltaY || event.deltaX;
-      if (this.scrollSnap && this.cellHeight) {
-        const currentScrollTop = container.scrollTop;
-        let nextScrollTop = delta > 0
-          ? currentScrollTop + this.cellHeight
-          : currentScrollTop - this.cellHeight;
-
-        nextScrollTop = Math.max(0, Math.min(nextScrollTop, container.scrollHeight - container.clientHeight));
-        this.scrollable.scrollTo({ top: nextScrollTop });
-      } else {
-        container.scrollTop += delta;
-      }
-    }
-  }
+  @ViewChild('container') containerRef: ElementRef<HTMLElement>;
 
   @Input() selectionMode?: {
     enabled: boolean;
@@ -67,8 +39,9 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   @Input() rowHoverStyle?: any;
   @Input() onSelectedCellsChange?: (options) => Promise<any>;
   @Input() scrollTo = ({ row }) => {
-    if (this.cellHeight) {
-      this.scrollable.scrollTo({ top: row * this.cellHeight });
+    if (this._cellHeight) {
+      const el = this.containerRef.nativeElement;
+      el.scrollTo({ top: row * this._cellHeight });
     }
   };
   @Input() onLoad?: (options) => Promise<any>;
@@ -77,10 +50,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   @Input() onCellClick?: (options) => Promise<any>;
   @Input() onContextMenuItemClick?: (options) => Promise<any>;
   @Input() onColumnWidthChange?: (options) => Promise<any>;
-  @ViewChild(CdkScrollable) scrollable: CdkScrollable;
-
   @Input() grid: GridCell[] = []
-
   @Input() scrollDirection: 'vertical' | 'horizontal' = 'vertical';
   @Input() gridRef: any;
   @Input() onScroll: any;
@@ -90,7 +60,6 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   @Input() columnCount: number;
   @Input() rowCount: number;
   @Input() gridStyle?: any;
-  @Input() scrollSnap?: boolean = false;
   @Input() scrollbarWidth: 'narrow' | 'medium' | 'wide' = 'narrow';
 
   resized$ = new Subject();
@@ -105,10 +74,174 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   ctrl;
   menuTopLeftPosition = { x: '0', y: '0' };
   selectedCellChangeSubscription: Subscription;
-  scrollableSubscription: Subscription;
-  scrollSnapSubscription: Subscription;
   isUserDraggingScrollbar = false;
-  scrollSnapTimeout: any;
+  firstRow = 0;
+  firstCol = 0;
+  buffer = 5;
+  visibleRowCount = 0;
+  visibleColCount = 0;
+  visibleCells: GridCell[] = [];
+  visibleContainerStyle: any = {};
+  visibleGridStyle: any = {};
+  stickyCells: GridCell[] = [];
+  nonStickyCells: GridCell[] = [];
+  stickyContainerStyle: any = {};
+  cellMatrix: GridCell[][] = [];
+  colPrefix: number[] = [];
+  scrollSub: Subscription;
+  nativeScrollSubscription: Subscription;
+
+  get _cellHeight(): number {
+    if (this.cellHeight != null) return this.cellHeight;
+    const h = this.containerRef?.nativeElement?.clientHeight;
+    return (h != null && this.rowCount > 0) ? h / this.rowCount : 0;
+  }
+
+  get _cellWidth(): number {
+    if (this.cellWidth != null) return this.cellWidth;
+    const w = this.containerRef?.nativeElement?.clientWidth;
+    return (w != null && this.columnCount > 0) ? w / this.columnCount : 0;
+  }
+
+  onNativeScroll() {
+    const el = this.containerRef.nativeElement;
+    const scrollTop = el.scrollTop;
+    const scrollLeft = el.scrollLeft;
+    this.updateVisibleWindow(scrollTop, scrollLeft);
+  }
+
+  updateVisibleWindow(scrollTop: number, scrollLeft: number) {
+    const vh = this.containerRef.nativeElement.clientHeight;
+    const vw = this.containerRef.nativeElement.clientWidth;
+
+    if (!this.columnWidths?.length) {
+      this.colPrefix = Array(this.columnCount + 1)
+        .fill(0)
+        .map((_, i) => i * this._cellWidth!);
+    }
+
+    const rawFirstRow = Math.floor(scrollTop / this._cellHeight!);
+    this.firstRow = Math.max(0, rawFirstRow - this.buffer);
+    const rowsInView = Math.ceil(vh / this._cellHeight!) + 2 * this.buffer;
+    this.visibleRowCount = Math.min(this.rowCount, rowsInView);
+    const maxFirstRow = Math.max(0, this.rowCount - this.visibleRowCount);
+    this.firstRow = Math.min(this.firstRow, maxFirstRow);
+
+    const totalCols = this.columnCount;
+    const { first, last } = this.computeColRange(scrollLeft, vw);
+    const visibleCols = last - first + 1;
+    const maxFirstCol = Math.max(0, totalCols - visibleCols);
+
+    this.firstCol = Math.min(first, maxFirstCol);
+    this.visibleColCount = visibleCols;
+
+    const minR = this.firstRow;
+    const maxR = minR + this.visibleRowCount - 1;
+    const minC = this.firstCol;
+    const maxC = minC + this.visibleColCount - 1;
+
+    const cells: GridCell[] = [];
+    for (let r = this.firstRow; r <= maxR; r++) {
+      for (let c = this.firstCol; c <= maxC; c++) {
+        const cell = this.cellMatrix[r][c];
+        if (cell) cells.push(cell);
+      }
+    }
+    this.visibleCells = cells;
+
+    const topPx = this.firstRow * this._cellHeight!;
+    const leftPx = this.colPrefix[this.firstCol];
+    const heightPx = this.visibleRowCount * this._cellHeight!;
+    const widthPx = this.colPrefix[this.firstCol + this.visibleColCount] - this.colPrefix[this.firstCol];
+
+    this.visibleContainerStyle = {
+      position: 'absolute',
+      transform: `translate3d(${leftPx}px, ${topPx}px, 0)`,
+      width: `${widthPx}px`,
+      height: `${heightPx}px`,
+      willChange: 'transform',
+    };
+
+    this.visibleGridStyle = {
+      display: 'grid',
+      gridTemplateRows: `repeat(${this.visibleRowCount}, ${this._cellHeight}px)`,
+      gridTemplateColumns: this.columnWidths
+        ? this.columnWidths
+          .slice(this.firstCol, this.firstCol + this.visibleColCount)
+          .map(w => `${w}px`).join(' ')
+        : `repeat(${this.visibleColCount}, ${this._cellWidth}px)`,
+      width: '100%',
+      height: '100%',
+      ...(this.gridStyle || {})
+    };
+    this.updateStickyContainer(scrollTop, scrollLeft);
+  }
+
+  updateStickyContainer(scrollTop: number, scrollLeft: number) {
+    this.stickyContainerStyle = {
+      position: 'absolute',
+      width: `${this.spacerWidth}px`,
+      height: `${this.spacerHeight}px`,
+      willChange: 'transform',
+      zIndex: 3,
+    };
+  }
+
+  getStickyCellStyle(cell: GridCell, scrollTop: number, scrollLeft: number) {
+    const base = this.getCellStyle(cell);
+    const style: any = { ...base };
+
+    if (cell.cellStyle?.sticky === 'top' || cell.cellStyle?.sticky === 'top-left') {
+      style.top = '0';
+      style.position = 'sticky';
+      style.zIndex = 5;
+    }
+
+    if (cell.cellStyle?.sticky === 'left' || cell.cellStyle?.sticky === 'top-left') {
+      style.left = '0';
+      style.position = 'sticky';
+      style.zIndex = 5;
+    }
+
+    if (cell.cellStyle?.sticky === 'left' || cell.cellStyle?.sticky === 'top-left') {
+      style.transform = `translate3d(${scrollLeft}px, 0, 0)`;
+      style.willChange = 'transform';
+    }
+
+    return style;
+  }
+
+  getVirtualCellStyle(cell: GridCell) {
+    const base = this.getCellStyle(cell);
+
+    let r = cell.row - this.firstRow;
+    let c = cell.col - this.firstCol;
+    if (cell.cellStyle?.position === 'sticky') {
+      if (cell.row < this.firstRow) r = 0;
+      if (cell.col < this.firstCol) c = 0;
+    }
+
+    const rowSpan = cell.rowSpan || 1;
+    const colSpan = cell.colSpan || 1;
+    const area = `${r + 1}/${c + 1}/${r + 1 + rowSpan}/${c + 1 + colSpan}`;
+
+    return {
+      ...base,
+      gridArea: area
+    };
+  }
+
+
+  get spacerWidth(): number {
+    if (this.columnWidths && this.columnWidths.length) {
+      return this.columnWidths.reduce((sum, w) => sum + w, 0);
+    }
+    return (this.columnCount * (this._cellWidth ?? 0));
+  }
+
+  get spacerHeight(): number {
+    return (this.rowCount * (this._cellHeight ?? 0));
+  }
 
   get scrollbarWidthClass() {
     if (this.scrollbarWidth === 'narrow') {
@@ -149,18 +282,18 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
     };
   }
 
-  constructor(public elementRef: ElementRef, private sanitizer: DomSanitizer) {
+  constructor(public elementRef: ElementRef, private sanitizer: DomSanitizer, private ngZone: NgZone) {
   }
 
   ngOnDestroy() {
-    if (this.scrollableSubscription) {
-      this.scrollableSubscription.unsubscribe();
-    }
-    if (this.scrollSnapSubscription) {
-      this.scrollSnapSubscription.unsubscribe();
-    }
     if (this.selectedCellChangeSubscription) {
       this.selectedCellChangeSubscription.unsubscribe();
+    }
+    if (this.scrollSub) {
+      this.scrollSub.unsubscribe();
+    }
+    if (this.nativeScrollSubscription) {
+      this.nativeScrollSubscription.unsubscribe();
     }
   }
 
@@ -188,7 +321,14 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   }
 
   emitCellClick($event: PointerEvent, cell: GridCell, ctrl = false) {
-    if (!($event.target as Element).querySelector('.selectable') && !($event.target as Element).classList.contains('selectable')) {
+    const tgt = $event.target as HTMLElement;
+    if (
+      tgt.closest('input, textarea, select, button') ||
+      tgt.closest('drayman-text-field-internal, drayman-checkbox-internal, drayman-button-internal, drayman-select-internal, drayman-datepicker-internal')
+    ) {
+      return;
+    }
+    if (!(tgt.closest('.selectable'))) {
       return;
     }
     if ($event.ctrlKey) {
@@ -221,7 +361,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   }
 
   onMouseDown($event: MouseEvent, cell: GridCell) {
-    if (!($event.target as Element).querySelector('.selectable') && !($event.target as Element).classList.contains('selectable')) {
+    if (!(($event.target as HTMLElement).closest('.selectable'))) {
       return;
     }
     if (this.selectionMode?.enabled && !this._selectedCells.length || this._selectedCells[0]?.selectionGroup === cell.selectionGroup) {
@@ -231,7 +371,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   }
 
   onMouseUp($event: MouseEvent, cell: GridCell) {
-    if (!this.pendingSelectedCells.length && (!($event.target as Element).querySelector('.selectable') && !($event.target as Element).classList.contains('selectable'))) {
+    if (!this.pendingSelectedCells.length && !($event.target as HTMLElement).closest('.selectable')) {
       return;
     }
     this.startSelectionCell = null;
@@ -279,105 +419,65 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
     }
   }
 
-  snapToGrid() {
-    const scrollElement = this.scrollable.getElementRef().nativeElement;
-    if (this.cellHeight) {
-      const currentScrollTop = this.scrollable.measureScrollOffset('top');
-      const scrollHeight = scrollElement.scrollHeight;
-      const clientHeight = scrollElement.clientHeight;
-      const maxScrollTop = scrollHeight - clientHeight;
-      const remainder = currentScrollTop % this.cellHeight;
-      if (remainder !== 0) {
-        let target = remainder < this.cellHeight / 2
-          ? currentScrollTop - remainder
-          : currentScrollTop + (this.cellHeight - remainder);
-        if (target > maxScrollTop - this.cellHeight / 2) {
-          target = maxScrollTop;
-        }
-        this.scrollable.scrollTo({ top: target });
-      }
-    }
-    if (this.cellWidth && !this.columnWidths?.length) {
-      const currentScrollLeft = this.scrollable.measureScrollOffset('left');
-      const scrollWidth = scrollElement.scrollWidth;
-      const clientWidth = scrollElement.clientWidth;
-      const maxScrollLeft = scrollWidth - clientWidth;
-      const remainder = currentScrollLeft % this.cellWidth;
-      if (remainder !== 0) {
-        let target = remainder < this.cellWidth / 2
-          ? currentScrollLeft - remainder
-          : currentScrollLeft + (this.cellWidth - remainder);
-        if (target > maxScrollLeft - this.cellWidth / 2) {
-          target = maxScrollLeft;
-        }
-        this.scrollable.scrollTo({ left: target });
-      }
-    }
-  }
   ngAfterViewInit() {
-    const scrollElement = this.scrollable.getElementRef().nativeElement;
-
-    scrollElement.addEventListener('mousedown', () => {
-      this.isUserDraggingScrollbar = true;
-    });
-
-    document.addEventListener('mouseup', () => {
-      if (this.isUserDraggingScrollbar) {
-        this.isUserDraggingScrollbar = false;
-        setTimeout(() => {
-          this.snapToGrid();
-        }, 100);
-      }
-    });
-    if (this.scrollSnap) {
-      this.scrollSnapSubscription = this.scrollable.elementScrolled().subscribe(() => {
-        if (!this.isUserDraggingScrollbar) {
-          clearTimeout(this.scrollSnapTimeout);
-          this.scrollSnapTimeout = setTimeout(() => {
-            this.snapToGrid();
-          }, 50);
-        }
-      });
-    }
-    this.scrollableSubscription = merge(
-      this.scrollable.elementScrolled(),
-      this.resized$,
-    ).pipe(
-      debounceTime(500),
-    ).subscribe((x) => {
-      if (!this.isUserDraggingScrollbar) {
-        this.onScroll?.({
-          currentCol: this.getCurrentColumn(this.scrollable.measureScrollOffset('left')),
-          visibleColCount: this.getVisibleColumnCount(
-            this.scrollable.getElementRef().nativeElement.clientWidth,
-            this.getCurrentColumn(this.scrollable.measureScrollOffset('left')),
-            this.scrollable.measureScrollOffset('left')
-          ),
-          currentRow: this.cellHeight ? Math.floor(this.scrollable.measureScrollOffset('top') / this.cellHeight) : 0,
-          visibleRowCount: this.cellHeight ? Math.ceil(this.scrollable.getElementRef().nativeElement.clientHeight / this.cellHeight) : this.rowCount,
-        })
-      }
-    });
-    this.selectedCellChangeSubscription = this.selectedCellsChanged$.pipe(
-      debounceTime(250),
-    ).subscribe((x) => {
-      this.onSelectedCellsChange?.({
-        ...x,
-        selectedCells: x.selectedCells.filter(
-          (xx, i) => x.selectedCells.findIndex(y => y.row === xx.row && y.col === xx.col) === i
-        ),
+    const scrollEl = this.containerRef.nativeElement as HTMLElement;
+    scrollEl.scrollTop = 0;
+    scrollEl.scrollLeft = 0;
+    const scroll$ = new Observable<UIEvent>(observer => {
+      const opts = { passive: true } as AddEventListenerOptions;
+      const handler = (e: UIEvent) => observer.next(e);
+      scrollEl.addEventListener('scroll', handler, opts);
+      return () => scrollEl.removeEventListener('scroll', handler, opts);
+    }).pipe(
+      throttleTime(0, animationFrameScheduler),
+    );
+    this.ngZone.runOutsideAngular(() => {
+      this.nativeScrollSubscription = scroll$.subscribe(() => {
+        const top = scrollEl.scrollTop;
+        const left = scrollEl.scrollLeft;
+        this.ngZone.run(() => this.updateVisibleWindow(top, left));
       });
     });
+    this.scrollSub = merge(
+      scroll$.pipe(debounceTime(200)),
+      this.resized$.pipe(debounceTime(200)),
+    ).subscribe(() => {
+      const top = scrollEl.scrollTop;
+      const left = scrollEl.scrollLeft;
+      this.onScroll?.({
+        currentCol: this.getCurrentColumn(left),
+        visibleColCount: this.getVisibleColumnCount(scrollEl.clientWidth, this.getCurrentColumn(left), left),
+        currentRow: this._cellHeight ? Math.floor(top / this._cellHeight) : 0,
+        visibleRowCount: this._cellHeight ? Math.ceil(scrollEl.clientHeight / this._cellHeight) : this.rowCount,
+      });
+    });
+    this.selectedCellChangeSubscription = this.selectedCellsChanged$
+      .pipe(
+        debounceTime(50)
+      )
+      .subscribe(change => {
+        this.onSelectedCellsChange?.({
+          selectedCells: change.selectedCells,
+          clearPrevious: change.clearPrevious
+        });
+      });
+    const initTop = scrollEl.scrollTop;
+    const initLeft = scrollEl.scrollLeft;
     this.onLoad?.({
-      currentCol: this.getCurrentColumn(this.scrollable.measureScrollOffset('left')),
+      currentCol: this.getCurrentColumn(initLeft),
       visibleColCount: this.getVisibleColumnCount(
-        this.scrollable.getElementRef().nativeElement.clientWidth,
-        this.getCurrentColumn(this.scrollable.measureScrollOffset('left')),
-        this.scrollable.measureScrollOffset('left')
+        scrollEl.clientWidth,
+        this.getCurrentColumn(initLeft),
+        initLeft
       ),
-      currentRow: this.cellHeight ? Math.floor(this.scrollable.measureScrollOffset('top') / this.cellHeight) : 0,
-      visibleRowCount: this.cellHeight ? Math.ceil(this.scrollable.getElementRef().nativeElement.clientHeight / this.cellHeight) : this.rowCount,
+      currentRow: this._cellHeight
+        ? Math.floor(initTop / this._cellHeight)
+        : 0,
+      visibleRowCount: this._cellHeight
+        ? Math.ceil(scrollEl.clientHeight / this._cellHeight)
+        : this.rowCount,
     });
+    this.updateVisibleWindow(initTop, initLeft);
   }
 
   getCurrentColumn(scrollOffset) {
@@ -391,7 +491,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
       }
       return this.columnWidths.length - 1;
     }
-    return this.cellWidth ? Math.floor(scrollOffset / this.cellWidth) : 0;
+    return this._cellWidth ? Math.floor(scrollOffset / this._cellWidth) : 0;
   }
 
   getVisibleColumnCount(clientWidth, startingCol, scrollOffset) {
@@ -409,16 +509,49 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
       }
       return colCount;
     }
-    return this.cellWidth ? Math.ceil(clientWidth / this.cellWidth) : this.columnCount;
+    return this._cellWidth ? Math.ceil(clientWidth / this._cellWidth) : this.columnCount;
   }
 
+  private computeColRange(scrollLeft: number, clientWidth: number) {
+    const total = this.columnCount;
+    const avgW = this.colPrefix[total] / total;
+    const bufPx = this.buffer * avgW;
+    const start = Math.max(0, scrollLeft - bufPx);
+    const end = scrollLeft + clientWidth + bufPx;
 
-  onResize(newWidth: number, index: number) {
-    if (this.columnWidths) {
-      // index = this.getCurrentColumn(this.scrollable.measureScrollOffset('left')) + index;
-      this.columnWidths = [...this.columnWidths.slice(0, index), newWidth, ...this.columnWidths.slice(index + 1)];
-      this.onColumnWidthChange?.({ columnWidths: this.columnWidths, changedWidthIndex: index, });
+    const first = this.binarySearchGE(this.colPrefix, start);
+    const last = this.binarySearchGE(this.colPrefix, end);
+
+    return {
+      first: Math.min(first, total - 1),
+      last: Math.min(last, total - 1)
+    };
+  }
+
+  private binarySearchGE(arr: number[], v: number) {
+    let lo = 0, hi = arr.length - 1;
+    while (lo < hi) {
+      const mid = (lo + hi) >>> 1;
+      if (arr[mid] < v) lo = mid + 1;
+      else hi = mid;
     }
+    return lo;
+  }
+
+  onResize(newWidth: number, colIndex: number) {
+    if (!this.columnWidths) { return; }
+    this.columnWidths = [
+      ...this.columnWidths.slice(0, colIndex),
+      newWidth,
+      ...this.columnWidths.slice(colIndex + 1),
+    ];
+    this.onColumnWidthChange?.({
+      columnWidths: this.columnWidths,
+      changedWidthIndex: colIndex,
+    });
+
+    const el = this.containerRef.nativeElement;
+    this.updateVisibleWindow(el.scrollTop, el.scrollLeft);
   }
 
 
@@ -432,33 +565,70 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (this.selectedCells) {
-      this._selectedCells = [...this.selectedCells];
-    }
-    const domParser = new DOMParser();
-    for (const cell of this.grid) {
-      for (const item of cell.content) {
-        (item as any)._parsedValue = domParser.parseFromString(item.value as any, 'text/html')?.body?.textContent;
+    let shouldRecalc = false;
+
+    if (changes.grid) {
+      this.stickyCells = this.grid.filter(c => c.cellStyle?.position === 'sticky');
+      this.nonStickyCells = this.grid.filter(c => c.cellStyle?.position !== 'sticky');
+
+      this.cellMatrix = Array.from(
+        { length: this.rowCount },
+        () => Array(this.columnCount)
+      );
+      for (let c of this.nonStickyCells) {
+        this.cellMatrix[c.row][c.col] = c;
       }
+
+      const parser = new DOMParser();
+      this.grid.forEach(c => {
+        c.content.forEach(item => {
+          (item as any)._parsedValue = parser
+            .parseFromString(item.value as any, 'text/html')
+            .body.textContent || '';
+          (item as any)._sanitized = this.sanitizer.bypassSecurityTrustHtml(item.value as any);
+        });
+      });
+
+      this._selectedCells = [...(this.selectedCells || [])];
+      this.pendingSelectedCells = [];
+      shouldRecalc = true;
+    }
+
+    if (changes.columnWidths) {
+      this.colPrefix = this.columnWidths!.reduce(
+        (acc, w) => { acc.push(acc[acc.length - 1] + w); return acc; },
+        [0]
+      );
+      shouldRecalc = true;
+    }
+
+    if (changes.selectedCells) {
+      this._selectedCells = [...(this.selectedCells || [])];
+      this.pendingSelectedCells = [];
+      shouldRecalc = true;
+    }
+
+    if (shouldRecalc && this.containerRef?.nativeElement) {
+      const el = this.containerRef.nativeElement;
+      this.updateVisibleWindow(el.scrollTop, el.scrollLeft);
     }
   }
 
   get customGridStyle() {
-    const height = (this.cellHeight || 0) * (this.rowCount || 0);
+    const height = (this._cellHeight || 0) * (this.rowCount || 0);
     const gridTemplateColumns = this.columnWidths
       ? this.columnWidths.map(width => `${width}px`).join(' ')
-      : `repeat(${this.columnCount}, ${this.cellWidth ? `${this.cellWidth}px` : 'auto'})`;
+      : `repeat(${this.columnCount}, ${this._cellWidth ? `${this._cellWidth}px` : 'auto'})`;
     return {
       gridTemplateColumns: gridTemplateColumns,
-      gridTemplateRows: `repeat(${this.rowCount}, ${this.cellHeight ? `${this.cellHeight}px` : 'auto'})`,
+      gridTemplateRows: `repeat(${this.rowCount}, ${this._cellHeight ? `${this._cellHeight}px` : 'auto'})`,
       width: this.columnWidths
         ? `${this.columnWidths.reduce((acc, width) => acc + width, 0)}px`
-        : (this.cellWidth ? `${this.columnCount * this.cellWidth}px` : `100%`),
+        : (this._cellWidth ? `${this.columnCount * this._cellWidth}px` : `100%`),
       height: height ? `${height}px` : `100%`,
       display: 'grid',
       ...(this.gridStyle || {}),
     };
   }
-
 
 }

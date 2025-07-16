@@ -62,10 +62,6 @@ export interface DraymanGrid {
         changedColumnWidthIndex: number;
     }>;
     gridStyle?: any;
-    /**
-     * Snap to rows and columns when scrolling.
-     */
-    scrollSnap?: boolean;
 }
 
 export interface GridCell {
