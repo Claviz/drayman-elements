@@ -59,7 +59,7 @@
 
 <ng-template #button>
     <mat-icon [ngStyle]="buttonIconStyle" *ngIf="icon">{{icon}}</mat-icon>
-    <div *ngIf="!icon">{{label || 'Button'}}</div>
+    <div *ngIf="!icon" [innerHTML]="safeLabelHtml"></div>
 </ng-template>
 
 <popper-content #thumbnailContent>

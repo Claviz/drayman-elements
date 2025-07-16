@@ -1,5 +1,6 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
-import { DraymanButton } from 'projects/shared/models/button-options';
+// button.component.ts
+import { Component, Input } from '@angular/core';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 @Component({
   selector: 'drayman-button-internal',
@@ -22,6 +23,13 @@ export class ButtonComponent {
   @Input() buttonStyle?: any;
   @Input() buttonIconStyle?: any;
   @Input() buttonRef?: any;
+
+  constructor(private sanitizer: DomSanitizer) { }
+
+  get safeLabelHtml(): SafeHtml {
+    const raw = this.label ?? 'Button';
+    return this.sanitizer.bypassSecurityTrustHtml(raw);
+  }
 
   emitClick($event: PointerEvent) {
     if (this.onClick) {
