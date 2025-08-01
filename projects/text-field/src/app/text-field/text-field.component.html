@@ -1,5 +1,5 @@
 <ng-container *ngIf="!mask">
-  <mat-form-field [appearance]="appearance || 'outline'" [floatLabel]="'auto'">
+  <mat-form-field [appearance]="appearance || 'outline'" [floatLabel]="floatLabel">
     <mat-label *ngIf="label">{{label}}</mat-label>
     <input #inputEl [id]="id" matInput [type]="type" [placeholder]="placeholder || label" [formControl]="formControl"
       [errorStateMatcher]="errorStateMatcher" autocomplete="off" (blur)="onBlur()" [matAutocomplete]="auto"
@@ -22,7 +22,7 @@
   </mat-form-field>
 </ng-container>
 <ng-container *ngIf="mask">
-  <mat-form-field [appearance]="appearance || 'outline'" [floatLabel]="'auto'">
+  <mat-form-field [appearance]="appearance || 'outline'" [floatLabel]="floatLabel">
     <mat-label *ngIf="label">{{label}}</mat-label>
     <input #inputEl [id]="id" matInput [type]="type" [placeholder]="placeholder || label" [formControl]="formControl"
       [errorStateMatcher]="errorStateMatcher" autocomplete="off" (blur)="onBlur()" [mask]="mask?.expression"

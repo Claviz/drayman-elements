@@ -20,6 +20,7 @@
     box-sizing: border-box;
 }
 .table-header {
+    height: 60px;
     margin: 0 15px;
 }
 
@@ -109,4 +110,8 @@ table {
 
 :host ::ng-deep .mat-cell .mat-form-field-suffix {
     font-size: 7px;
+}
+
+drayman-slider-internal {
+    padding-top: 24px;
 }

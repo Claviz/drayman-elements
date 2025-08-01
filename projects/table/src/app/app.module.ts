@@ -27,6 +27,7 @@ import { TimepickerModule } from 'projects/timepicker/src/app/app.module';
 
 import { SafeHtmlPipe } from '../../../shared/pipes/safe-html';
 import { TableComponent } from './table/table.component';
+import { SliderModule } from 'projects/slider/src/app/app.module';
 
 @NgModule({
   imports: [
@@ -48,6 +49,7 @@ import { TableComponent } from './table/table.component';
     MatCheckboxModule,
     TextFieldModule,
     SelectModule,
+    SliderModule,
     FileUploaderModule,
     NumberFieldModule,
     CheckboxModule,

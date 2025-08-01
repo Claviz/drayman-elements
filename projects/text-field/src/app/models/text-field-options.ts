@@ -18,4 +18,8 @@ export interface DraymanTextField extends InputFieldOptionsBase<string>, Autocom
         showOnBlur?: boolean;
         tooltip?: string;
     }
+    /**
+     * Float label behavior.
+     */
+    floatLabel?: 'always' | 'never' | 'auto';
 }

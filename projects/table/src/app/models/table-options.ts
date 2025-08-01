@@ -7,6 +7,40 @@ import { DraymanCheckbox } from '../../../../checkbox/src/app/models/checkbox-op
 import { DraymanDatepicker } from '../../../../datepicker/src/app/models/datepicker-options';
 import { DraymanTimepicker } from '../../../../timepicker/src/app/models/timepicker-options';
 import { InputMaskOptionsBase } from '../../../../shared/models/input-mask-options-base';
+import { DraymanSlider } from '../../../../slider/src/app/models/slider-options';
+
+type EventHandlerKeys<T> =
+    { [K in keyof T]: K extends `on${string}` ? K : never }[keyof T];
+
+type DraymanSliderOptions = Omit<DraymanSlider, EventHandlerKeys<DraymanSlider>>;
+type DraymanTextFieldOptions = Omit<DraymanTextField, EventHandlerKeys<DraymanTextField>>;
+
+/**
+ * A single toolbar item in the table: a button, slider, or text-field.
+ */
+export type DraymanToolbarItem =
+    | DraymanToolbarButtonItem
+    | DraymanToolbarSliderItem
+    | DraymanToolbarTextFieldItem;
+
+/** Button item in the toolbar */
+export interface DraymanToolbarButtonItem {
+    type: 'button';
+    options: DraymanToolbarButton;
+}
+
+/** Slider item in the toolbar */
+export interface DraymanToolbarSliderItem {
+    type: 'slider';
+    options: DraymanSliderOptions;
+}
+
+/** Text-field item in the toolbar */
+export interface DraymanToolbarTextFieldItem {
+    type: 'text-field';
+    options: DraymanTextFieldOptions;
+}
+
 export interface DraymanTable {
     /**
      * Title of the table.
@@ -146,6 +180,11 @@ export interface DraymanTable {
      */
     select?: boolean;
     /**
+     * List of toolbar items (buttons, sliders, text-fields, etc).
+     */
+    toolbarItems?: DraymanToolbarItem[];
+    /**
+     * @deprecated Use `toolbarItems` instead.
      * List of toolbar buttons.
      */
     toolbarButtons?: DraymanToolbarButton[];
@@ -158,6 +197,13 @@ export interface DraymanTable {
             rowIndex: number;
         }[];
         buttonDefinition: DraymanToolbarButton;
+    }>;
+    /**
+     * Event fired when value of input (text-field, slider, etc.) in toolbar changes.
+     */
+    onToolbarItemValueChange?: ElementEvent<{
+        value: any;
+        itemDefinition: DraymanSliderOptions | DraymanTextFieldOptions;
     }>;
     /**
      * This function can be used to override default cells with `select` type search algorithm.

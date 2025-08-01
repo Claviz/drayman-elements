@@ -1,7 +1,7 @@
 <div [ngClass]="pagination ? 'table-wrapper' : 'table-wrapper-no-pagination'" class="table-wrapper" fxLayout="column">
   <div *ngIf="!disableToolbar" [attr.aria-label]="title ? title + ' table' : 'Table'" fxLayout="column"
     [ngClass]="{'table-header-selection-active': selection.selected.length}">
-    <div aria-label="Table header" fxLayout="row" fxLayoutAlign="center center" class="table-header">
+    <div aria-label="Table header" fxLayout="row" fxLayoutAlign="center center" class="table-header" fxLayoutGap="10px">
       <h3 *ngIf="selection.selected.length">{{selection.selected.length}} row(s) selected</h3>
       <h3 *ngIf="!selection.selected.length">{{title || 'Table'}}</h3>
       <span fxFlex></span>
@@ -14,11 +14,47 @@
           <mat-icon>clear</mat-icon>
         </button>
       </mat-form-field>
-      <drayman-button-internal [attr.aria-label]="button.options.label" *ngFor="let button of currentToolbarButtons"
-        [label]="button.options.label" [onClick]="button.options.onClick" [view]="button.options.view"
-        [icon]="button.options.icon" [tooltip]="button.options.tooltip" [disabled]="button.options.disabled"
-        [imgUrl]="button.options.imgUrl" [buttonStyle]="button.options.buttonStyle">
-      </drayman-button-internal>
+      <ng-container *ngIf="!currentToolbarItems.length">
+        <drayman-button-internal [attr.aria-label]="button.options.label" *ngFor="let button of currentToolbarButtons"
+          [label]="button.options.label" [onClick]="button.options.onClick" [view]="button.options.view"
+          [icon]="button.options.icon" [tooltip]="button.options.tooltip" [disabled]="button.options.disabled"
+          [imgUrl]="button.options.imgUrl" [buttonStyle]="button.options.buttonStyle">
+        </drayman-button-internal>
+      </ng-container>
+      <ng-container *ngIf="currentToolbarItems.length">
+        <ng-container *ngFor="let toolbarItem of currentToolbarItems; trackBy: toolbarItemsTrackByFn">
+          <ng-container [ngSwitch]="toolbarItem.type">
+            <ng-container *ngSwitchCase="'slider'">
+              <drayman-slider-internal [enableThumbLabel]="toolbarItem.options.enableThumbLabel"
+                [color]="toolbarItem.options.color" [alwaysOnThumb]="toolbarItem.options.alwaysOnThumb"
+                [tickInterval]="toolbarItem.options.tickInterval" [label]="toolbarItem.options.label"
+                [value]="toolbarItem.options.value" [min]="toolbarItem.options.min" [max]="toolbarItem.options.max"
+                [step]="toolbarItem.options.step" [onValueChange]="toolbarItem.options.onValueChange"
+                [disabled]="toolbarItem.options.disabled">
+              </drayman-slider-internal>
+            </ng-container>
+            <ng-container *ngSwitchCase="'text-field'">
+              <drayman-text-field-internal fxFlex="250px" [appearance]="'legacy'" [floatLabel]="'never'"
+                [onValueChange]="toolbarItem.options.onValueChange" [type]="toolbarItem.options.type"
+                [value]="toolbarItem.options.value" [label]="toolbarItem.options.label"
+                [disabled]="toolbarItem.options.disabled" [helpText]="toolbarItem.options.helpText"
+                [error]="toolbarItem.options.error" [updateOnBlur]="toolbarItem.options.updateOnBlur"
+                [suggestions]="toolbarItem.options.suggestions"
+                [suggestionsPanelWidth]="toolbarItem.options.suggestionsPanelWidth" [mask]="toolbarItem.options.mask"
+                [suffix]="toolbarItem.options.suffix">
+              </drayman-text-field-internal>
+            </ng-container>
+            <ng-container *ngSwitchCase="'button'">
+              <drayman-button-internal [attr.aria-label]="toolbarItem.options.label" [label]="toolbarItem.options.label"
+                [onClick]="toolbarItem.options.onClick" [view]="toolbarItem.options.view"
+                [icon]="toolbarItem.options.icon" [tooltip]="toolbarItem.options.tooltip"
+                [disabled]="toolbarItem.options.disabled" [imgUrl]="toolbarItem.options.imgUrl"
+                [buttonStyle]="toolbarItem.options.buttonStyle">
+              </drayman-button-internal>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </ng-container>
     </div>
     <div style="height: 5px;"></div>
     <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
@@ -58,12 +94,14 @@
 
       <ng-container *ngFor="let column of columns; let columnIndex = index" [matColumnDef]="column.field"
         [sticky]="column.pinned === 'left'" [stickyEnd]="column.pinned === 'right'">
-        <th style="padding-left: 5px;" mat-header-cell mat-sort-header *matHeaderCellDef [ngStyle]="column.style">
+        <th mat-header-cell mat-sort-header *matHeaderCellDef [ngStyle]="column.style"
+          [style.padding-left.px]="(columnIndex === 0 && select) ? 20 : 5">
           {{column.label}}
         </th>
-        <td style="padding-left: 5px;" [attr.aria-label]="'Row ' + rowIndex + ' column ' + columnIndex" mat-cell
+        <td [attr.aria-label]="'Row ' + rowIndex + ' column ' + columnIndex" mat-cell
           *matCellDef="let obj; let rowIndex = index" [ngStyle]="grid[rowIndex][columnIndex]?.style"
-          (click)="onTableCellClick(rowIndex, column.field)">
+          (click)="onTableCellClick(rowIndex, column.field)"
+          [style.padding-left.px]="(columnIndex === 0 && select) ? 20 : 5">
           <ng-container [ngSwitch]="grid[rowIndex][columnIndex]?.type">
             <ng-container *ngSwitchCase="'button'">
               <drayman-button-internal [label]="grid[rowIndex][columnIndex].options.label"

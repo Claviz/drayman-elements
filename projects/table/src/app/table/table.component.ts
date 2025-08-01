@@ -18,7 +18,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTable } from '@angular/material/table';
 import { DraymanButton } from 'projects/shared/models/button-options';
 import { Observable, Subject } from 'rxjs';
-import { debounceTime, map, take, tap } from 'rxjs/operators';
+import { debounceTime, map, min, take, tap } from 'rxjs/operators';
 import { generate } from 'shortid';
 
 import {
@@ -93,6 +93,10 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
     value: any;
     rowIndex: number;
   }) => Promise<void>;
+  @Input() onToolbarItemValueChange?: (data: {
+    value: any;
+    itemDefinition: any;
+  }) => Promise<void>;
   @Input() onCellClick?: (data: {
     row: DraymanTableRow;
     field: string;
@@ -111,6 +115,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
   @Input() disableToolbar?: boolean;
   @Input() select?: boolean;
   @Input() toolbarButtons?: DraymanToolbarButton[];
+  @Input() toolbarItems?: any[];
   @Input() onToolbarButtonClick?: (data: {
     selectedRows: {
       row: DraymanTableRow;
@@ -334,19 +339,25 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
       !this.sort;
   }
 
+  toolbarItemsTrackByFn(index, item) {
+    return item?.options?.label || item?.options?.icon || index;
+  }
+
   grid: GridCellType[][] = [];
   currentToolbarButtons: {
     options: DraymanButton;
+  }[] = [];
+  currentToolbarItems: {
+    options: any;
+    type: any;
   }[] = [];
   renderGrid() {
     const newGrid: GridCellType[][] = [];
     for (let rowIndex = 0; rowIndex < this.visibleData.length; rowIndex++) {
       const row: GridCellType[] = [];
       for (let columnIndex = 0; columnIndex < this.columns?.length; columnIndex++) {
-        // const column = this.options.columns[columnIndex];
         const field = this.columns[columnIndex].field;
         const cell = { ...this.columns[columnIndex], ...this.visibleData[rowIndex][field] };
-        // const style = { ...column.style, ...cell?.style };
         if (cell) {
           if (cell.type === 'button') {
             const buttonCell = cell as DraymanTableButtonCell;
@@ -577,36 +588,113 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
       newGrid.push(row);
     }
     this.grid = newGrid;
-    const buttons: {
-      options: DraymanButton;
-    }[] = [];
-    for (let button of (this.toolbarButtons || [])) {
-      if (!button.selectionButton || this.selection.hasValue()) {
-        const draymanButton: {
-          options: DraymanButton;
-        } = {
-          options: {
-            disabled: button.disabled,
-            icon: button.icon,
-            imgUrl: button.imgUrl,
-            label: button.label,
-            buttonStyle: button.buttonStyle,
-            tooltip: button.tooltip,
-            view: button.view,
-            onClick: this.onToolbarButtonClick ? async () => {
-              return this.onToolbarButtonClick({
-                selectedRows: this.selection.selected.map(x => ({
-                  row: x,
-                  rowIndex: this.visibleData.indexOf(x),
-                })),
-                buttonDefinition: button,
-              });
-            } : null,
-          },
-        };
-        buttons.push(draymanButton);
+    if (this.toolbarItems?.length) {
+      const items = [];
+      for (let item of this.toolbarItems) {
+        if (item.type === 'button') {
+          const button = item.options as DraymanToolbarButton;
+          if (!button.selectionButton || this.selection.hasValue()) {
+            const draymanButton: DraymanButton = {
+              disabled: button.disabled,
+              icon: button.icon,
+              imgUrl: button.imgUrl,
+              label: button.label,
+              buttonStyle: button.buttonStyle,
+              tooltip: button.tooltip,
+              view: button.view,
+              onClick: this.onToolbarButtonClick ? async () => {
+                return this.onToolbarButtonClick({
+                  selectedRows: this.selection.selected.map(x => ({
+                    row: x,
+                    rowIndex: this.visibleData.indexOf(x),
+                  })),
+                  buttonDefinition: button,
+                });
+              } : null,
+            };
+            items.push({ type: 'button', options: draymanButton });
+          }
+        } else if (item.type === 'slider') {
+          const slider = item.options as any;
+          items.push({
+            type: 'slider',
+            options: {
+              value: slider.value,
+              label: slider.label,
+              disabled: slider.disabled,
+              min: slider.min,
+              max: slider.max,
+              step: slider.step,
+              enableThumbLabel: slider.enableThumbLabel,
+              tickInterval: slider.tickInterval,
+              color: slider.color,
+              alwaysOnThumb: slider.alwaysOnThumb,
+              onValueChange: this.onToolbarItemValueChange ? async ({ value }) => {
+                return this.onToolbarItemValueChange({
+                  value,
+                  itemDefinition: slider,
+                });
+              } : null,
+            },
+          });
+        } else if (item.type === 'text-field') {
+          const textField = item.options as any;
+          items.push({
+            type: 'text-field',
+            options: {
+              onValueChange: this.onToolbarItemValueChange ? async ({ value }) => {
+                return this.onToolbarItemValueChange({
+                  value,
+                  itemDefinition: textField,
+                });
+              } : null,
+              value: textField.value,
+              label: textField.label,
+              disabled: textField.disabled,
+              helpText: textField.helpText,
+              error: textField.error,
+              updateOnBlur: textField.updateOnBlur,
+              suggestions: textField.suggestions,
+              suggestionsPanelWidth: textField.suggestionsPanelWidth,
+              mask: textField.mask,
+              suffix: textField.suffix,
+            },
+          });
+        }
+        this.currentToolbarItems = items;
       }
+    } else {
+      const buttons: {
+        options: DraymanButton;
+      }[] = [];
+      for (let button of (this.toolbarButtons || [])) {
+        if (!button.selectionButton || this.selection.hasValue()) {
+          const draymanButton: {
+            options: DraymanButton;
+          } = {
+            options: {
+              disabled: button.disabled,
+              icon: button.icon,
+              imgUrl: button.imgUrl,
+              label: button.label,
+              buttonStyle: button.buttonStyle,
+              tooltip: button.tooltip,
+              view: button.view,
+              onClick: this.onToolbarButtonClick ? async () => {
+                return this.onToolbarButtonClick({
+                  selectedRows: this.selection.selected.map(x => ({
+                    row: x,
+                    rowIndex: this.visibleData.indexOf(x),
+                  })),
+                  buttonDefinition: button,
+                });
+              } : null,
+            },
+          };
+          buttons.push(draymanButton);
+        }
+      }
+      this.currentToolbarButtons = buttons;
     }
-    this.currentToolbarButtons = buttons;
   }
 }
