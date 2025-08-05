@@ -5,7 +5,8 @@
       <h3 *ngIf="selection.selected.length">{{selection.selected.length}} row(s) selected</h3>
       <h3 *ngIf="!selection.selected.length">{{title || 'Table'}}</h3>
       <span fxFlex></span>
-      <mat-form-field aria-label="Search field" floatLabel="never" fxFlex="250px" [fxHide]="!search">
+      <mat-form-field aria-label="Search field" floatLabel="never" fxFlex="250px"
+        [fxHide]="!search || searchBarPosition !== 'left'">
         <input [id]="id" aria-label="Search field input" matInput [formControl]="searchControl" placeholder="Search"
           autofocus autocomplete="off">
         <mat-icon style="vertical-align: bottom" matPrefix>search</mat-icon>
@@ -24,6 +25,10 @@
       <ng-container *ngIf="currentToolbarItems.length">
         <ng-container *ngFor="let toolbarItem of currentToolbarItems; trackBy: toolbarItemsTrackByFn">
           <ng-container [ngSwitch]="toolbarItem.type">
+            <ng-container *ngSwitchCase="'text'">
+              <div style="padding-bottom: 8px;" [ngStyle]="toolbarItem.options.style"
+                [innerHTML]="toolbarItem.options.value"></div>
+            </ng-container>
             <ng-container *ngSwitchCase="'slider'">
               <drayman-slider-internal [enableThumbLabel]="toolbarItem.options.enableThumbLabel"
                 [color]="toolbarItem.options.color" [alwaysOnThumb]="toolbarItem.options.alwaysOnThumb"
@@ -55,6 +60,16 @@
           </ng-container>
         </ng-container>
       </ng-container>
+      <mat-form-field aria-label="Search field" floatLabel="never" fxFlex="250px"
+        [fxHide]="!search || searchBarPosition !== 'right'">
+        <input [id]="id" aria-label="Search field input" matInput [formControl]="searchControl" placeholder="Search"
+          autofocus autocomplete="off">
+        <mat-icon style="vertical-align: bottom" matPrefix>search</mat-icon>
+        <button aria-label="Clear search field input" *ngIf="searchControl.value" (click)="searchControl.setValue(null)"
+          mat-icon-button matSuffix>
+          <mat-icon>clear</mat-icon>
+        </button>
+      </mat-form-field>
     </div>
     <div style="height: 5px;"></div>
     <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>

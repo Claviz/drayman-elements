@@ -21,7 +21,8 @@ type DraymanTextFieldOptions = Omit<DraymanTextField, EventHandlerKeys<DraymanTe
 export type DraymanToolbarItem =
     | DraymanToolbarButtonItem
     | DraymanToolbarSliderItem
-    | DraymanToolbarTextFieldItem;
+    | DraymanToolbarTextFieldItem
+    | DraymanToolbarTextItem;
 
 /** Button item in the toolbar */
 export interface DraymanToolbarButtonItem {
@@ -39,6 +40,15 @@ export interface DraymanToolbarSliderItem {
 export interface DraymanToolbarTextFieldItem {
     type: 'text-field';
     options: DraymanTextFieldOptions;
+}
+
+/** Text item in the toolbar */
+export interface DraymanToolbarTextItem {
+    type: 'text';
+    options: {
+        value?: string;
+        style?: any;
+    };
 }
 
 export interface DraymanTable {
@@ -68,6 +78,10 @@ export interface DraymanTable {
      * Enables search bar.
      */
     search?: boolean;
+    /**
+     * Search bar position in toolbar.
+     */
+    searchBarPosition?: 'left' | 'right';
     /**
      * Enables paginator.
      */

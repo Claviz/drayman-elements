@@ -48,6 +48,7 @@ import {
   GridTextFieldCell,
   GridTimepickerCell,
 } from '../models/table-options';
+import { DomSanitizer } from '@angular/platform-browser';
 
 @Component({
   selector: 'drayman-table-internal',
@@ -62,6 +63,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
   @Input() rowStyle?: any[];
   @Input() rowDrag?: boolean;
   @Input() search?: boolean;
+  @Input() searchBarPosition?: 'left' | 'right' = 'left';
   @Input() pagination?: boolean;
   @Input() sort?: boolean;
   @Input() pageSize?: number;
@@ -173,7 +175,7 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
       this.selection.clear() :
       this.visibleData.forEach(row => this.selection.select(row));
   }
-  constructor(private elementRef: ElementRef, private ngZone: NgZone) { }
+  constructor(private elementRef: ElementRef, private ngZone: NgZone, private sanitizer: DomSanitizer) { }
 
   ngOnDestroy() {
   }
@@ -614,6 +616,15 @@ export class TableComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
             };
             items.push({ type: 'button', options: draymanButton });
           }
+        } else if (item.type === 'text') {
+          const text = item.options as any;
+          items.push({
+            type: 'text',
+            options: {
+              style: text.style,
+              value: this.sanitizer.bypassSecurityTrustHtml(text.value as any)
+            },
+          });
         } else if (item.type === 'slider') {
           const slider = item.options as any;
           items.push({
