@@ -6,6 +6,7 @@
     <div class="sticky-grid-container" [ngStyle]="stickyContainerStyle">
         <div [ngStyle]="customGridStyle">
             <div style="position: relative;" class="selectable" *ngFor="let cell of stickyCells; trackBy: cellTrackByFn"
+                (mouseenter)="cell.hovered = true"
                 [ngStyle]="getStickyCellStyle(cell, containerRef?.nativeElement?.scrollLeft || 0, containerRef?.nativeElement?.scrollTop || 0)"
                 (click)="emitCellClick($event, cell)" (mousedown)="onMouseDown($event, cell)"
                 (mouseup)="onMouseUp($event, cell)" (mouseover)="onMouseOver($event, cell)"
@@ -118,8 +119,9 @@
                 *ngFor="let cell of visibleCells; let i = index; trackBy: cellTrackByFn"
                 [ngStyle]="getVirtualCellStyle(cell)" (click)="emitCellClick($event, cell)"
                 (mousedown)="onMouseDown($event, cell)" (mouseup)="onMouseUp($event, cell)"
-                (mouseover)="onMouseOver($event, cell)" (mouseleave)="onMouseLeave($event, cell); cell.hovered = false;"
-                [attr.ref]="cell.ref" (contextmenu)="oncontextmenu($event, cell)">
+                (mouseover)="onMouseOver($event, cell)" (mouseenter)="cell.hovered = true"
+                (mouseleave)="onMouseLeave($event, cell); cell.hovered = false;" [attr.ref]="cell.ref"
+                (contextmenu)="oncontextmenu($event, cell)">
                 <div [ngStyle]="cell.contentStyle">
                     <ng-container *ngFor="let cellItem of cell.content; trackBy: cellItemTrackByFn.bind(this, cell)">
                         <ng-container [ngSwitch]="cellItem.type">
