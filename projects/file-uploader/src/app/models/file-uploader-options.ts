@@ -36,6 +36,10 @@ export interface DraymanFileUploader {
      * This function is usually used to remove a specific file from file system.
      */
     onRemoveUploaded?: (data: { fileId: string }) => Promise<string>;
+    /**
+     * Additional FilePond options. See https://pqina.nl/filepond/docs/api/instance/properties/
+     */
+    filePondOptions?: any;
 }
 
 interface File {

@@ -14,6 +14,7 @@ export class FileUploaderComponent implements OnChanges {
   @Input() onUpload?: (data: undefined, files: File[]) => Promise<string>;
   @Input() onRemoveUploaded?: (data: { fileId: string }) => Promise<string>;
   @Input() allowMultiple?: boolean;
+  @Input() filePondOptions?: any;
   @Input() initialFiles: {
     id: string;
     length: number;
@@ -60,6 +61,7 @@ export class FileUploaderComponent implements OnChanges {
     this.pondOptions = {
       ...this.pondOptions,
       allowMultiple: !!this.allowMultiple,
+      ...(this.filePondOptions || {}),
     }
   }
 }
