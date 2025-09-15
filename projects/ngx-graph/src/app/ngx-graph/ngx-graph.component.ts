@@ -21,7 +21,14 @@ export class NgxGraphComponent implements OnChanges {
   @Input() onNodeClick?: () => Promise<void>;
   @Input() onLinkClick?: () => Promise<void>;
 
+  safeLinks: any[] = [];
+
   ngOnChanges() {
+    this.safeLinks = (this.links || []).map(link => ({
+      ...link,
+      originalId: link.id,
+      id: `edge-${link.id}`,
+    }));
   }
 
   onResized(event: ResizedEvent) {
