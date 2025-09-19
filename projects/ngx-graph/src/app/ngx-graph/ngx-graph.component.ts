@@ -24,10 +24,10 @@ export class NgxGraphComponent implements OnChanges {
   safeLinks: any[] = [];
 
   ngOnChanges() {
-    this.safeLinks = (this.links || []).map(link => ({
+    this.safeLinks = (this.links || []).map((link, i) => ({
       ...link,
-      originalId: link.id,
-      id: `edge-${link.id}`,
+      originalId: link.id || i,
+      id: `edge-${link.id || i}`,
     }));
   }
 
