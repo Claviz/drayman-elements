@@ -192,6 +192,7 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
       ['sn-map', 'map'],
       ['sn-text', 'sn-text'],
       ['sn-distplot', 'distributionplot'],
+      ['sn-gauge', 'gauge'],
     ].map((t) => ({
       name: t[1],
       load: () => {
