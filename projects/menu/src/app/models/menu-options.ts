@@ -20,6 +20,8 @@ export interface DraymanMenuItem {
      * Icon displayed before label text.
      */
     icon?: string;
+    iconStyle?: any;
+    itemStyle?: any;
     /**
      * Whether item disabled or not.
      */
