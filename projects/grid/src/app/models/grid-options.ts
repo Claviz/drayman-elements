@@ -62,6 +62,10 @@ export interface DraymanGrid {
         changedColumnWidthIndex: number;
     }>;
     gridStyle?: any;
+    /**
+     * Minimum width of any column on resize. Default is 10px.
+     */
+    minColumnWidth?: number;
 }
 
 export interface GridCell {

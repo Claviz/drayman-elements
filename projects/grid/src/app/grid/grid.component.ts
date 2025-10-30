@@ -58,6 +58,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   @Input() cellWidth?: number;
   @Input() columnWidths?: number[];
   @Input() columnCount: number;
+  @Input() minColumnWidth?: number;
   @Input() rowCount: number;
   @Input() gridStyle?: any;
   @Input() scrollbarWidth: 'narrow' | 'medium' | 'wide' = 'narrow';
@@ -539,6 +540,10 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   }
 
   onResize(newWidth: number, colIndex: number) {
+    const minWidth = this.minColumnWidth || 10;
+    if (newWidth <= minWidth) {
+      newWidth = minWidth;
+    }
     if (!this.columnWidths) { return; }
     this.columnWidths = [
       ...this.columnWidths.slice(0, colIndex),
