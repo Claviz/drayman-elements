@@ -6,24 +6,22 @@
     <div class="sticky-grid-container" [ngStyle]="stickyContainerStyle">
         <div [ngStyle]="customGridStyle">
             <div style="position: relative;" class="selectable" *ngFor="let cell of stickyCells; trackBy: cellTrackByFn"
-                (mouseenter)="cell.hovered = true"
                 [ngStyle]="getStickyCellStyle(cell, containerRef?.nativeElement?.scrollLeft || 0, containerRef?.nativeElement?.scrollTop || 0)"
                 (click)="emitCellClick($event, cell)" (mousedown)="onMouseDown($event, cell)"
                 (mouseup)="onMouseUp($event, cell)" (mouseover)="onMouseOver($event, cell)"
-                (mouseleave)="onMouseLeave($event, cell); cell.hovered = false;" [attr.ref]="cell.ref"
+                (mouseleave)="onMouseLeave($event, cell)" [attr.ref]="cell.ref"
                 (contextmenu)="oncontextmenu($event, cell)">
                 <div [ngStyle]="cell.contentStyle">
                     <ng-container *ngFor="let cellItem of cell.content; trackBy: cellItemTrackByFn.bind(this, cell)">
                         <ng-container [ngSwitch]="cellItem.type">
                             <ng-container *ngSwitchCase="'text'">
-                                <div class="selectable" [matTooltip]="cellItem.tooltip" [title]="cellItem._parsedValue"
-                                    [ngStyle]="(cell.hovered && cellItem.hoverStyle) ? cellItem.hoverStyle : cellItem.style"
-                                    [innerHTML]="cellItem._sanitized">
+                                <div class="selectable" [matTooltip]="cellItem.tooltip"
+                                    [title]="getParsedValue(cellItem)" [ngStyle]="cellItem.style"
+                                    [innerHTML]="getSanitized(cellItem)">
                                 </div>
                             </ng-container>
                             <ng-container *ngSwitchCase="'button'">
-                                <div
-                                    [ngStyle]="(cell.hovered && cellItem.hoverStyle) ? cellItem.hoverStyle : cellItem.style">
+                                <div [ngStyle]="cellItem.style">
                                     <drayman-button-internal [buttonRef]="cellItem.value.ref"
                                         [label]="cellItem.value.label"
                                         [onClick]="emitContentButtonClick.bind(this, cell, cellItem.value)"
@@ -35,8 +33,7 @@
                                 </div>
                             </ng-container>
                             <ng-container *ngSwitchCase="'text-field'">
-                                <div
-                                    [ngStyle]="(cell.hovered && cellItem.hoverStyle) ? cellItem.hoverStyle : cellItem.style">
+                                <div [ngStyle]="cellItem.style">
                                     <drayman-text-field-internal [metaData]="cell.row + '_' + cell.col"
                                         [appearance]="cellItem.value.appearance"
                                         [onValueChange]="onCellContentValueChange" [type]="cellItem.value.type"
@@ -51,8 +48,7 @@
                                 </div>
                             </ng-container>
                             <ng-container *ngSwitchCase="'datepicker'">
-                                <div
-                                    [ngStyle]="(cell.hovered && cellItem.hoverStyle) ? cellItem.hoverStyle : cellItem.style">
+                                <div [ngStyle]="cellItem.style">
                                     <drayman-datepicker-internal [metaData]="cell.row + '_' + cell.col"
                                         [appearance]="cellItem.value.appearance"
                                         [onValueChange]="onCellContentValueChange"
@@ -66,8 +62,7 @@
                                 </div>
                             </ng-container>
                             <ng-container *ngSwitchCase="'select'">
-                                <div
-                                    [ngStyle]="(cell.hovered && cellItem.hoverStyle) ? cellItem.hoverStyle : cellItem.style">
+                                <div [ngStyle]="cellItem.style">
                                     <drayman-select-internal [metaData]="cell.row + '_' + cell.col"
                                         [appearance]="cellItem.value.appearance"
                                         [onValueChange]="onCellContentValueChange" [options]="cellItem.value.options"
@@ -79,8 +74,7 @@
                                 </div>
                             </ng-container>
                             <ng-container *ngSwitchCase="'checkbox'">
-                                <div
-                                    [ngStyle]="(cell.hovered && cellItem.hoverStyle) ? cellItem.hoverStyle : cellItem.style">
+                                <div [ngStyle]="cellItem.style">
                                     <drayman-checkbox-internal [metaData]="cell.row + '_' + cell.col"
                                         [onValueChange]="onCellContentValueChange" [value]="cellItem.value.value"
                                         [label]="cellItem.value.label" [disabled]="cellItem.value.disabled"
@@ -90,8 +84,7 @@
                                 </div>
                             </ng-container>
                             <ng-container *ngSwitchCase="'sparkline'">
-                                <div
-                                    [ngStyle]="(cell.hovered && cellItem.hoverStyle) ? cellItem.hoverStyle : cellItem.style">
+                                <div [ngStyle]="cellItem.style">
                                     <drayman-sparkline-internal [data]="cellItem.value.data"
                                         [lineColor]="cellItem.value.lineColor"
                                         [minPointColor]="cellItem.value.minPointColor"
@@ -119,21 +112,19 @@
                 *ngFor="let cell of visibleCells; let i = index; trackBy: cellTrackByFn"
                 [ngStyle]="getVirtualCellStyle(cell)" (click)="emitCellClick($event, cell)"
                 (mousedown)="onMouseDown($event, cell)" (mouseup)="onMouseUp($event, cell)"
-                (mouseover)="onMouseOver($event, cell)" (mouseenter)="cell.hovered = true"
-                (mouseleave)="onMouseLeave($event, cell); cell.hovered = false;" [attr.ref]="cell.ref"
+                (mouseover)="onMouseOver($event, cell)" (mouseleave)="onMouseLeave($event, cell)" [attr.ref]="cell.ref"
                 (contextmenu)="oncontextmenu($event, cell)">
                 <div [ngStyle]="cell.contentStyle">
                     <ng-container *ngFor="let cellItem of cell.content; trackBy: cellItemTrackByFn.bind(this, cell)">
                         <ng-container [ngSwitch]="cellItem.type">
                             <ng-container *ngSwitchCase="'text'">
-                                <div class="selectable" [matTooltip]="cellItem.tooltip" [title]="cellItem._parsedValue"
-                                    [ngStyle]="(cell.hovered && cellItem.hoverStyle) ? cellItem.hoverStyle : cellItem.style"
-                                    [innerHTML]="cellItem._sanitized">
+                                <div class="selectable" [matTooltip]="cellItem.tooltip"
+                                    [title]="getParsedValue(cellItem)" [ngStyle]="cellItem.style"
+                                    [innerHTML]="getSanitized(cellItem)">
                                 </div>
                             </ng-container>
                             <ng-container *ngSwitchCase="'button'">
-                                <div
-                                    [ngStyle]="(cell.hovered && cellItem.hoverStyle) ? cellItem.hoverStyle : cellItem.style">
+                                <div [ngStyle]="cellItem.style">
                                     <drayman-button-internal [buttonRef]="cellItem.value.ref"
                                         [label]="cellItem.value.label"
                                         [onClick]="emitContentButtonClick.bind(this, cell, cellItem.value)"
@@ -145,8 +136,7 @@
                                 </div>
                             </ng-container>
                             <ng-container *ngSwitchCase="'text-field'">
-                                <div
-                                    [ngStyle]="(cell.hovered && cellItem.hoverStyle) ? cellItem.hoverStyle : cellItem.style">
+                                <div [ngStyle]="cellItem.style">
                                     <drayman-text-field-internal [metaData]="cell.row + '_' + cell.col"
                                         [appearance]="cellItem.value.appearance"
                                         [onValueChange]="onCellContentValueChange" [type]="cellItem.value.type"
@@ -161,8 +151,7 @@
                                 </div>
                             </ng-container>
                             <ng-container *ngSwitchCase="'datepicker'">
-                                <div
-                                    [ngStyle]="(cell.hovered && cellItem.hoverStyle) ? cellItem.hoverStyle : cellItem.style">
+                                <div [ngStyle]="cellItem.style">
                                     <drayman-datepicker-internal [metaData]="cell.row + '_' + cell.col"
                                         [appearance]="cellItem.value.appearance"
                                         [onValueChange]="onCellContentValueChange"
@@ -176,8 +165,7 @@
                                 </div>
                             </ng-container>
                             <ng-container *ngSwitchCase="'select'">
-                                <div
-                                    [ngStyle]="(cell.hovered && cellItem.hoverStyle) ? cellItem.hoverStyle : cellItem.style">
+                                <div [ngStyle]="cellItem.style">
                                     <drayman-select-internal [metaData]="cell.row + '_' + cell.col"
                                         [appearance]="cellItem.value.appearance"
                                         [onValueChange]="onCellContentValueChange" [options]="cellItem.value.options"
@@ -189,8 +177,7 @@
                                 </div>
                             </ng-container>
                             <ng-container *ngSwitchCase="'checkbox'">
-                                <div
-                                    [ngStyle]="(cell.hovered && cellItem.hoverStyle) ? cellItem.hoverStyle : cellItem.style">
+                                <div [ngStyle]="cellItem.style">
                                     <drayman-checkbox-internal [metaData]="cell.row + '_' + cell.col"
                                         [onValueChange]="onCellContentValueChange" [value]="cellItem.value.value"
                                         [label]="cellItem.value.label" [disabled]="cellItem.value.disabled"
@@ -200,8 +187,7 @@
                                 </div>
                             </ng-container>
                             <ng-container *ngSwitchCase="'sparkline'">
-                                <div
-                                    [ngStyle]="(cell.hovered && cellItem.hoverStyle) ? cellItem.hoverStyle : cellItem.style">
+                                <div [ngStyle]="cellItem.style">
                                     <drayman-sparkline-internal [data]="cellItem.value.data"
                                         [lineColor]="cellItem.value.lineColor"
                                         [minPointColor]="cellItem.value.minPointColor"

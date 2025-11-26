@@ -11,7 +11,7 @@ import {
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import { DomSanitizer } from '@angular/platform-browser';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ResizedEvent } from 'angular-resize-event';
 import { animationFrameScheduler, fromEvent, merge, Observable, Subject, Subscription } from 'rxjs';
 import { debounceTime, skipWhile, throttleTime } from 'rxjs/operators';
@@ -91,6 +91,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   colPrefix: number[] = [];
   scrollSub: Subscription;
   nativeScrollSubscription: Subscription;
+  cellItemCache = new WeakMap<any, { sanitized: SafeHtml, parsedValue: string }>();
 
   get _cellHeight(): number {
     if (this.cellHeight != null) return this.cellHeight;
@@ -298,8 +299,12 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
     }
   }
 
-  getSanitizedString(value: string) {
-    return this.sanitizer.bypassSecurityTrustHtml(value);
+  getSanitized(cellItem: any): SafeHtml {
+    return this.cellItemCache.get(cellItem)?.sanitized;
+  }
+
+  getParsedValue(cellItem: any): string {
+    return this.cellItemCache.get(cellItem)?.parsedValue;
   }
 
   oncontextmenu($event: PointerEvent, cell: GridCell) {
@@ -572,7 +577,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   ngOnChanges(changes: SimpleChanges) {
     let shouldRecalc = false;
 
-    if (changes.grid) {
+    if (changes.grid && JSON.stringify(changes.grid?.previousValue || {}) !== JSON.stringify(changes.grid?.currentValue || {})) {
       this.stickyCells = this.grid.filter(c => c.cellStyle?.position === 'sticky');
       this.nonStickyCells = this.grid.filter(c => c.cellStyle?.position !== 'sticky');
 
@@ -587,19 +592,19 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
       const parser = new DOMParser();
       this.grid.forEach(c => {
         c.content.forEach(item => {
-          (item as any)._parsedValue = parser
-            .parseFromString(item.value as any, 'text/html')
-            .body.textContent || '';
-          (item as any)._sanitized = this.sanitizer.bypassSecurityTrustHtml(item.value as any);
+          const itemAny = item as any;
+          this.cellItemCache.set(itemAny, {
+            parsedValue: parser.parseFromString(itemAny.value, 'text/html').body.textContent || '',
+            sanitized: this.sanitizer.bypassSecurityTrustHtml(itemAny.value) || '',
+          });
         });
       });
 
-      this._selectedCells = [...(this.selectedCells || [])];
       this.pendingSelectedCells = [];
       shouldRecalc = true;
     }
 
-    if (changes.columnWidths) {
+    if (changes.columnWidths && JSON.stringify(changes.columnWidths?.previousValue || {}) !== JSON.stringify(changes.columnWidths?.currentValue || {})) {
       this.colPrefix = this.columnWidths!.reduce(
         (acc, w) => { acc.push(acc[acc.length - 1] + w); return acc; },
         [0]
@@ -607,7 +612,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
       shouldRecalc = true;
     }
 
-    if (changes.selectedCells) {
+    if (changes.selectedCells && JSON.stringify(this._selectedCells || {}) !== JSON.stringify(this.selectedCells || {})) {
       this._selectedCells = [...(this.selectedCells || [])];
       this.pendingSelectedCells = [];
       shouldRecalc = true;
