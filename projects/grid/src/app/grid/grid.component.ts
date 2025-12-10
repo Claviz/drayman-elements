@@ -61,6 +61,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   @Input() minColumnWidth?: number;
   @Input() rowCount: number;
   @Input() gridStyle?: any;
+  @Input() containerStyle?: any = {};
   @Input() scrollbarWidth: 'narrow' | 'medium' | 'wide' = 'narrow';
 
   resized$ = new Subject();

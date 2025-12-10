@@ -1,5 +1,5 @@
 <div #container class="wrapper" [ngClass]="scrollbarWidthClass" (resized)="onResized($event)"
-    (mouseleave)="onGridMouseLeave($event)">
+    (mouseleave)="onGridMouseLeave($event)" [ngStyle]="containerStyle">
     <div class="spacer" [style.--row-height.px]="_cellHeight" [style.width.px]="spacerWidth"
         [style.height.px]="spacerHeight">
     </div>
