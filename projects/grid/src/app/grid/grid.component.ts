@@ -73,6 +73,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   pendingSelectedCells: GridCell[] = [];
   startSelectionCell: GridCell;
   hoveredRow: number = -1;
+  hoveredCells = new Set<string>();
   ctrl;
   menuTopLeftPosition = { x: '0', y: '0' };
   selectedCellChangeSubscription: Subscription;
@@ -262,6 +263,18 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
     return cell.row + '-' + cell.col + '-' + index;
   }
 
+  isCellHovered(cell: GridCell) {
+    return this.hoveredCells.has(this.getCellKey(cell));
+  }
+
+  getCellItemStyle(cell: GridCell, cellItem: any) {
+    return (this.isCellHovered(cell) && cellItem.hoverStyle) ? cellItem.hoverStyle : cellItem.style;
+  }
+
+  private getCellKey(cell: GridCell) {
+    return `${cell.row}-${cell.col}`;
+  }
+
   getCellStyle(cell: GridCell) {
     const rowEnd = cell.rowSpan ? cell.row + cell.rowSpan : cell.row + 1;
     const colEnd = cell.colSpan ? cell.col + cell.colSpan : cell.col + 1;
@@ -364,6 +377,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   }
 
   onMouseLeave($event: MouseEvent, cell: GridCell) {
+    this.hoveredCells.delete(this.getCellKey(cell));
     this.hoveredRow = -1;
   }
 
@@ -390,6 +404,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   }
 
   onMouseOver($event: MouseEvent, cell: GridCell) {
+    this.hoveredCells.add(this.getCellKey(cell));
     this.hoveredRow = cell.row;
     if (this.startSelectionCell) {
       const minCol = Math.min(cell.col, this.startSelectionCell.col);
@@ -408,6 +423,8 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   }
 
   onGridMouseLeave($event: MouseEvent) {
+    this.hoveredCells.clear();
+    this.hoveredRow = -1;
     this.startSelectionCell = null;
     if (this.pendingSelectedCells.length) {
       this._selectedCells = [...this._selectedCells, ...this.pendingSelectedCells];

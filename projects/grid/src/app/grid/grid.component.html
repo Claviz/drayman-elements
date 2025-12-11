@@ -16,12 +16,12 @@
                         <ng-container [ngSwitch]="cellItem.type">
                             <ng-container *ngSwitchCase="'text'">
                                 <div class="selectable" [matTooltip]="cellItem.tooltip"
-                                    [title]="getParsedValue(cellItem)" [ngStyle]="cellItem.style"
+                                    [title]="getParsedValue(cellItem)" [ngStyle]="getCellItemStyle(cell, cellItem)"
                                     [innerHTML]="getSanitized(cellItem)">
                                 </div>
                             </ng-container>
                             <ng-container *ngSwitchCase="'button'">
-                                <div [ngStyle]="cellItem.style">
+                                <div [ngStyle]="getCellItemStyle(cell, cellItem)">
                                     <drayman-button-internal [buttonRef]="cellItem.value.ref"
                                         [label]="cellItem.value.label"
                                         [onClick]="emitContentButtonClick.bind(this, cell, cellItem.value)"
@@ -33,7 +33,7 @@
                                 </div>
                             </ng-container>
                             <ng-container *ngSwitchCase="'text-field'">
-                                <div [ngStyle]="cellItem.style">
+                                <div [ngStyle]="getCellItemStyle(cell, cellItem)">
                                     <drayman-text-field-internal [metaData]="cell.row + '_' + cell.col"
                                         [appearance]="cellItem.value.appearance"
                                         [onValueChange]="onCellContentValueChange" [type]="cellItem.value.type"
@@ -48,7 +48,7 @@
                                 </div>
                             </ng-container>
                             <ng-container *ngSwitchCase="'datepicker'">
-                                <div [ngStyle]="cellItem.style">
+                                <div [ngStyle]="getCellItemStyle(cell, cellItem)">
                                     <drayman-datepicker-internal [metaData]="cell.row + '_' + cell.col"
                                         [appearance]="cellItem.value.appearance"
                                         [onValueChange]="onCellContentValueChange"
@@ -62,7 +62,7 @@
                                 </div>
                             </ng-container>
                             <ng-container *ngSwitchCase="'select'">
-                                <div [ngStyle]="cellItem.style">
+                                <div [ngStyle]="getCellItemStyle(cell, cellItem)">
                                     <drayman-select-internal [metaData]="cell.row + '_' + cell.col"
                                         [appearance]="cellItem.value.appearance"
                                         [onValueChange]="onCellContentValueChange" [options]="cellItem.value.options"
@@ -74,7 +74,7 @@
                                 </div>
                             </ng-container>
                             <ng-container *ngSwitchCase="'checkbox'">
-                                <div [ngStyle]="cellItem.style">
+                                <div [ngStyle]="getCellItemStyle(cell, cellItem)">
                                     <drayman-checkbox-internal [metaData]="cell.row + '_' + cell.col"
                                         [onValueChange]="onCellContentValueChange" [value]="cellItem.value.value"
                                         [label]="cellItem.value.label" [disabled]="cellItem.value.disabled"
@@ -84,7 +84,7 @@
                                 </div>
                             </ng-container>
                             <ng-container *ngSwitchCase="'sparkline'">
-                                <div [ngStyle]="cellItem.style">
+                                <div [ngStyle]="getCellItemStyle(cell, cellItem)">
                                     <drayman-sparkline-internal [data]="cellItem.value.data"
                                         [lineColor]="cellItem.value.lineColor"
                                         [minPointColor]="cellItem.value.minPointColor"
@@ -119,12 +119,12 @@
                         <ng-container [ngSwitch]="cellItem.type">
                             <ng-container *ngSwitchCase="'text'">
                                 <div class="selectable" [matTooltip]="cellItem.tooltip"
-                                    [title]="getParsedValue(cellItem)" [ngStyle]="cellItem.style"
+                                    [title]="getParsedValue(cellItem)" [ngStyle]="getCellItemStyle(cell, cellItem)"
                                     [innerHTML]="getSanitized(cellItem)">
                                 </div>
                             </ng-container>
                             <ng-container *ngSwitchCase="'button'">
-                                <div [ngStyle]="cellItem.style">
+                                <div [ngStyle]="getCellItemStyle(cell, cellItem)">
                                     <drayman-button-internal [buttonRef]="cellItem.value.ref"
                                         [label]="cellItem.value.label"
                                         [onClick]="emitContentButtonClick.bind(this, cell, cellItem.value)"
@@ -136,7 +136,7 @@
                                 </div>
                             </ng-container>
                             <ng-container *ngSwitchCase="'text-field'">
-                                <div [ngStyle]="cellItem.style">
+                                <div [ngStyle]="getCellItemStyle(cell, cellItem)">
                                     <drayman-text-field-internal [metaData]="cell.row + '_' + cell.col"
                                         [appearance]="cellItem.value.appearance"
                                         [onValueChange]="onCellContentValueChange" [type]="cellItem.value.type"
@@ -151,7 +151,7 @@
                                 </div>
                             </ng-container>
                             <ng-container *ngSwitchCase="'datepicker'">
-                                <div [ngStyle]="cellItem.style">
+                                <div [ngStyle]="getCellItemStyle(cell, cellItem)">
                                     <drayman-datepicker-internal [metaData]="cell.row + '_' + cell.col"
                                         [appearance]="cellItem.value.appearance"
                                         [onValueChange]="onCellContentValueChange"
@@ -165,7 +165,7 @@
                                 </div>
                             </ng-container>
                             <ng-container *ngSwitchCase="'select'">
-                                <div [ngStyle]="cellItem.style">
+                                <div [ngStyle]="getCellItemStyle(cell, cellItem)">
                                     <drayman-select-internal [metaData]="cell.row + '_' + cell.col"
                                         [appearance]="cellItem.value.appearance"
                                         [onValueChange]="onCellContentValueChange" [options]="cellItem.value.options"
@@ -177,7 +177,7 @@
                                 </div>
                             </ng-container>
                             <ng-container *ngSwitchCase="'checkbox'">
-                                <div [ngStyle]="cellItem.style">
+                                <div [ngStyle]="getCellItemStyle(cell, cellItem)">
                                     <drayman-checkbox-internal [metaData]="cell.row + '_' + cell.col"
                                         [onValueChange]="onCellContentValueChange" [value]="cellItem.value.value"
                                         [label]="cellItem.value.label" [disabled]="cellItem.value.disabled"
@@ -187,7 +187,7 @@
                                 </div>
                             </ng-container>
                             <ng-container *ngSwitchCase="'sparkline'">
-                                <div [ngStyle]="cellItem.style">
+                                <div [ngStyle]="getCellItemStyle(cell, cellItem)">
                                     <drayman-sparkline-internal [data]="cellItem.value.data"
                                         [lineColor]="cellItem.value.lineColor"
                                         [minPointColor]="cellItem.value.minPointColor"
