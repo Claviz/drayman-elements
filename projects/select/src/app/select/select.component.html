@@ -9,6 +9,15 @@
           [searching]="searching">
         </ngx-mat-select-search>
       </mat-option>
+      <mat-option class="select-all-option" *ngIf="multiple && selectAllOption"
+        [attr.aria-label]="selectAllDisplayLabel + ' option'" [value]="selectAllOptionValue"
+        [disabled]="!selectOptions.length"
+        (onSelectionChange)="handleSelectAllSelectionChange($event)">
+        <mat-pseudo-checkbox class="mat-option-pseudo-checkbox" [state]="selectAllState"
+          [disabled]="formControl.disabled">
+        </mat-pseudo-checkbox>
+        {{selectAllDisplayLabel}}
+      </mat-option>
       <mat-option [attr.aria-label]="data.label + ' option'" *ngFor="let data of selectOptions; trackBy: trackByFn"
         [value]="data.value">
         {{data.label}}

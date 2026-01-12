@@ -1,5 +1,6 @@
 import { Component, Input, SimpleChanges } from '@angular/core';
 import { FormControl } from '@angular/forms';
+import type { MatOptionSelectionChange, MatPseudoCheckboxState } from '@angular/material/core';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 
@@ -20,6 +21,7 @@ export class SelectComponent extends FieldBase<any> {
   }[];
   @Input() onSearchChange?: (data: { value: string }) => Promise<void>;
   @Input() multiple?: boolean;
+  @Input() selectAllOption?: boolean;
   @Input() value?: any;
   @Input() label?: string;
   @Input() disabled?: boolean;
@@ -35,6 +37,9 @@ export class SelectComponent extends FieldBase<any> {
   searchChanges$: Subscription;
   selectOptions: { value: any; label: any }[] = [];
   searching = false;
+  selectAllLabel = 'Select all';
+  deselectAllLabel = 'Deselect all';
+  readonly selectAllOptionValue = '__drayman_select_all__';
 
   ngOnChanges(simpleChanges: SimpleChanges) {
     super.ngOnChanges(simpleChanges);
@@ -45,14 +50,78 @@ export class SelectComponent extends FieldBase<any> {
       );
       this.options = [...missingValues.map(x => ({ value: x, label: x })), ...this.options];
     }
+    const options = this.options || [];
     this.selectOptions = this.onSearchChange ?
-      this.options :
-      this.options?.filter(x => `${x.label}`.trim().toLowerCase().includes(this.searchControl?.value?.toLowerCase() || ''));
+      options :
+      options.filter(x => `${x.label}`.trim().toLowerCase().includes(this.searchControl?.value?.toLowerCase() || ''));
   }
 
   clearSelection($event) {
     $event.stopPropagation();
     this.formControl.setValue(undefined);
+  }
+
+  handleSelectAllSelectionChange(event: MatOptionSelectionChange) {
+    if (!event.isUserInput || !event.source.selected) {
+      return;
+    }
+    event.source.deselect();
+    if (this.formControl.disabled) {
+      return;
+    }
+    const visibleValues = this.getVisibleValues();
+    if (!visibleValues.length) {
+      return;
+    }
+    const selectedValues = this.getSelectedValues();
+    const allVisibleSelected = visibleValues.every(value => selectedValues.includes(value));
+    if (allVisibleSelected) {
+      const remainingValues = selectedValues.filter(value => !visibleValues.includes(value));
+      this.formControl.setValue(remainingValues.length ? remainingValues : undefined);
+      return;
+    }
+    const nextValues = [...selectedValues, ...visibleValues.filter(value => !selectedValues.includes(value))];
+    this.formControl.setValue(nextValues);
+  }
+
+  get selectAllState(): MatPseudoCheckboxState {
+    const visibleValues = this.getVisibleValues();
+    if (!visibleValues.length) {
+      return 'unchecked';
+    }
+    const selectedValues = this.getSelectedValues();
+    let selectedCount = 0;
+    for (const optionValue of visibleValues) {
+      if (selectedValues.some(value => value === optionValue)) {
+        selectedCount += 1;
+      }
+    }
+    if (selectedCount === 0) {
+      return 'unchecked';
+    }
+    if (selectedCount === visibleValues.length) {
+      return 'checked';
+    }
+    return 'indeterminate';
+  }
+
+  get selectAllDisplayLabel(): string {
+    return this.selectAllState === 'checked' ? this.deselectAllLabel : this.selectAllLabel;
+  }
+
+  private getSelectedValues(): any[] {
+    const currentValue = this.formControl.value;
+    if (Array.isArray(currentValue)) {
+      return currentValue.filter(value => value !== this.selectAllOptionValue);
+    }
+    if (currentValue === this.selectAllOptionValue) {
+      return [];
+    }
+    return currentValue != null ? [currentValue] : [];
+  }
+
+  private getVisibleValues(): any[] {
+    return this.selectOptions.map(option => option.value);
   }
 
   ngOnInit() {

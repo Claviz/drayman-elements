@@ -1,6 +1,7 @@
 import { APP_INITIALIZER, Injector, NgModule } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatPseudoCheckboxModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -19,6 +20,7 @@ import { SingleOverlayContainer } from 'mat-single-overlay';
     BrowserAnimationsModule,
     MatSelectModule,
     MatFormFieldModule,
+    MatPseudoCheckboxModule,
     ReactiveFormsModule,
     NgxMatSelectSearchModule,
     MatIconModule,

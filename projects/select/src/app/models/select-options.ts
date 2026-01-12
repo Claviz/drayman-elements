@@ -24,6 +24,10 @@ export interface DraymanSelect extends FieldOptionsBase<any> {
      */
     multiple?: boolean;
     /**
+     * Whether the select should render a "Select all" option when multiple selection is enabled.
+     */
+    selectAllOption?: boolean;
+    /**
      * Whether clearing of the select field should be disabled.
      */
     allowSelectionClear?: boolean;
