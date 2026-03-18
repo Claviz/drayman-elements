@@ -18,6 +18,7 @@ import { DraymanTextareaField } from '../dist/types/textarea-field/src/app/model
 import { DraymanTimepicker } from '../dist/types/timepicker/src/app/models/timepicker-options';
 import { DraymanYoutubePlayer } from '../dist/types/youtube-player/src/app/models/youtube-player-options';
 import { DraymanNebula } from '../dist/types/nebula/src/app/models/nebula-options';
+import { DraymanSuperset } from '../dist/types/superset/src/app/models/superset-options';
 import { DraymanGrid } from '../dist/types/grid/src/app/models/grid-options';
 import { DraymanCodeEditor } from '../dist/types/code-editor/src/app/models/code-editor-options';
 import { DraymanCalendar } from '../dist/types/calendar/src/app/models/calendar-options';
@@ -1296,6 +1297,43 @@ declare global {
      * ```
      */
     interface DraymanNebulaProps extends DraymanNebula, DraymanElementsProps { }
+    /**
+     * # <drayman-superset \/>
+     *
+     * Apache Superset dashboard integration element powered by the
+     * [Superset Embedded SDK](https://www.npmjs.com/package/@superset-ui/embedded-sdk).
+     *
+     * ## Example of usage
+     *
+     * ```typescript
+     * export const component: DraymanComponent = async ({ forceUpdate }) => {
+     * 
+     *     return () => {
+     *         const dashboardUiConfig = {
+     *             hideTitle: true,
+     *             hideTab: true,
+     *             hideChartControls: false,
+     *             filters: {
+     *                 visible: true,
+     *                 expanded: false,
+     *             },
+     *         };
+     * 
+     *         return (
+     *             <drayman-superset
+     *                 supersetDomain="http://superset"
+     *                 embedId="01879ce0-6016-4332-b535-f5f1950f9364"
+     *                 onFetchGuestToken={async () => {
+     *                     return `token`;
+     *                 }}
+     *                 dashboardUiConfig={dashboardUiConfig}
+     *             />
+     *         );
+     *     }
+     * }
+     * ```
+     */
+    interface DraymanSupersetProps extends DraymanSuperset, DraymanElementsProps { }
 
     namespace JSX {
         export interface IntrinsicElements {
@@ -1317,6 +1355,7 @@ declare global {
             'drayman-timepicker': DraymanTimepickerProps;
             'drayman-youtube-player': DraymanYoutubePlayerProps;
             'drayman-nebula': DraymanNebulaProps;
+            'drayman-superset': DraymanSupersetProps;
             'drayman-grid': DraymanGridProps;
             'drayman-code-editor': DraymanCodeEditorProps;
             'drayman-calendar': DraymanCalendarProps;

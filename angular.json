@@ -2461,6 +2461,88 @@
           }
         }
       }
+    },
+    "superset": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss",
+          "skipTests": true
+        }
+      },
+      "root": "projects/superset",
+      "sourceRoot": "projects/superset/src",
+      "prefix": "drayman",
+      "architect": {
+        "build": {
+          "builder": "ngx-build-plus:browser",
+          "options": {
+            "outputPath": "dist/superset",
+            "index": "",
+            "main": "projects/superset/src/main.ts",
+            "polyfills": "projects/superset/src/polyfills.ts",
+            "tsConfig": "projects/superset/tsconfig.app.json",
+            "aot": false,
+            "assets": [
+              "projects/superset/src/favicon.ico",
+              "projects/superset/src/assets"
+            ],
+            "styles": [
+              "projects/superset/src/styles.scss"
+            ],
+            "allowedCommonJsDependencies": [
+              "@superset-ui/embedded-sdk"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "fileReplacements": [
+                {
+                  "replace": "projects/superset/src/environments/environment.ts",
+                  "with": "projects/superset/src/environments/environment.prod.ts"
+                }
+              ],
+              "optimization": true,
+              "outputHashing": "all",
+              "sourceMap": false,
+              "extractCss": true,
+              "namedChunks": false,
+              "aot": true,
+              "extractLicenses": true,
+              "vendorChunk": false,
+              "buildOptimizer": true,
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "2mb",
+                  "maximumError": "5mb"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "builder": "ngx-build-plus:dev-server",
+          "options": {
+            "browserTarget": "superset:build"
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "superset:build:production"
+            }
+          }
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "superset:build"
+          }
+        },
+        "test": {
+          "builder": "ngx-build-plus:karma"
+        }
+      }
     }
   },
   "defaultProject": "button"

@@ -1,6 +1,6 @@
 {
   "name": "@drayman/elements",
-  "version": "1.80.0",
+  "version": "1.81.0",
   "description": "A collection of web components for Drayman.",
   "license": "MIT",
   "keywords": [
@@ -12,7 +12,7 @@
     "build:types": "tsc -p ./tsconfig.types.json",
     "typedoc": "npm run build:types && typedoc --tsconfig ./tsconfig.types.json",
     "lint": "ng lint",
-    "build": "npm run build:calendar && npm run build:code-editor && npm run build:button && npm run build:text-field && npm run build:claviz-charts && npm run build:file-uploader && npm run build:number-field && npm run build:select && npm run build:table && npm run build:checkbox && npm run build:slider && npm run build:textarea-field && npm run build:radio-group && npm run build:datepicker && npm run build:timepicker && npm run build:pdf-viewer && npm run build:ngx-charts && npm run build:menu && npm run build:ngx-graph && npm run build:youtube-player && npm run build:nebula && npm run build:grid && npm run build:gauge && npm run build:year-calendar && npm run typedoc",
+    "build": "npm run build:calendar && npm run build:code-editor && npm run build:button && npm run build:text-field && npm run build:claviz-charts && npm run build:file-uploader && npm run build:number-field && npm run build:select && npm run build:table && npm run build:checkbox && npm run build:slider && npm run build:textarea-field && npm run build:radio-group && npm run build:datepicker && npm run build:timepicker && npm run build:pdf-viewer && npm run build:ngx-charts && npm run build:menu && npm run build:ngx-graph && npm run build:youtube-player && npm run build:nebula && npm run build:superset && npm run build:grid && npm run build:gauge && npm run build:year-calendar && npm run typedoc",
     "build:code-editor": "ng build code-editor --extra-webpack-config webpack.partial.js --configuration production --single-bundle --output-hashing=none",
     "build:calendar": "ng build calendar --configuration production --single-bundle --output-hashing=none",
     "build:button": "ng build button --configuration production --single-bundle --output-hashing=none",
@@ -24,6 +24,7 @@
     "build:grid": "ng build grid --configuration production --single-bundle --output-hashing=none",
     "build:youtube-player": "ng build youtube-player --configuration production --single-bundle --output-hashing=none",
     "build:nebula": "ng build nebula --configuration production --single-bundle --output-hashing=none",
+    "build:superset": "ng build superset --configuration production --single-bundle --output-hashing=none",
     "build:table": "ng build table --configuration production --single-bundle --output-hashing=none",
     "build:checkbox": "ng build checkbox --configuration production --single-bundle --output-hashing=none",
     "build:slider": "ng build slider --configuration production --single-bundle --output-hashing=none",
@@ -77,6 +78,9 @@
       },
       "drayman-nebula": {
         "script": "./dist/nebula/main.js"
+      },
+      "drayman-superset": {
+        "script": "./dist/superset/main.js"
       },
       "drayman-table": {
         "script": "./dist/table/main.js"
@@ -143,6 +147,7 @@
     "@nebula.js/stardust": "5.11.0",
     "@ngneat/spectator": "5.13.2",
     "@qlik/api": "^1.29.0",
+    "@superset-ui/embedded-sdk": "^0.3.0",
     "@swimlane/ngx-charts": "16.0.0",
     "@swimlane/ngx-graph": "8.0.0",
     "@types/jest": "26.0.13",

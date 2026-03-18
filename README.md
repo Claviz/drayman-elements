@@ -31,6 +31,7 @@ Default drayman elements library.
 - [drayman-youtube-player](interfaces/__global.draymanyoutubeplayerprops.html)
 - [drayman-grid](interfaces/__global.draymangridprops.html)
 - [drayman-nebula](interfaces/__global.draymannebulaprops.html)
+- [drayman-superset](interfaces/__global.draymansupersetprops.html)
 - [drayman-code-editor](interfaces/__global.draymancodeeditorprops.html)
 - [drayman-calendar](interfaces/__global.draymancalendarprops.html)
 - [drayman-year-calendar](interfaces/__global.draymanyearcalendarprops.html)
