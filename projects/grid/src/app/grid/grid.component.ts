@@ -1,6 +1,7 @@
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   Input,
@@ -95,6 +96,22 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   nativeScrollSubscription: Subscription;
   cellItemCache = new WeakMap<any, { sanitized: SafeHtml, parsedValue: string }>();
 
+  private rebuildColPrefix() {
+    if (this.columnWidths?.length) {
+      this.colPrefix = this.columnWidths.reduce(
+        (acc, w) => {
+          acc.push(acc[acc.length - 1] + w);
+          return acc;
+        },
+        [0]
+      );
+    } else {
+      this.colPrefix = Array(this.columnCount + 1)
+        .fill(0)
+        .map((_, i) => i * this._cellWidth!);
+    }
+  }
+
   get _cellHeight(): number {
     if (this.cellHeight != null) return this.cellHeight;
     const h = this.containerRef?.nativeElement?.clientHeight;
@@ -118,11 +135,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
     const vh = this.containerRef.nativeElement.clientHeight;
     const vw = this.containerRef.nativeElement.clientWidth;
 
-    if (!this.columnWidths?.length) {
-      this.colPrefix = Array(this.columnCount + 1)
-        .fill(0)
-        .map((_, i) => i * this._cellWidth!);
-    }
+    this.rebuildColPrefix();
 
     const rawFirstRow = Math.floor(scrollTop / this._cellHeight!);
     this.firstRow = Math.max(0, rawFirstRow - this.buffer);
@@ -298,7 +311,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
     };
   }
 
-  constructor(public elementRef: ElementRef, private sanitizer: DomSanitizer, private ngZone: NgZone) {
+  constructor(public elementRef: ElementRef, private sanitizer: DomSanitizer, private ngZone: NgZone, private cdr: ChangeDetectorRef,) {
   }
 
   ngOnDestroy() {
@@ -459,7 +472,10 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
       this.nativeScrollSubscription = scroll$.subscribe(() => {
         const top = scrollEl.scrollTop;
         const left = scrollEl.scrollLeft;
-        this.ngZone.run(() => this.updateVisibleWindow(top, left));
+        this.ngZone.run(() => {
+          this.updateVisibleWindow(top, left);
+          this.cdr.markForCheck();
+        });
       });
     });
     this.scrollSub = merge(
@@ -567,19 +583,27 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
     if (newWidth <= minWidth) {
       newWidth = minWidth;
     }
-    if (!this.columnWidths) { return; }
+    if (!this.columnWidths) {
+      return;
+    }
+
     this.columnWidths = [
       ...this.columnWidths.slice(0, colIndex),
       newWidth,
       ...this.columnWidths.slice(colIndex + 1),
     ];
+
+    this.rebuildColPrefix();
+
+    const el = this.containerRef.nativeElement;
+    this.updateVisibleWindow(el.scrollTop, el.scrollLeft);
+
     this.onColumnWidthChange?.({
       columnWidths: this.columnWidths,
       changedWidthIndex: colIndex,
     });
 
-    const el = this.containerRef.nativeElement;
-    this.updateVisibleWindow(el.scrollTop, el.scrollLeft);
+    this.cdr.markForCheck();
   }
 
 
@@ -623,10 +647,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
     }
 
     if (changes.columnWidths && JSON.stringify(changes.columnWidths?.previousValue || {}) !== JSON.stringify(changes.columnWidths?.currentValue || {})) {
-      this.colPrefix = this.columnWidths!.reduce(
-        (acc, w) => { acc.push(acc[acc.length - 1] + w); return acc; },
-        [0]
-      );
+      this.rebuildColPrefix();
       shouldRecalc = true;
     }
 
@@ -639,6 +660,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
     if (shouldRecalc && this.containerRef?.nativeElement) {
       const el = this.containerRef.nativeElement;
       this.updateVisibleWindow(el.scrollTop, el.scrollLeft);
+      this.cdr.markForCheck();
     }
   }
 
