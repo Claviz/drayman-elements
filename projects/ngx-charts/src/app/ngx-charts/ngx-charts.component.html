@@ -11,6 +11,19 @@
             [yScaleMin]="chart.yScaleMin" [showDataLabel]="chart.showDataLabel" (select)="onSelect($event)">
         </ngx-charts-bar-vertical>
     </ng-container>
+    <ng-container *ngSwitchCase="'verticalBarStacked'">
+        <ngx-charts-bar-vertical-stacked [results]="chart.results" [scheme]="chart.scheme"
+            [customColors]="chart.customColors" [animations]="chart.animations" [legend]="chart.legend"
+            [legendTitle]="chart.legendTitle" [legendPosition]="chart.legendPosition" [gradient]="chart.gradient"
+            [activeEntries]="chart.activeEntries" [tooltipDisabled]="chart.tooltipDisabled"
+            [schemeType]="chart.schemeType" [xAxis]="chart.xAxis" [yAxis]="chart.yAxis"
+            [showXAxisLabel]="chart.showXAxisLabel" [showYAxisLabel]="chart.showYAxisLabel"
+            [xAxisLabel]="chart.xAxisLabel" [yAxisLabel]="chart.yAxisLabel" [showGridLines]="chart.showGridLines"
+            [xAxisTicks]="chart.xAxisTicks" [yAxisTicks]="chart.yAxisTicks" [barPadding]="chart.barPadding"
+            [roundDomains]="chart.roundDomains" [showDataLabel]="chart.showDataLabel"
+            [yScaleMax]="chart.yScaleMax" (select)="onSelect($event)">
+        </ngx-charts-bar-vertical-stacked>
+    </ng-container>
     <ng-container *ngSwitchCase="'pie'">
         <ngx-charts-pie-chart [results]="chart.results" [scheme]="chart.scheme" [customColors]="chart.customColors"
             [animations]="chart.animations" [labels]="chart.labels" [trimLabels]="chart.trimLabels"

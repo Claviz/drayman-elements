@@ -576,6 +576,38 @@ declare global {
      *     );
      * }
      * ```
+     *
+     * ### Stacked vertical bar chart
+     *
+     * ```typescript
+     * export const component: DraymanComponent = async ({ forceUpdate }) => {
+     *     return () => (
+     *         <drayman-ngx-charts
+     *             type="verticalBarStacked"
+     *             results={[
+     *                 {
+     *                     name: 'Germany',
+     *                     series: [
+     *                         { name: '2010', value: 7300000 },
+     *                         { name: '2011', value: 8940000 },
+     *                     ],
+     *                 },
+     *                 {
+     *                     name: 'USA',
+     *                     series: [
+     *                         { name: '2010', value: 7870000 },
+     *                         { name: '2011', value: 8270000 },
+     *                     ],
+     *                 },
+     *             ]}
+     *             legend
+     *             xAxis
+     *             yAxis
+     *             showGridLines
+     *         />
+     *     );
+     * }
+     * ```
      */
     interface DraymanNgxChartsProps extends DraymanNgxCharts, DraymanElementsProps { }
     /**

@@ -4,7 +4,7 @@ export interface DraymanNgxCharts {
      * Emits data defined by `onSelect` output of [ngx-charts](https://github.com/swimlane/ngx-charts) library.
      */
     onSelect?: ElementEvent<{ data: any }>;
-    type: 'pie' | 'verticalBar' | 'numberCard' | 'gauge' | 'areaNormalized' | 'areaStacked' | 'line';
+    type: 'pie' | 'verticalBar' | 'verticalBarStacked' | 'numberCard' | 'gauge' | 'areaNormalized' | 'areaStacked' | 'line';
     /**
      * Chart data.
      */

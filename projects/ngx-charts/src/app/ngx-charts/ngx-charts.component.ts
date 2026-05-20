@@ -13,7 +13,7 @@ export class NgxChartsComponent implements OnChanges, AfterViewInit {
 
   @ViewChild('chartContainer', { read: ViewContainerRef, static: true }) public chartContainer: ViewContainerRef;
   @Input() onSelect?: (data: any) => Promise<void>;;
-  @Input() type: 'pie' | 'verticalBar' | 'numberCard' | 'gauge' | 'areaNormalized' | 'areaStacked' | 'line';
+  @Input() type: 'pie' | 'verticalBar' | 'verticalBarStacked' | 'numberCard' | 'gauge' | 'areaNormalized' | 'areaStacked' | 'line';
   @Input() results: any[];
   @Input() legendTitle?: string;
   @Input() scheme?: any;
