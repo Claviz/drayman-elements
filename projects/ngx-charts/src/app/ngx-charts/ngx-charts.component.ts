@@ -37,8 +37,15 @@ export class NgxChartsComponent implements OnChanges, AfterViewInit {
   @Input() xAxisLabel?: string;
   @Input() yAxisLabel?: string;
   @Input() showGridLines?: boolean;
-  @Input() xAxisTicks?: boolean;
-  @Input() yAxisTicks?: boolean;
+  @Input() trimXAxisTicks?: boolean;
+  @Input() trimYAxisTicks?: boolean;
+  @Input() rotateXAxisTicks?: boolean;
+  @Input() maxXAxisTickLength?: number;
+  @Input() maxYAxisTickLength?: number;
+  @Input() xAxisTickFormatting?: any;
+  @Input() yAxisTickFormatting?: any;
+  @Input() xAxisTicks?: any[];
+  @Input() yAxisTicks?: any[];
   @Input() barPadding?: number;
   @Input() roundDomains?: boolean;
   @Input() roundEdges?: boolean;
@@ -106,6 +113,13 @@ export class NgxChartsComponent implements OnChanges, AfterViewInit {
       xAxisLabel: this.xAxisLabel || undefined,
       yAxisLabel: this.yAxisLabel || undefined,
       showGridLines: this.showGridLines || true,
+      trimXAxisTicks: this.trimXAxisTicks ?? true,
+      trimYAxisTicks: this.trimYAxisTicks ?? true,
+      rotateXAxisTicks: this.rotateXAxisTicks ?? true,
+      maxXAxisTickLength: this.maxXAxisTickLength ?? 16,
+      maxYAxisTickLength: this.maxYAxisTickLength ?? 16,
+      xAxisTickFormatting: this.xAxisTickFormatting || undefined,
+      yAxisTickFormatting: this.yAxisTickFormatting || undefined,
       xAxisTicks: this.xAxisTicks || undefined,
       yAxisTicks: this.yAxisTicks || undefined,
       barPadding: this.barPadding || 8,

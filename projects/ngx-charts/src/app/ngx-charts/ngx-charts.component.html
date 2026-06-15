@@ -6,9 +6,13 @@
             [schemeType]="chart.schemeType" [xAxis]="chart.xAxis" [yAxis]="chart.yAxis"
             [showXAxisLabel]="chart.showXAxisLabel" [showYAxisLabel]="chart.showYAxisLabel"
             [xAxisLabel]="chart.xAxisLabel" [yAxisLabel]="chart.yAxisLabel" [showGridLines]="chart.showGridLines"
-            [xAxisTicks]="chart.xAxisTicks" [yAxisTicks]="chart.yAxisTicks" [barPadding]="chart.barPadding"
-            [roundDomains]="chart.roundDomains" [roundEdges]="chart.roundEdges" [yScaleMax]="chart.yScaleMax"
-            [yScaleMin]="chart.yScaleMin" [showDataLabel]="chart.showDataLabel" (select)="onSelect($event)">
+            [trimXAxisTicks]="chart.trimXAxisTicks" [trimYAxisTicks]="chart.trimYAxisTicks"
+            [rotateXAxisTicks]="chart.rotateXAxisTicks" [maxXAxisTickLength]="chart.maxXAxisTickLength"
+            [maxYAxisTickLength]="chart.maxYAxisTickLength" [xAxisTickFormatting]="chart.xAxisTickFormatting"
+            [yAxisTickFormatting]="chart.yAxisTickFormatting" [xAxisTicks]="chart.xAxisTicks"
+            [yAxisTicks]="chart.yAxisTicks" [barPadding]="chart.barPadding" [roundDomains]="chart.roundDomains"
+            [roundEdges]="chart.roundEdges" [yScaleMax]="chart.yScaleMax" [yScaleMin]="chart.yScaleMin"
+            [showDataLabel]="chart.showDataLabel" (select)="onSelect($event)">
         </ngx-charts-bar-vertical>
     </ng-container>
     <ng-container *ngSwitchCase="'verticalBarStacked'">
@@ -19,9 +23,12 @@
             [schemeType]="chart.schemeType" [xAxis]="chart.xAxis" [yAxis]="chart.yAxis"
             [showXAxisLabel]="chart.showXAxisLabel" [showYAxisLabel]="chart.showYAxisLabel"
             [xAxisLabel]="chart.xAxisLabel" [yAxisLabel]="chart.yAxisLabel" [showGridLines]="chart.showGridLines"
-            [xAxisTicks]="chart.xAxisTicks" [yAxisTicks]="chart.yAxisTicks" [barPadding]="chart.barPadding"
-            [roundDomains]="chart.roundDomains" [showDataLabel]="chart.showDataLabel"
-            [yScaleMax]="chart.yScaleMax" (select)="onSelect($event)">
+            [trimXAxisTicks]="chart.trimXAxisTicks" [trimYAxisTicks]="chart.trimYAxisTicks"
+            [rotateXAxisTicks]="chart.rotateXAxisTicks" [maxXAxisTickLength]="chart.maxXAxisTickLength"
+            [maxYAxisTickLength]="chart.maxYAxisTickLength" [xAxisTickFormatting]="chart.xAxisTickFormatting"
+            [yAxisTickFormatting]="chart.yAxisTickFormatting" [xAxisTicks]="chart.xAxisTicks"
+            [yAxisTicks]="chart.yAxisTicks" [barPadding]="chart.barPadding" [roundDomains]="chart.roundDomains"
+            [showDataLabel]="chart.showDataLabel" [yScaleMax]="chart.yScaleMax" (select)="onSelect($event)">
         </ngx-charts-bar-vertical-stacked>
     </ng-container>
     <ng-container *ngSwitchCase="'pie'">
@@ -56,8 +63,12 @@
             [showXAxisLabel]="chart.showXAxisLabel" [showYAxisLabel]="chart.showYAxisLabel"
             [xAxisLabel]="chart.xAxisLabel" [yAxisLabel]="chart.yAxisLabel" [timeline]="chart.timeline"
             [gradient]="chart.gradient" [showGridLines]="chart.showGridLines" [activeEntries]="chart.activeEntries"
-            [schemeType]="chart.schemeType" [xAxisTicks]="chart.xAxisTicks" [yAxisTicks]="chart.yAxisTicks"
-            [roundDomains]="chart.roundDomains" [tooltipDisabled]="chart.tooltipDisabled" (select)="onSelect($event)">
+            [schemeType]="chart.schemeType" [trimXAxisTicks]="chart.trimXAxisTicks"
+            [trimYAxisTicks]="chart.trimYAxisTicks" [rotateXAxisTicks]="chart.rotateXAxisTicks"
+            [maxXAxisTickLength]="chart.maxXAxisTickLength" [maxYAxisTickLength]="chart.maxYAxisTickLength"
+            [xAxisTickFormatting]="chart.xAxisTickFormatting" [yAxisTickFormatting]="chart.yAxisTickFormatting"
+            [xAxisTicks]="chart.xAxisTicks" [yAxisTicks]="chart.yAxisTicks" [roundDomains]="chart.roundDomains"
+            [tooltipDisabled]="chart.tooltipDisabled" (select)="onSelect($event)">
         </ngx-charts-area-chart-normalized>
     </ng-container>
     <ng-container *ngSwitchCase="'areaStacked'">
@@ -67,10 +78,13 @@
             [showXAxisLabel]="chart.showXAxisLabel" [showYAxisLabel]="chart.showYAxisLabel"
             [xAxisLabel]="chart.xAxisLabel" [yAxisLabel]="chart.yAxisLabel" [timeline]="chart.timeline"
             [gradient]="chart.gradient" [showGridLines]="chart.showGridLines" [activeEntries]="chart.activeEntries"
-            [schemeType]="chart.schemeType" [xAxisTicks]="chart.xAxisTicks" [yAxisTicks]="chart.yAxisTicks"
-            [roundDomains]="chart.roundDomains" [tooltipDisabled]="chart.tooltipDisabled" [xScaleMin]="chart.xScaleMin"
-            [xScaleMax]="chart.xScaleMax" [yScaleMin]="chart.yScaleMin" [yScaleMax]="chart.yScaleMax"
-            (select)="onSelect($event)">
+            [schemeType]="chart.schemeType" [trimXAxisTicks]="chart.trimXAxisTicks"
+            [trimYAxisTicks]="chart.trimYAxisTicks" [rotateXAxisTicks]="chart.rotateXAxisTicks"
+            [maxXAxisTickLength]="chart.maxXAxisTickLength" [maxYAxisTickLength]="chart.maxYAxisTickLength"
+            [xAxisTickFormatting]="chart.xAxisTickFormatting" [yAxisTickFormatting]="chart.yAxisTickFormatting"
+            [xAxisTicks]="chart.xAxisTicks" [yAxisTicks]="chart.yAxisTicks" [roundDomains]="chart.roundDomains"
+            [tooltipDisabled]="chart.tooltipDisabled" [xScaleMin]="chart.xScaleMin" [xScaleMax]="chart.xScaleMax"
+            [yScaleMin]="chart.yScaleMin" [yScaleMax]="chart.yScaleMax" (select)="onSelect($event)">
         </ngx-charts-area-chart-stacked>
     </ng-container>
     <ng-container *ngSwitchCase="'line'">
@@ -80,9 +94,13 @@
             [showXAxisLabel]="chart.showXAxisLabel" [showYAxisLabel]="chart.showYAxisLabel"
             [xAxisLabel]="chart.xAxisLabel" [yAxisLabel]="chart.yAxisLabel" [timeline]="chart.timeline"
             [gradient]="chart.gradient" [showGridLines]="chart.showGridLines" [activeEntries]="chart.activeEntries"
-            [schemeType]="chart.schemeType" [xAxisTicks]="chart.xAxisTicks" [yAxisTicks]="chart.yAxisTicks"
-            [roundDomains]="chart.roundDomains" [tooltipDisabled]="chart.tooltipDisabled" [autoScale]="chart.autoScale"
-            [gradient]="chart.gradient" [rangeFillOpacity]="chart.rangeFillOpacity" [showRefLines]="chart.showRefLines"
+            [schemeType]="chart.schemeType" [trimXAxisTicks]="chart.trimXAxisTicks"
+            [trimYAxisTicks]="chart.trimYAxisTicks" [rotateXAxisTicks]="chart.rotateXAxisTicks"
+            [maxXAxisTickLength]="chart.maxXAxisTickLength" [maxYAxisTickLength]="chart.maxYAxisTickLength"
+            [xAxisTickFormatting]="chart.xAxisTickFormatting" [yAxisTickFormatting]="chart.yAxisTickFormatting"
+            [xAxisTicks]="chart.xAxisTicks" [yAxisTicks]="chart.yAxisTicks" [roundDomains]="chart.roundDomains"
+            [tooltipDisabled]="chart.tooltipDisabled" [autoScale]="chart.autoScale" [gradient]="chart.gradient"
+            [rangeFillOpacity]="chart.rangeFillOpacity" [showRefLines]="chart.showRefLines"
             [referenceLines]="chart.referenceLines" [showRefLabels]="chart.showRefLabels" [xScaleMin]="chart.xScaleMin"
             [xScaleMax]="chart.xScaleMax" [yScaleMin]="chart.yScaleMin" [yScaleMax]="chart.yScaleMax"
             (select)="onSelect($event)">

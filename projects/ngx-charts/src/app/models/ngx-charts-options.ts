@@ -82,11 +82,39 @@ export interface DraymanNgxCharts {
     /**
      * Trim or don't trim ticks on the x axis.
      */
-    xAxisTicks?: boolean;
+    trimXAxisTicks?: boolean;
     /**
-    * Trim or don't trim ticks on the y axis.
-    */
-    yAxisTicks?: boolean;
+     * Trim or don't trim ticks on the y axis.
+     */
+    trimYAxisTicks?: boolean;
+    /**
+     * Rotate x axis tick labels to prevent overlap.
+     */
+    rotateXAxisTicks?: boolean;
+    /**
+     * Maximum length of x axis tick labels when trimming is enabled.
+     */
+    maxXAxisTickLength?: number;
+    /**
+     * Maximum length of y axis tick labels when trimming is enabled.
+     */
+    maxYAxisTickLength?: number;
+    /**
+     * Custom x axis tick formatting function.
+     */
+    xAxisTickFormatting?: any;
+    /**
+     * Custom y axis tick formatting function.
+     */
+    yAxisTickFormatting?: any;
+    /**
+     * Predefined list of x axis tick values.
+     */
+    xAxisTicks?: any[];
+    /**
+     * Predefined list of y axis tick values.
+     */
+    yAxisTicks?: any[];
     /**
      * Padding between bars in `px`.
      */
