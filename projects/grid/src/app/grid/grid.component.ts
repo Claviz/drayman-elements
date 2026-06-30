@@ -120,8 +120,8 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
 
   get _cellWidth(): number {
     if (this.cellWidth != null) return this.cellWidth;
-    const w = this.containerRef?.nativeElement?.clientWidth;
-    return (w != null && this.columnCount > 0) ? w / this.columnCount : 0;
+    const usableWidth = this.usableClientWidth;
+    return (usableWidth != null && this.columnCount > 0) ? usableWidth / this.columnCount : 0;
   }
 
   onNativeScroll() {
@@ -133,7 +133,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
 
   updateVisibleWindow(scrollTop: number, scrollLeft: number) {
     const vh = this.containerRef.nativeElement.clientHeight;
-    const vw = this.containerRef.nativeElement.clientWidth;
+    const vw = this.usableClientWidth;
 
     this.rebuildColPrefix();
 
@@ -258,6 +258,31 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
 
   get spacerHeight(): number {
     return (this.rowCount * (this._cellHeight ?? 0));
+  }
+
+  get scrollbarWidthPx(): number {
+    if (this.scrollbarWidth === 'medium') return 14;
+    if (this.scrollbarWidth === 'wide') return 16;
+
+    return 10;
+  }
+
+  get hasVerticalScrollbar(): boolean {
+    const el = this.containerRef?.nativeElement;
+    return !!el && this.spacerHeight > el.clientHeight;
+  }
+
+  get overlayVerticalScrollbarWidth(): number {
+    const el = this.containerRef?.nativeElement;
+    if (!el || !this.hasVerticalScrollbar) return 0;
+
+    const reservedScrollbarWidth = el.offsetWidth - el.clientWidth;
+    return reservedScrollbarWidth > 0 ? 0 : this.scrollbarWidthPx;
+  }
+
+  get usableClientWidth(): number {
+    const el = this.containerRef?.nativeElement;
+    return el ? Math.max(0, el.clientWidth - this.overlayVerticalScrollbarWidth) : 0;
   }
 
   get scrollbarWidthClass() {
@@ -486,7 +511,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
       const left = scrollEl.scrollLeft;
       this.onScroll?.({
         currentCol: this.getCurrentColumn(left),
-        visibleColCount: this.getVisibleColumnCount(scrollEl.clientWidth, this.getCurrentColumn(left), left),
+        visibleColCount: this.getVisibleColumnCount(this.usableClientWidth, this.getCurrentColumn(left), left),
         currentRow: this._cellHeight ? Math.floor(top / this._cellHeight) : 0,
         visibleRowCount: this._cellHeight ? Math.ceil(scrollEl.clientHeight / this._cellHeight) : this.rowCount,
       });
@@ -506,7 +531,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
     this.onLoad?.({
       currentCol: this.getCurrentColumn(initLeft),
       visibleColCount: this.getVisibleColumnCount(
-        scrollEl.clientWidth,
+        this.usableClientWidth,
         this.getCurrentColumn(initLeft),
         initLeft
       ),
