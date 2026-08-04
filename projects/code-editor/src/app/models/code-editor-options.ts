@@ -1,3 +1,7 @@
+/**
+ * Requires the host environment to initialize Monaco on `window.monaco`
+ * before creating a `drayman-code-editor` element.
+ */
 export interface DraymanCodeEditor {
     /**
      * The language of the code editor.
@@ -20,6 +24,10 @@ export interface DraymanCodeEditor {
      * Executed with an input value from user.
      */
     onValueChange?: ElementEvent<{ value: string }>;
+    /**
+     * Executed when the browser-side editor is ready.
+     */
+    onReady?: ElementEvent<{}>;
     /**
      * Label shown above the editor.
      */

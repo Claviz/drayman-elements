@@ -25,9 +25,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
       provide: DateAdapter,
       useFactory: adapterFactory,
     }),
-    // CodemirrorModule,
-    // AngularResizedEventModule,
-    // NgeMonacoModule.forRoot({}),
   ],
   providers: [
     {
