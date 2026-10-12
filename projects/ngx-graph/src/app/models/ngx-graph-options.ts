@@ -27,6 +27,10 @@ export interface DraymanNgxGraph {
      * Automatically zoom the graph to fit in the avialable viewport when the graph is updated.
      */
     autoZoom?: boolean;
+    /** 
+     * Focus the first node at left center, then retain position and zoom instead of autoCenter/autoZoom. 
+     */
+    preserveView?: boolean;
     /**
      * Executed when user clicks on a node.
      */
