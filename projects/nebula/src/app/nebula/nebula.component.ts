@@ -280,6 +280,13 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
           args,
         });
       },
+      // Scatter plots with more than 1,000 points draw density bins.
+      getHyperCubeBinnedData: async (...args) => {
+        return await this.onVizMethod({
+          name: 'getHyperCubeBinnedData',
+          args,
+        });
+      },
       beginSelections: (...args) => {
         this.inSelections = true;
         this.selectionMade = false;
