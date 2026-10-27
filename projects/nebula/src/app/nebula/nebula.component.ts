@@ -3,8 +3,26 @@ import * as stardust from '@nebula.js/stardust';
 
 // import EnigmaMocker from '../../enigma-mocker';
 import { requireFrom } from '../../custom-d3-require';
+import { patchRangeBrush, rangeBrushGlobals } from '../../range-brush';
 // import treemap from '../../../sn-treemap/sn-treemap';
 // import datepicker from 'nebula-date-range-picker/dist/nebula-date-range-picker';
+
+// Longest wait for the confirmed layout before the chart shows its own view again.
+const frozenViewTimeoutMs = 5000;
+// Longest wait for a chart to redraw new data in place.
+const updateTimeoutMs = 10_000;
+const errorUpdateTimeoutMs = 300;
+const fadeMs = 200;
+
+const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+// Nebula's model of a rendered chart. New data goes to the same chart, which animates to it
+// the way Qlik Sense charts do.
+interface ChartSource {
+  id: string;
+  layout: any;
+  listeners: Set<() => void>;
+}
 
 @Component({
   selector: 'drayman-nebula-internal',
@@ -14,11 +32,14 @@ import { requireFrom } from '../../custom-d3-require';
 export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
   private static nextAppId = 0;
   private layout: any;
+  // Layouts can be megabytes; each one is serialized once.
+  private layoutJson: string;
   @Input() set qLayout(value: any) {
     this.layout = value;
+    this.layoutJson = JSON.stringify(value);
     // Register render work as soon as the view is patched, before a queued hide
     // can run. Angular's render hook may execute on a later browser turn.
-    this.layoutChanged = JSON.stringify(value) !== this.oldLayoutJson;
+    this.layoutChanged = this.layoutJson !== this.oldLayoutJson;
     if (this.viewReady) this.reportRendering(this.rendering || (!!value && this.layoutChanged));
   }
   get qLayout() { return this.layout; }
@@ -53,10 +74,115 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
   private cancelRender?: () => void;
   private reportedRendering = false;
   private vizContainer?: HTMLElement;
+  private source?: ChartSource;
+  // Nebula removes the selection highlight as soon as a selection is confirmed, but the
+  // confirmed layout comes later. A copy of the highlighted view covers the chart until then.
+  private inSelections = false;
+  // A selection with nothing selected (a tap on empty space) brings no new layout to wait for.
+  private selectionMade = false;
+  private selectionSnapshot?: HTMLElement;
+  private frozenView?: HTMLElement;
+  private frozenRevision = 0;
+  private frozenTimeout;
+  // Charts confirm their selection on Enter and cancel it on Escape. The server ends
+  // selections made with the pointer itself, but it doesn't see these keys.
+  private handlingKey = false;
+  // Ending a selection on the server waits for the selection calls before it.
+  private serverSelections: Promise<unknown> = Promise.resolve();
 
   async ngAfterViewInit() {
     this.viewReady = true;
+    // Capture runs before Nebula's click-out handler redraws the chart.
+    document.addEventListener('pointerdown', this.onPointerDown, true);
+    document.addEventListener('keydown', this.onKeyDown, true);
+    document.addEventListener('keyup', this.onKeyUp, true);
     await this.render();
+  }
+
+  private onPointerDown = (event: PointerEvent) => {
+    // A close button cancels the selection, and the chart below already shows the result.
+    const button: any = (event.target as Element)?.closest?.('drayman-button');
+    const cancels = button?.icon === 'close';
+    this.selectionSnapshot = this.inSelections && this.vizContainer && !cancels ? this.copyView(this.vizContainer) : undefined;
+  };
+
+  // Keyboard selections would make the snapshot stale.
+  private onKeyDown = () => {
+    this.selectionSnapshot = undefined;
+    this.markKey();
+  };
+
+  // Charts handle Enter and Escape when the key goes up.
+  private onKeyUp = (event: KeyboardEvent) => {
+    const view = event.key === 'Enter' && this.inSelections ? this.vizContainer : undefined;
+    this.selectionSnapshot = view ? this.copyView(view) : undefined;
+    this.markKey();
+  };
+
+  private markKey() {
+    this.handlingKey = true;
+    setTimeout(() => this.handlingKey = false);
+  }
+
+  private async selectOnServer(method: string, selections: any[]) {
+    this.selectionMade = true;
+    const call = this.onSelections?.({ selections, method });
+    this.serverSelections = Promise.all([this.serverSelections, call]).catch(() => undefined);
+    await call;
+  }
+
+  private endSelectionsOnServer(accept: boolean) {
+    this.serverSelections = this.serverSelections
+      .then(() => this.onVizMethod?.({ name: 'endSelections', args: [accept] }))
+      .catch(error => console.error('Ending the Qlik selection failed:', error));
+  }
+
+  private copyView(view: HTMLElement) {
+    const copy = view.cloneNode(true) as HTMLElement;
+    // Clones keep canvas sizes but not their pixels.
+    const canvases = view.querySelectorAll('canvas');
+    copy.querySelectorAll('canvas').forEach((canvas, i) => {
+      if (canvases[i].width && canvases[i].height) canvas.getContext('2d')?.drawImage(canvases[i], 0, 0);
+    });
+    copy.setAttribute('inert', '');
+    copy.setAttribute('aria-hidden', 'true');
+    return copy;
+  }
+
+  private freezeView(view?: HTMLElement) {
+    if (this.disposed || !view || !this.vizContainer) return;
+    this.unfreezeView();
+    this.vizContainer.style.visibility = 'hidden';
+    this.vizEl.nativeElement.appendChild(view);
+    this.frozenView = view;
+    this.frozenRevision = this.renderRevision;
+    this.frozenTimeout = setTimeout(() => {
+      // A layout received after the confirmation replaces the copy once rendered.
+      if (!this.rendering || this.renderRevision === this.frozenRevision) this.unfreezeView(true);
+    }, frozenViewTimeoutMs);
+  }
+
+  private unfreezeView(fade = false) {
+    clearTimeout(this.frozenTimeout);
+    const view = this.frozenView;
+    if (!view) return;
+    this.frozenView = undefined;
+    if (this.vizContainer) this.vizContainer.style.visibility = '';
+    if (fade) this.crossfade(view, this.vizContainer);
+    else view.remove();
+  }
+
+  // Fades the outgoing view into the incoming one, then removes it.
+  private crossfade(outgoing: HTMLElement | undefined, incoming?: HTMLElement) {
+    if (reducedMotion()) {
+      outgoing?.remove();
+      return;
+    }
+    const timing = { duration: fadeMs, easing: 'ease-out' };
+    incoming?.animate([{ opacity: 0 }, { opacity: 1 }], timing);
+    if (!outgoing) return;
+    const remove = () => outgoing.remove();
+    outgoing.animate([{ opacity: 1 }, { opacity: 0 }], { ...timing, fill: 'forwards' }).finished.then(remove, remove);
   }
 
   private reportRendering(rendering: boolean) {
@@ -81,7 +207,7 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
       let revision: number;
       do {
         revision = this.renderRevision;
-        this.oldLayoutJson = JSON.stringify(this.qLayout);
+        this.oldLayoutJson = this.layoutJson;
         const layout = JSON.parse(this.oldLayoutJson);
         this.layoutChanged = false;
         try {
@@ -93,14 +219,23 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
     } finally {
       this.rendering = false;
       this.vizContainer?.removeAttribute('inert');
+      // A layout received after the confirmation has been rendered.
+      if (this.renderRevision > this.frozenRevision) this.unfreezeView(true);
       this.reportRendering(false);
     }
   }
 
   private async renderLayout(layout: any, revision: number) {
+    // A new chart is built only for the first layout, another chart type, or a selection the
+    // chart still holds although the server ended it (rebuilding drops it).
+    if (this.viz && !this.inSelections && this.source?.layout.visualization === layout.visualization) {
+      await this.updateLayout(this.source, layout);
+      return;
+    }
+    const source: ChartSource = { id: layout.qInfo.qId, layout, listeners: new Set() };
     const genericObject = {
       getLayout: () => {
-        return layout;
+        return source.layout;
       },
       selectHyperCubeCells: (...args) => {
       },
@@ -135,7 +270,7 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
         });
       },
       getStackedDataPages: (...args) => {
-        return layout.qHyperCube.qDataPages;
+        return source.layout.qHyperCube.qDataPages;
       },
       getFullPropertyTree: () => {
       },
@@ -146,33 +281,35 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
         });
       },
       beginSelections: (...args) => {
+        this.inSelections = true;
+        this.selectionMade = false;
+        this.vizContainer?.classList.remove('selection-ended');
       },
-      selectHyperCubeContinuousRange: async (...args) => {
-        await this.onSelections?.({ selections: args, method: 'selectHyperCubeContinuousRange' })
-      },
-      selectHyperCubeValues: async (...args) => {
-        await this.onSelections?.({ selections: args, method: 'selectHyperCubeValues' })
-      },
-      selectListObjectValues: async (...args) => {
-        await this.onSelections?.({ selections: args, method: 'selectListObjectValues' })
-      },
-      selectPivotCells: async (...args) => {
-        await this.onSelections?.({ selections: args, method: 'selectPivotCells' })
-      },
-      rangeSelectHyperCubeValues: async (...args) => {
-        await this.onSelections?.({ selections: args, method: 'rangeSelectHyperCubeValues' })
-      },
+      selectHyperCubeContinuousRange: (...args) => this.selectOnServer('selectHyperCubeContinuousRange', args),
+      selectHyperCubeValues: (...args) => this.selectOnServer('selectHyperCubeValues', args),
+      selectListObjectValues: (...args) => this.selectOnServer('selectListObjectValues', args),
+      selectPivotCells: (...args) => this.selectOnServer('selectPivotCells', args),
+      rangeSelectHyperCubeValues: (...args) => this.selectOnServer('rangeSelectHyperCubeValues', args),
       resetMadeSelections: (...args) => {
       },
       clearSelections: (...args) => {
       },
-      endSelections: (...args) => {
+      // Nebula calls this right after it has redrawn the chart without the highlight.
+      endSelections: (accept) => {
+        this.inSelections = false;
+        this.vizContainer?.classList.add('selection-ended');
+        if (accept && this.selectionMade) this.freezeView(this.selectionSnapshot);
+        this.selectionSnapshot = undefined;
+        if (this.handlingKey) this.endSelectionsOnServer(accept);
       },
-      removeListener: (...args) => {
+      // Nebula reads the layout again when the model changes.
+      on: (event: string, listener: () => void) => {
+        if (event === 'changed') source.listeners.add(listener);
+      },
+      removeListener: (event: string, listener: () => void) => {
+        if (event === 'changed') source.listeners.delete(listener);
       },
       useKeyboard: (...args) => {
-      },
-      on: (...args) => {
       },
       getField: (...args) => {
       },
@@ -198,8 +335,8 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
     }
     const preservedGetObject = app.getObject;
     app.getObject = async (objectId) => {
-      if (objectId === layout.qInfo.qId) {
-        return await preservedGetObject(layout.qInfo.qId);
+      if (objectId === source.id) {
+        return await preservedGetObject(source.id);
       }
       return {
         getLayout: async () => {
@@ -230,7 +367,10 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
       return this.onEvaluate({ expression })
     }
 
-    const loadNebulaChart = requireFrom((name) => (this.nebulaPackagesUrl ? `${this.nebulaPackagesUrl}/${name}` : `https://unpkg.com/@nebula.js/${name}`)).alias({
+    const loadNebulaChart = requireFrom((name) => (this.nebulaPackagesUrl ? `${this.nebulaPackagesUrl}/${name}` : `https://unpkg.com/@nebula.js/${name}`), {
+      transform: patchRangeBrush,
+      globals: rangeBrushGlobals,
+    }).alias({
       '@nebula.js/stardust': stardust,
     });
     const types = [
@@ -311,9 +451,10 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
         const finish = () => { if (initialRender && controllerReady) resolve(); };
         n.render({
           element: container,
-          id: layout.qInfo.qId,
-          // Nebula 5.11 wires onRender only when options are supplied.
-          options: {},
+          id: source.id,
+          // Nebula 5.11 wires onRender only when options are supplied. Line charts animate
+          // only when asked; the other charts animate unless told not to.
+          options: { chartAnimations: !reducedMotion() },
           onRender: () => { initialRender = true; finish(); },
           // An error panel is a completed view too; keep Nebula's message visible.
           onError: () => { initialRender = true; finish(); },
@@ -329,15 +470,23 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
         }, reject);
       });
       if (cancelled || this.disposed || revision !== this.renderRevision) return;
+      // The new chart fades in over a copy of the old one, unless a frozen copy already covers it.
+      const previous = this.vizContainer && !this.frozenView ? this.copyView(this.vizContainer) : undefined;
+      // Destroying a view confirms its open selection; that must not freeze the new view.
+      this.inSelections = false;
+      this.selectionSnapshot = undefined;
       this.viz?.destroy();
       this.destroyApp();
       this.vizContainer?.remove();
       this.viz = nextViz;
       this.app = app;
       this.n = n;
+      this.source = source;
       this.vizContainer = container;
       container.style.opacity = '';
       container.style.pointerEvents = '';
+      if (previous) this.vizEl.nativeElement.appendChild(previous);
+      if (!this.frozenView) this.crossfade(previous, container);
       committed = true;
     } finally {
       cancelled = true;
@@ -351,6 +500,42 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
     }
   }
 
+  // Nebula redraws the rendered chart when its model changes. The chart keeps the id it was
+  // rendered with, while the server gives each layout a new one.
+  private async updateLayout(source: ChartSource, layout: any) {
+    const rendered = this.chartRendered(this.vizContainer);
+    source.layout = { ...layout, qInfo: { ...layout.qInfo, qId: source.id } };
+    source.listeners.forEach(listener => listener());
+    await rendered;
+    // The redraw has dropped the ranges of the ended selection.
+    this.vizContainer?.classList.remove('selection-ended');
+  }
+
+  // Nebula counts finished renders on the chart's element, which an error panel replaces.
+  private chartRendered(container?: HTMLElement) {
+    if (!container) return Promise.resolve();
+    const counter = () => container.querySelector('[data-render-count]');
+    const element = counter();
+    const count = element?.getAttribute('data-render-count');
+    return new Promise<void>(resolve => {
+      const done = () => {
+        observer.disconnect();
+        clearTimeout(timeout);
+        this.cancelRender = undefined;
+        resolve();
+      };
+      const observer = new MutationObserver(() => {
+        const current = counter();
+        if (current !== element || current?.getAttribute('data-render-count') !== count) done();
+      });
+      observer.observe(container, { subtree: true, childList: true, attributes: true, attributeFilter: ['data-render-count'] });
+      // An error panel has no counter and may not change at all.
+      const timeout = setTimeout(done, element ? updateTimeoutMs : errorUpdateTimeoutMs);
+      // A newer layout doesn't wait for this one.
+      this.cancelRender = done;
+    });
+  }
+
   destroyApp(app = this.app) {
     if (app) document.querySelector(`div[data-app-id='${app.id}']`)?.remove();
     if (app === this.app) this.app = undefined;
@@ -360,6 +545,11 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
     this.disposed = true;
     ++this.renderRevision;
     this.cancelRender?.();
+    document.removeEventListener('pointerdown', this.onPointerDown, true);
+    document.removeEventListener('keydown', this.onKeyDown, true);
+    document.removeEventListener('keyup', this.onKeyUp, true);
+    this.selectionSnapshot = undefined;
+    this.unfreezeView();
     this.reportRendering(false);
     this.viz?.destroy();
     this.vizContainer?.remove();

@@ -10,3 +10,8 @@
     flex: 1;
     position: relative;
 }
+
+// Picasso keeps drawing the ranges of an ended selection until the chart is replaced.
+.viz ::ng-deep .selection-ended [data-key*="range-brush"] {
+    visibility: hidden;
+}

@@ -95,6 +95,8 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   scrollSub: Subscription;
   nativeScrollSubscription: Subscription;
   cellItemCache = new WeakMap<any, { sanitized: SafeHtml, parsedValue: string }>();
+  // A missing grid counts as empty, as before.
+  private gridJson = JSON.stringify({});
 
   private rebuildColPrefix() {
     if (this.columnWidths?.length) {
@@ -160,7 +162,7 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
     const cells: GridCell[] = [];
     for (let r = this.firstRow; r <= maxR; r++) {
       for (let c = this.firstCol; c <= maxC; c++) {
-        const cell = this.cellMatrix[r][c];
+        const cell = this.cellMatrix[r]?.[c];
         if (cell) cells.push(cell);
       }
     }
@@ -644,24 +646,31 @@ export class GridComponent implements OnInit, OnChanges, AfterViewInit, OnDestro
   ngOnChanges(changes: SimpleChanges) {
     let shouldRecalc = false;
 
-    if (changes.grid && JSON.stringify(changes.grid?.previousValue || {}) !== JSON.stringify(changes.grid?.currentValue || {})) {
-      this.stickyCells = this.grid.filter(c => c.cellStyle?.position === 'sticky');
-      this.nonStickyCells = this.grid.filter(c => c.cellStyle?.position !== 'sticky');
+    // Grids can hold thousands of cells; the last grid is serialized once and kept for comparison.
+    const gridJson = changes.grid ? JSON.stringify(changes.grid.currentValue || {}) : this.gridJson;
+    if (changes.grid && gridJson !== this.gridJson) {
+      this.gridJson = gridJson;
+      const grid = this.grid || [];
+      this.stickyCells = grid.filter(c => c.cellStyle?.position === 'sticky');
+      this.nonStickyCells = grid.filter(c => c.cellStyle?.position !== 'sticky');
 
-      this.cellMatrix = Array.from(
-        { length: this.rowCount },
-        () => Array(this.columnCount)
-      );
+      // Only rows with cells get an array: rowCount covers the whole table, often thousands of rows.
+      this.cellMatrix = [];
       for (let c of this.nonStickyCells) {
-        this.cellMatrix[c.row][c.col] = c;
+        const row = this.cellMatrix[c.row] || (this.cellMatrix[c.row] = []);
+        row[c.col] = c;
       }
 
-      const parser = new DOMParser();
-      this.grid.forEach(c => {
+      // Most values are plain text; only markup and entities need the HTML parser.
+      let parser: DOMParser | undefined;
+      grid.forEach(c => {
         c.content.forEach(item => {
           const itemAny = item as any;
+          const text = String(itemAny.value);
           this.cellItemCache.set(itemAny, {
-            parsedValue: parser.parseFromString(itemAny.value, 'text/html').body.textContent || '',
+            parsedValue: /[<&]/.test(text)
+              ? (parser = parser || new DOMParser()).parseFromString(text, 'text/html').body.textContent || ''
+              : text,
             sanitized: this.sanitizer.bypassSecurityTrustHtml(itemAny.value) || '',
           });
         });

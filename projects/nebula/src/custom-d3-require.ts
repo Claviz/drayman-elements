@@ -68,8 +68,16 @@ async function resolve(name, base) {
 
 export var require = requireFrom(resolve);
 
-export function requireFrom(resolver) {
+export interface RequireOptions {
+    // Rewrites a module's source before it runs.
+    transform?: (source: string) => string;
+    // Variables available to every module's source.
+    globals?: Record<string, unknown>;
+}
+
+export function requireFrom(resolver, options: RequireOptions = {}) {
     const cache = new Map();
+    const globals = options.globals || {};
 
     function requireAbsolute(url) {
         if (typeof url !== "string") return url;
@@ -79,14 +87,15 @@ export function requireFrom(resolver) {
                 try {
                     const response = await fetch(url);
                     if (!response.ok) throw new RequireError(`Unable to fetch module from ${url}`);
-                    const scriptContent = await response.text();
+                    let scriptContent = await response.text();
+                    if (options.transform) scriptContent = options.transform(scriptContent);
 
                     const moduleQueue = [];
                     const moduleDefine = createDefine(moduleQueue);
 
-                    const moduleFunction = new Function('define', scriptContent);
+                    const moduleFunction = new Function('define', ...Object.keys(globals), scriptContent);
 
-                    moduleFunction(moduleDefine);
+                    moduleFunction(moduleDefine, ...Object.values(globals));
 
                     const moduleFactory = moduleQueue.shift();
                     if (typeof moduleFactory !== 'function') {
@@ -117,7 +126,7 @@ export function requireFrom(resolver) {
                 if (typeof name !== "string") return name;
             }
             return resolver(name, base);
-        });
+        }, options);
     }
 
     function require(name) {
