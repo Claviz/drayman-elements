@@ -43,6 +43,9 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
     if (this.viewReady) this.reportRendering(this.rendering || (!!value && this.layoutChanged));
   }
   get qLayout() { return this.layout; }
+  // The chart's properties as the server read them together with one layout, named by that
+  // layout's qInfo.qId. Charts ask for them before their first paint.
+  @Input() qEffectiveProperties?: { qId: string; properties: any };
   @Input() theme: any;
   @Output() renderStateChange = new EventEmitter<{ rendering: boolean }>();
   @Input() onSelections?: (options) => Promise<any>;
@@ -240,6 +243,12 @@ export class NebulaComponent implements AfterViewInit, OnChanges, OnDestroy {
       selectHyperCubeCells: (...args) => {
       },
       getEffectiveProperties: async (...args) => {
+        // Properties sent with the layout on screen answer without asking the server. Any other
+        // layout may belong to changed properties, so the server is asked.
+        const sent = this.qEffectiveProperties;
+        if (sent?.properties && sent.qId === this.layout?.qInfo?.qId) {
+          return JSON.parse(JSON.stringify(sent.properties));
+        }
         return await this.onVizMethod({
           name: 'getEffectiveProperties',
           args,

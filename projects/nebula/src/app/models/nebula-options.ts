@@ -20,6 +20,12 @@ export interface DraymanNebula {
      */
     qLayout: any;
     /**
+     * Effective properties of the object, read on the server together with one layout.
+     * `qId` is that layout's `qInfo.qId`. While that layout is shown, the chart's `getEffectiveProperties`
+     * is answered from `properties` instead of `onVizMethod`.
+     */
+    qEffectiveProperties?: { qId: string; properties: any };
+    /**
      * Custom JSON theme for the viz.
      * Structure can be found here - https://help.qlik.com/en-US/sense-developer/Subsystems/Extensions/Content/Sense_Extensions/CustomThemes/custom-themes-properties.htm.
      */
